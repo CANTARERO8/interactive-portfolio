@@ -49,6 +49,7 @@
 - **Tres perfiles gráficos persistentes**: Rendimiento, Ultra y Ultra+, con transición cinematográfica de pantalla completa al cambiar de modo.
 - **Nebulosa volumétrica por raymarching** con ruido 3D, bruma azul medianoche, humo carbón, halos cian y una variante violeta de alta densidad en Ultra+.
 - **Campo de partículas estable en coordenadas 3D**, con parallax de cámara sin estrellas que aparezcan o desaparezcan por reciclaje visual.
+- **Ciudad de Sistemas en segundo plano** con ocho distritos temáticos, arquitectura procedural oscura, vías de datos, tránsito aéreo y densidad escalable sin invadir el corredor de las vitrinas.
 
 ---
 
@@ -83,6 +84,9 @@ La aplicación está construida sobre un ecosistema desacoplado que sincroniza d
   - Mitigación activa de presión en el recolector de basura (*Garbage Collector*) mediante la reutilización de objetos de vectores scratch (`Vector3`) en el bucle de render.
 - **Arquitectura ambiental (`scenes/EnvironmentBiomes.js` & `scenes/ColumnRuins.js`)**:
   - Torres, vitrinas y un corredor PostgreSQL con diez estaciones de trabajo 3D distribuidas por zonas sin ocultar la tecnología ni invadir el recorrido de cámara.
+- **Ciudad procedural (`scenes/SystemsCity.js` & `textures/SystemsCitySignTextures.js`)**:
+  - Skyline modular construido con instancias para ocho distritos: laboratorio, archivo de proyectos, red reactiva, fundición backend, operaciones de datos, fábrica de contenido y puerto de enlace.
+  - Los edificios permanecen alejados en profundidad, usan masas casi negras y una iluminación cian/violeta contenida; Rendimiento, Ultra y Ultra+ activan capas progresivas de densidad, puentes locales, tránsito y drones.
 - **Entidad morfológica (`scenes/MorphingCoreEntity.js`)**:
   - Núcleo procedural que transforma su geometría y enlaza visualmente los ecosistemas del recorrido mediante trayectorias espaciales controladas.
 - **Partículas estratificadas (`effects/Particles.js`)**:
@@ -102,7 +106,7 @@ La aplicación está construida sobre un ecosistema desacoplado que sincroniza d
 - **Coreografía con GSAP & ScrollTrigger (`PortfolioOrchestrator.js`)**:
   - Anclaje espacial (*pinning*), revelación escalonada (*staggering*) y transiciones de paralaje sincronizadas con la trayectoria de la cámara 3D.
 - **Perfiles gráficos (`GraphicsMode.js`)**:
-  - Selector persistente Rendimiento / Ultra / Ultra+ que reconfigura resolución, niebla, partículas, raymarching y haces con una transición GSAP de pantalla completa.
+  - Selector persistente Rendimiento / Ultra / Ultra+ que reconfigura resolución, niebla, partículas, raymarching, haces y densidad urbana con una transición GSAP de pantalla completa.
 - **Vuelo libre (`ExplorerMode.js`)**:
   - Control alternativo de cámara con teclado y ratón, colisiones espaciales, soporte táctil y retorno seguro al recorrido narrativo.
 - **Tipografía Cinética & Decodificación de Texto (`TextAnimations.js` & `TextInteractions.js`)**:
@@ -183,8 +187,10 @@ interactive-portfolio/
 │   │   ├── scenes/
 │   │   │   ├── ColumnRuins.js       # Construcción geométrica de torres y columnas
 │   │   │   ├── EnvironmentBiomes.js # Zonas, vitrinas y distribución ambiental
-│   │   │   └── MorphingCoreEntity.js # Núcleo procedural y transformaciones
+│   │   │   ├── MorphingCoreEntity.js # Núcleo procedural y transformaciones
+│   │   │   └── SystemsCity.js        # Ciudad distante, distritos y tránsito procedural
 │   │   └── textures/
+│   │       ├── SystemsCitySignTextures.js # Señalización Canvas de distritos
 │   │       └── TechnologyDisplayTextures.js # Displays Canvas de tecnologías
 │   └── main.js                      # Punto de entrada de la aplicación
 ├── index.html                       # Marcado semántico, loader y meta-etiquetas SEO

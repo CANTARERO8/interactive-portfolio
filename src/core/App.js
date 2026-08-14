@@ -4,6 +4,7 @@ import { GridFloor } from '../three/effects/GridFloor';
 import { VolumetricNebula } from '../three/effects/VolumetricNebula';
 import { VolumetricLightBeams } from '../three/effects/VolumetricLightBeams';
 import { EnvironmentBiomes } from '../three/scenes/EnvironmentBiomes';
+import { SystemsCity } from '../three/scenes/SystemsCity';
 import { MorphingCoreEntity } from '../three/scenes/MorphingCoreEntity';
 import { ScrollManager } from './ScrollManager';
 import { Cursor } from './Cursor';
@@ -31,6 +32,7 @@ export class App {
     this.particles = new Particles(this.engine.scene);
     this.gridFloor = new GridFloor(this.engine.scene);
     this.biomes = new EnvironmentBiomes(this);
+    this.systemsCity = new SystemsCity(this);
     this.lightBeams = new VolumetricLightBeams(this.engine.scene, this.engine.camera);
     this.morphingEntity = new MorphingCoreEntity(this);
     this.explorerMode = new ExplorerMode(this);
@@ -82,6 +84,7 @@ export class App {
       this.particles.update(deltaTime, elapsedTime);
       this.gridFloor.update(deltaTime, elapsedTime);
       this.biomes.update(deltaTime, elapsedTime, sceneProgress);
+      this.systemsCity.update(deltaTime, elapsedTime, sceneProgress, this.explorerMode.active);
       this.lightBeams.update(elapsedTime, sceneProgress, this.explorerMode.active, this.isOverclocked);
       this.morphingEntity.update(deltaTime, elapsedTime, sceneProgress);
       
