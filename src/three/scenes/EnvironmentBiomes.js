@@ -403,10 +403,24 @@ export class EnvironmentBiomes {
     this.databaseFans = [];
     this.databaseTerminalTextures = createDatabaseTerminalTextures(this.app.engine.renderer, 5);
 
+    const boothWidth = 3.2;
+    const boothDepth = 1.5;
+    const boothYaw = Math.PI / 2 - 0.16;
+    const stationCountPerSide = 5;
+    const stationClearance = 0.5;
+    const stationFootprintZ = (
+      Math.abs(Math.sin(boothYaw)) * boothWidth
+      + Math.abs(Math.cos(boothYaw)) * boothDepth
+    );
+    const stationSpacing = stationFootprintZ + stationClearance;
+    const corridorHalfSpan = ((stationCountPerSide - 1) * stationSpacing) / 2;
+    const corridorContentLength = corridorHalfSpan * 2 + stationFootprintZ;
+    const walkwayLength = corridorContentLength + 1.2;
+
     const assets = {
-      backPanel: new THREE.BoxGeometry(3.2, 4.72, 0.16),
-      roof: new THREE.BoxGeometry(3.2, 0.16, 1.5),
-      sideRail: new THREE.BoxGeometry(0.14, 4.65, 1.45),
+      backPanel: new THREE.BoxGeometry(boothWidth, 4.72, 0.16),
+      roof: new THREE.BoxGeometry(boothWidth, 0.16, boothDepth),
+      sideRail: new THREE.BoxGeometry(0.11, 4.65, 0.14),
       header: new THREE.BoxGeometry(2.82, 0.4, 0.14),
       desk: new THREE.BoxGeometry(2.74, 0.14, 1.04),
       monitor: new THREE.BoxGeometry(2.06, 1.3, 0.16),
@@ -436,16 +450,14 @@ export class EnvironmentBiomes {
       side: THREE.DoubleSide
     });
 
-    const stationCountPerSide = 5;
-    const stationSpacing = 2.82;
     for (let laneIndex = 0; laneIndex < stationCountPerSide; laneIndex++) {
-      const localZ = 5.64 - laneIndex * stationSpacing;
+      const localZ = corridorHalfSpan - laneIndex * stationSpacing;
       [-1, 1].forEach(side => {
         const stationIndex = laneIndex * 2 + (side > 0 ? 1 : 0);
         const booth = new THREE.Group();
         booth.name = `POSTGRES_DB_CABIN_${String(stationIndex + 1).padStart(2, '0')}`;
         booth.position.set(side * 5.15, -0.58, localZ);
-        booth.rotation.y = side < 0 ? Math.PI / 2 - 0.16 : -Math.PI / 2 + 0.16;
+        booth.rotation.y = side < 0 ? boothYaw : -boothYaw;
 
         const backPanel = new THREE.Mesh(assets.backPanel, this.matObsidian);
         backPanel.name = `${booth.name}_BACKPLANE`;
@@ -464,7 +476,7 @@ export class EnvironmentBiomes {
 
         [-1, 1].forEach(railSide => {
           const sideRail = new THREE.Mesh(assets.sideRail, this.matSlate);
-          sideRail.position.set(railSide * 1.53, 0, 0);
+          sideRail.position.set(railSide * 1.53, 0, -0.66);
           booth.add(sideRail);
         });
 
@@ -606,7 +618,7 @@ export class EnvironmentBiomes {
     }
 
     // Long, unobstructed center aisle. Cabins remain outside the camera lane.
-    const walkwayGeometry = new THREE.BoxGeometry(6.6, 0.14, 17.6);
+    const walkwayGeometry = new THREE.BoxGeometry(6.6, 0.14, walkwayLength);
     const walkway = new THREE.Mesh(walkwayGeometry, this.matObsidian);
     walkway.position.set(0, -3.0, -0.15);
     group.add(walkway);
@@ -614,22 +626,25 @@ export class EnvironmentBiomes {
 
     [-2.95, 2.95].forEach(x => {
       const aisleLight = new THREE.Mesh(
-        new THREE.BoxGeometry(0.055, 0.035, 16.8),
+        new THREE.BoxGeometry(0.055, 0.035, walkwayLength - 0.8),
         this.glowCyan
       );
       aisleLight.position.set(x, -2.91, -0.15);
       group.add(aisleLight);
 
       const ceilingRail = new THREE.Mesh(
-        new THREE.BoxGeometry(0.07, 0.07, 17.2),
+        new THREE.BoxGeometry(0.07, 0.07, walkwayLength - 0.4),
         this.glowBlue
       );
       ceilingRail.position.set(x, 2.5, -0.15);
       group.add(ceilingRail);
     });
 
-    for (let ribIndex = 0; ribIndex < 7; ribIndex++) {
-      const ribZ = 7.35 - ribIndex * 2.5;
+    const ribCount = Math.ceil(walkwayLength / 2.5);
+    const ribSpacing = (walkwayLength - 2.0) / (ribCount - 1);
+    const firstRibZ = ((ribCount - 1) * ribSpacing) / 2;
+    for (let ribIndex = 0; ribIndex < ribCount; ribIndex++) {
+      const ribZ = firstRibZ - ribIndex * ribSpacing;
       const ceilingRib = new THREE.Mesh(
         new THREE.BoxGeometry(10.5, 0.1, 0.12),
         this.matSlate
@@ -648,7 +663,7 @@ export class EnvironmentBiomes {
 
     // Elevated operations display creates a focal point without blocking passage.
     const overviewFrame = new THREE.Mesh(new THREE.BoxGeometry(3.9, 1.72, 0.16), this.matObsidian);
-    overviewFrame.position.set(0, 1.15, -7.35);
+    overviewFrame.position.set(0, 1.15, -corridorHalfSpan - 1.0);
     group.add(overviewFrame);
     overviewFrame.add(new THREE.LineSegments(new THREE.EdgesGeometry(overviewFrame.geometry), this.wireCyan));
     const overviewMaterial = new THREE.MeshBasicMaterial({
@@ -660,7 +675,7 @@ export class EnvironmentBiomes {
       depthWrite: false
     });
     const overviewScreen = new THREE.Mesh(new THREE.PlaneGeometry(3.58, 1.45), overviewMaterial);
-    overviewScreen.position.set(0, 1.15, -7.26);
+    overviewScreen.position.set(0, 1.15, -corridorHalfSpan - 0.91);
     overviewScreen.renderOrder = 5;
     group.add(overviewScreen);
 
