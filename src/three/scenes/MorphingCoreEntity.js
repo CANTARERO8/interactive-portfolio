@@ -32,7 +32,7 @@ export class MorphingCoreEntity {
     this.buildLaravelColumns();
     this.buildPostgresBeacon();
     this.buildWordPressLayoutCore();
-    this.buildContactSingularity();
+    this.buildContactOrbitalCore();
 
     // Waypoints for the entity placement along the scroll corridor
     // Z positions and offsets carefully matched to each section's biome center
@@ -392,34 +392,85 @@ export class MorphingCoreEntity {
     this.forms.wordpress = root;
   }
 
-  // ─── 8. FORM H: CONTACT QUANTUM SINGULARITY ───────────────────────────
-  buildContactSingularity() {
+  // ─── 8. FORM H: CONTACT ORBITAL TRANSMISSION CORE ─────────────────────
+  buildContactOrbitalCore() {
     const root = new THREE.Group();
     root.visible = false;
 
-    // Glowing Event Horizon Sphere
-    const sphereGeo = new THREE.SphereGeometry(0.8, 32, 32);
-    this.singularitySphere = new THREE.Mesh(
-      sphereGeo,
-      new THREE.MeshBasicMaterial({ color: '#00f2fe', wireframe: false })
-    );
-    root.add(this.singularitySphere);
+    const crystalMaterial = new THREE.MeshPhysicalMaterial({
+      color: '#020711',
+      emissive: '#06182b',
+      emissiveIntensity: 0.48,
+      roughness: 0.18,
+      metalness: 0.78,
+      clearcoat: 0.46,
+      clearcoatRoughness: 0.18,
+      transparent: true,
+      opacity: 0.9,
+      depthWrite: false
+    });
 
-    // Multi-Ring Gravitational Disk
-    this.singularityRings = [];
-    for (let i = 0; i < 4; i++) {
-      const torusGeo = new THREE.TorusGeometry(1.2 + i * 0.4, 0.02, 16, 64);
+    this.contactCrystal = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(0.96, 2),
+      crystalMaterial
+    );
+    this.contactCrystal.scale.y = 1.18;
+    this.contactCrystal.renderOrder = 2;
+    root.add(this.contactCrystal);
+
+    this.contactEmitter = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.34, 1),
+      new THREE.MeshBasicMaterial({
+        color: '#9af7ff',
+        transparent: true,
+        opacity: 0.92,
+        toneMapped: false
+      })
+    );
+    this.contactEmitter.renderOrder = 3;
+    root.add(this.contactEmitter);
+
+    const coreRingConfigs = [
+      { radius: 1.38, tube: 0.035, rotation: [Math.PI / 2.8, 0.15, 0], color: '#00f2fe', speed: 0.48 },
+      { radius: 1.76, tube: 0.028, rotation: [Math.PI / 2.15, -0.28, 0.18], color: '#a855f7', speed: -0.34 },
+      { radius: 2.12, tube: 0.022, rotation: [Math.PI / 1.72, 0.22, -0.12], color: '#67e8f9', speed: 0.24 }
+    ];
+    this.contactCoreRings = coreRingConfigs.map(config => {
       const ring = new THREE.Mesh(
-        torusGeo,
+        new THREE.TorusGeometry(config.radius, config.tube, 12, 72),
         new THREE.MeshBasicMaterial({
-          color: i % 2 === 0 ? '#a855f7' : '#00f2fe',
+          color: config.color,
           transparent: true,
-          opacity: 0.7
+          opacity: 0.72,
+          toneMapped: false
         })
       );
-      ring.rotation.x = Math.PI / 2 + (i * 0.2);
+      ring.rotation.set(...config.rotation);
       root.add(ring);
-      this.singularityRings.push({ ring, speed: (i + 1) * 0.6 });
+      return { ring, speed: config.speed };
+    });
+
+    this.contactSignalNodes = [];
+    const nodeGeometry = new THREE.TetrahedronGeometry(0.13, 0);
+    const violetNodeMaterial = new THREE.MeshBasicMaterial({
+      color: '#a855f7',
+      transparent: true,
+      opacity: 0.78,
+      toneMapped: false
+    });
+    for (let nodeIndex = 0; nodeIndex < 4; nodeIndex++) {
+      const node = new THREE.Mesh(
+        nodeGeometry,
+        nodeIndex % 2 === 0 ? this.ringMaterial : violetNodeMaterial
+      );
+      root.add(node);
+      this.contactSignalNodes.push({
+        node,
+        angle: (nodeIndex / 4) * Math.PI * 2,
+        radius: 2.35 + (nodeIndex % 2) * 0.22,
+        speed: 0.38 + nodeIndex * 0.055,
+        phase: nodeIndex * 1.42
+      });
     }
 
     this.group.add(root);
@@ -599,13 +650,31 @@ export class MorphingCoreEntity {
       if (this.wordpressOrbit) this.wordpressOrbit.rotation.z += deltaTime * 0.48;
     }
 
-    if (this.forms.contact.visible && this.singularityRings) {
-      this.singularityRings.forEach(r => {
-        r.ring.rotation.z += deltaTime * r.speed;
+    if (this.forms.contact.visible && this.contactCoreRings) {
+      this.contactCoreRings.forEach((item, index) => {
+        item.ring.rotation.y += deltaTime * item.speed;
+        item.ring.rotation.z += deltaTime * item.speed * (index % 2 === 0 ? 0.42 : -0.36);
       });
-      if (this.singularitySphere) {
-        const pulse = 1.0 + Math.sin(elapsedTime * 6.0) * 0.12;
-        this.singularitySphere.scale.set(pulse, pulse, pulse);
+      if (this.contactCrystal) {
+        this.contactCrystal.rotation.x += deltaTime * 0.16;
+        this.contactCrystal.rotation.y -= deltaTime * 0.28;
+      }
+      if (this.contactEmitter) {
+        const pulse = 0.9 + Math.sin(elapsedTime * 2.8) * 0.12;
+        this.contactEmitter.scale.setScalar(pulse);
+        this.contactEmitter.rotation.y += deltaTime * 0.72;
+      }
+      if (this.contactSignalNodes) {
+        this.contactSignalNodes.forEach(signal => {
+          signal.angle += deltaTime * signal.speed;
+          signal.node.position.set(
+            Math.sin(signal.angle) * signal.radius,
+            Math.sin(elapsedTime * 0.78 + signal.phase) * 0.48,
+            Math.cos(signal.angle) * signal.radius
+          );
+          signal.node.rotation.x += deltaTime * 0.44;
+          signal.node.rotation.y -= deltaTime * 0.62;
+        });
       }
     }
 

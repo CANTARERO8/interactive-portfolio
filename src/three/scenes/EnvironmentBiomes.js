@@ -29,7 +29,7 @@ export class EnvironmentBiomes {
     this.buildBiomeLaravelCitadel();
     this.buildBiomePostgresDataCorridor();
     this.buildBiomeWordPressFoundry();
-    this.buildBiomeContactSingularity();
+    this.buildBiomeContactOrbitalUplink();
 
     // Explorer entry boundaries. PostgreSQL begins before its visual center so
     // its blue operations beacon is active as soon as the first cabin appears.
@@ -731,37 +731,138 @@ export class EnvironmentBiomes {
     this.rootGroup.add(group);
   }
 
-  // ─── 8. BIOMA CONTACTO: VÓRTICE DE SINGULARIDAD (Z = -65 to -85) ──────
-  buildBiomeContactSingularity() {
+  // ─── 8. BIOMA CONTACTO: NÚCLEO DE COMUNICACIÓN ORBITAL (Z = -65 to -85)
+  buildBiomeContactOrbitalUplink() {
     const group = new THREE.Group();
     group.position.set(0, 3.2, -72);
 
-    // Vast floating orbital arch ring surrounding the exit portal
-    const grandRingGeo = new THREE.TorusGeometry(14, 0.08, 16, 100);
-    this.contactGrandRing = new THREE.Mesh(grandRingGeo, this.glowCyan);
-    this.contactGrandRing.rotation.x = Math.PI / 2.5;
-    group.add(this.contactGrandRing);
+    this.contactOrbitalStation = new THREE.Group();
+    this.contactOrbitalStation.name = 'CONTACT_ORBITAL_UPLINK';
+    group.add(this.contactOrbitalStation);
 
-    const grandRingGeo2 = new THREE.TorusGeometry(18, 0.06, 16, 100);
-    this.contactGrandRing2 = new THREE.Mesh(grandRingGeo2, this.glowPurple);
-    this.contactGrandRing2.rotation.y = Math.PI / 3;
-    group.add(this.contactGrandRing2);
+    // Mechanical collar around the mobile crystalline transmitter.
+    this.contactHubCollar = new THREE.Mesh(
+      new THREE.TorusGeometry(3.45, 0.2, 14, 88),
+      this.matObsidian
+    );
+    this.contactHubCollar.rotation.x = Math.PI / 2;
+    this.contactOrbitalStation.add(this.contactHubCollar);
 
-    // Floating debris monoliths orbiting the singularity
-    this.singularityDebris = [];
-    for (let i = 0; i < 16; i++) {
-      const geo = new THREE.BoxGeometry(0.8 + Math.random() * 0.8, 2.5 + Math.random() * 3.5, 0.8);
-      const mesh = new THREE.Mesh(geo, this.matSlate);
+    this.contactHubFins = new THREE.Group();
+    const finGeometry = new THREE.BoxGeometry(0.22, 0.58, 1.15);
+    for (let finIndex = 0; finIndex < 8; finIndex++) {
+      const angle = (finIndex / 8) * Math.PI * 2;
+      const fin = new THREE.Mesh(finGeometry, this.matSlate);
+      fin.position.set(Math.sin(angle) * 3.42, 0, Math.cos(angle) * 3.42);
+      fin.rotation.y = angle;
+      this.contactHubFins.add(fin);
+    }
+    this.contactOrbitalStation.add(this.contactHubFins);
 
-      group.add(mesh);
-      this.singularityDebris.push({
-        mesh,
-        angle: (i / 16) * Math.PI * 2,
-        radius: 8.5 + Math.random() * 7.0,
-        height: -4.0 + Math.random() * 8.0,
-        speed: 0.2 + Math.random() * 0.4
+    // Three transmission bands define the station without crossing the UI.
+    const ringConfigs = [
+      { radius: 4.35, tube: 0.055, rotation: [Math.PI / 2.5, 0.18, 0.12], speed: 0.18, material: this.glowCyan },
+      { radius: 5.65, tube: 0.045, rotation: [Math.PI / 2.1, -0.28, -0.18], speed: -0.12, material: this.glowPurple },
+      { radius: 7.05, tube: 0.035, rotation: [Math.PI / 1.85, 0.32, 0.08], speed: 0.08, material: this.glowCyan }
+    ];
+    this.contactTransmissionRings = ringConfigs.map((config, index) => {
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(config.radius, config.tube, 12, 96),
+        config.material
+      );
+      ring.rotation.set(...config.rotation);
+      ring.renderOrder = 2;
+      this.contactOrbitalStation.add(ring);
+      return {
+        ring,
+        baseX: config.rotation[0],
+        baseY: config.rotation[1],
+        baseZ: config.rotation[2],
+        speed: config.speed,
+        phase: index * 1.7
+      };
+    });
+
+    // Six compact receiver pods replace the former rotating columns.
+    this.contactAntennas = [];
+    const antennaBaseGeometry = new THREE.BoxGeometry(0.78, 0.3, 1.05);
+    const antennaPanelGeometry = new THREE.BoxGeometry(0.72, 0.055, 0.42);
+    const antennaDishGeometry = new THREE.ConeGeometry(0.56, 0.24, 28, 1, true);
+    for (let antennaIndex = 0; antennaIndex < 6; antennaIndex++) {
+      const angle = (antennaIndex / 6) * Math.PI * 2;
+      const radius = antennaIndex % 2 === 0 ? 5.35 : 6.3;
+      const pod = new THREE.Group();
+      pod.position.set(
+        Math.sin(angle) * radius,
+        (antennaIndex % 3 - 1) * 1.25,
+        Math.cos(angle) * radius
+      );
+      pod.rotation.y = angle;
+
+      const base = new THREE.Mesh(antennaBaseGeometry, this.matObsidian);
+      pod.add(base);
+
+      [-1, 1].forEach(side => {
+        const panel = new THREE.Mesh(
+          antennaPanelGeometry,
+          antennaIndex % 2 === 0 ? this.glowCyan : this.glowPurple
+        );
+        panel.position.set(side * 0.64, 0, 0.02);
+        panel.rotation.z = side * 0.08;
+        pod.add(panel);
+      });
+
+      const dishPivot = new THREE.Group();
+      dishPivot.position.z = 0.62;
+      const dish = new THREE.Mesh(antennaDishGeometry, this.matSlate);
+      dish.rotation.x = Math.PI / 2;
+      dishPivot.add(dish);
+      const emitter = new THREE.Mesh(
+        new THREE.SphereGeometry(0.1, 14, 10),
+        antennaIndex % 2 === 0 ? this.glowCyan : this.glowPurple
+      );
+      emitter.position.z = 0.23;
+      dishPivot.add(emitter);
+      pod.add(dishPivot);
+
+      this.contactOrbitalStation.add(pod);
+      this.contactAntennas.push({
+        pod,
+        dishPivot,
+        emitter,
+        baseY: pod.position.y,
+        phase: antennaIndex * 0.84
       });
     }
+
+    // Instanced packets keep the orbital traffic detailed and inexpensive.
+    const packetGeometry = new THREE.BoxGeometry(0.24, 0.055, 0.09);
+    this.contactPacketMatrix = new THREE.Matrix4();
+    this.contactPacketPosition = new THREE.Vector3();
+    this.contactPacketQuaternion = new THREE.Quaternion();
+    this.contactPacketScale = new THREE.Vector3(1, 1, 1);
+    this.contactPacketEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+    this.contactPacketStreams = [
+      { material: this.glowCyan, count: 18, radiusOffset: 0, direction: 1, states: [] },
+      { material: this.glowPurple, count: 14, radiusOffset: 0.7, direction: -1, states: [] }
+    ].map((stream, streamIndex) => {
+      const mesh = new THREE.InstancedMesh(packetGeometry, stream.material, stream.count);
+      mesh.name = streamIndex === 0 ? 'CYAN_UPLINK_PACKETS' : 'VIOLET_UPLINK_PACKETS';
+      mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      mesh.frustumCulled = false;
+      this.contactOrbitalStation.add(mesh);
+
+      for (let packetIndex = 0; packetIndex < stream.count; packetIndex++) {
+        stream.states.push({
+          angle: (packetIndex / stream.count) * Math.PI * 2 + streamIndex * 0.32,
+          radius: 4.45 + (packetIndex % 3) * 0.92 + stream.radiusOffset,
+          baseY: (packetIndex % 3 - 1) * 1.18,
+          speed: stream.direction * (0.34 + (packetIndex % 5) * 0.035),
+          phase: packetIndex * 0.61 + streamIndex
+        });
+      }
+      return { mesh, states: stream.states };
+    });
 
     this.biomes.contact = { group, baseScale: 1.0, activeRange: [0.80, 1.0] };
     this.rootGroup.add(group);
@@ -833,16 +934,43 @@ export class EnvironmentBiomes {
       }
     }
 
-    // Contact Rings & Debris
-    if (this.contactGrandRing) this.contactGrandRing.rotation.z += deltaTime * 0.2;
-    if (this.contactGrandRing2) this.contactGrandRing2.rotation.x -= deltaTime * 0.15;
-    if (this.singularityDebris) {
-      this.singularityDebris.forEach(d => {
-        d.angle += deltaTime * d.speed;
-        d.mesh.position.x = Math.cos(d.angle) * d.radius;
-        d.mesh.position.z = Math.sin(d.angle) * d.radius;
-        d.mesh.position.y = d.height + Math.sin(elapsedTime * 1.2 + d.angle) * 0.6;
-        d.mesh.rotation.y += deltaTime * 0.5;
+    // Orbital communication station
+    if (this.contactTransmissionRings) {
+      this.contactTransmissionRings.forEach((item, index) => {
+        item.ring.rotation.x = item.baseX + Math.sin(elapsedTime * 0.18 + item.phase) * 0.06;
+        item.ring.rotation.y = item.baseY + elapsedTime * item.speed;
+        item.ring.rotation.z = item.baseZ + Math.cos(elapsedTime * 0.14 + index) * 0.045;
+      });
+    }
+    if (this.contactHubFins) this.contactHubFins.rotation.y -= deltaTime * 0.12;
+    if (this.contactHubCollar) this.contactHubCollar.rotation.z += deltaTime * 0.08;
+    if (this.contactAntennas) {
+      this.contactAntennas.forEach(antenna => {
+        antenna.dishPivot.rotation.x = Math.sin(elapsedTime * 0.42 + antenna.phase) * 0.16;
+        antenna.dishPivot.rotation.y = Math.cos(elapsedTime * 0.31 + antenna.phase) * 0.12;
+        antenna.pod.position.y = antenna.baseY + Math.sin(elapsedTime * 0.48 + antenna.phase) * 0.16;
+        antenna.emitter.scale.setScalar(0.82 + Math.sin(elapsedTime * 2.2 + antenna.phase) * 0.18);
+      });
+    }
+    if (this.contactPacketStreams) {
+      this.contactPacketStreams.forEach(stream => {
+        stream.states.forEach((packet, packetIndex) => {
+          packet.angle += deltaTime * packet.speed;
+          this.contactPacketPosition.set(
+            Math.sin(packet.angle) * packet.radius,
+            packet.baseY + Math.sin(elapsedTime * 0.9 + packet.phase) * 0.24,
+            Math.cos(packet.angle) * packet.radius
+          );
+          this.contactPacketEuler.set(0, packet.angle, Math.sin(packet.phase) * 0.08);
+          this.contactPacketQuaternion.setFromEuler(this.contactPacketEuler);
+          this.contactPacketMatrix.compose(
+            this.contactPacketPosition,
+            this.contactPacketQuaternion,
+            this.contactPacketScale
+          );
+          stream.mesh.setMatrixAt(packetIndex, this.contactPacketMatrix);
+        });
+        stream.mesh.instanceMatrix.needsUpdate = true;
       });
     }
 
