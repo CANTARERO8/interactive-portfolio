@@ -337,7 +337,7 @@ export class TextAnimations {
       const chars = target.querySelectorAll('.char-span');
       if (chars.length) {
         // Force initial opacity to 0 and clear translateY transitions
-        gsap.set(chars, { opacity: 0, y: 0, clearProps: 'transform' });
+        gsap.set(chars, { opacity: 0, x: 0, y: 0, scale: 1 });
         
         // Pure digital code matrix glyphs: binary, terminal blocks, and tech symbols
         const glyphs = ['0', '1', 'X', 'Y', 'Z', 'A', 'B', 'C', '░', '▒', '▓', '█', '▄', '▀', '▲', '▼', '◀', '▶', '◆', '◇', '#', '$', '%', '&', '@', '*', '+', '-', '=', '?', '/', '\\', '!'];
@@ -404,7 +404,6 @@ export class TextAnimations {
             duration: 0.5,
             stagger: 0.01,
             ease: 'power2.out',
-            clearProps: 'transform',
             overwrite: 'auto'
           }
         );

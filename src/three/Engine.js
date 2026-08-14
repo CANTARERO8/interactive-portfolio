@@ -26,10 +26,10 @@ export class Engine {
       alpha: false,
       powerPreference: 'high-performance'
     });
-    
+
+    this.qualityMode = 'ultra';
     this.renderer.setSize(this.width, this.height);
-    // Cap at 1.5 — above that, GPU fill-rate is the bottleneck with no visible quality gain
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    this.renderer.setPixelRatio(this.getTargetPixelRatio());
     
     // Cinematic tone mapping
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -37,8 +37,9 @@ export class Engine {
     // Shadows disabled — we have 6 SpotLights with PCFSoft which costs enormous GPU time
     this.renderer.shadowMap.enabled = false;
 
-    // Clock for delta tracking
-    this.clock = new THREE.Clock();
+    // Timer with Page Visibility integration avoids giant deltas after tab changes.
+    this.timer = new THREE.Timer();
+    this.timer.connect(document);
     
     // Resize listener
     this.resizeCallback = this.onResize.bind(this);
@@ -47,7 +48,8 @@ export class Engine {
     // Tick registers
     this.tickCallbacks = new Set();
     
-    // Start tick loop
+    // Start tick loop with a stable callback reference.
+    this.tickCallback = this.tick.bind(this);
     this.tick();
   }
 
@@ -61,11 +63,12 @@ export class Engine {
   }
 
   // Animation Loop (60fps)
-  tick() {
-    requestAnimationFrame(this.tick.bind(this));
+  tick(timestamp) {
+    this.rafId = requestAnimationFrame(this.tickCallback);
+    this.timer.update(timestamp);
     
-    const deltaTime = this.clock.getDelta();
-    const elapsedTime = this.clock.getElapsedTime();
+    const deltaTime = this.timer.getDelta();
+    const elapsedTime = this.timer.getElapsed();
     
     // Execute registered ticks
     for (const callback of this.tickCallbacks) {
@@ -87,6 +90,26 @@ export class Engine {
     this.targetFov = fov;
   }
 
+  getTargetPixelRatio() {
+    const pixelRatioCap = this.qualityMode === 'performance'
+      ? 1
+      : (this.qualityMode === 'ultra-plus' ? 2 : 1.35);
+    return Math.min(window.devicePixelRatio || 1, pixelRatioCap);
+  }
+
+  setQualityMode(mode) {
+    this.qualityMode = ['performance', 'ultra', 'ultra-plus'].includes(mode) ? mode : 'ultra';
+    const isPerformance = this.qualityMode === 'performance';
+    const isUltraPlus = this.qualityMode === 'ultra-plus';
+
+    this.renderer.setPixelRatio(this.getTargetPixelRatio());
+    this.scene.background.set(isPerformance ? '#080d28' : (isUltraPlus ? '#010207' : '#030817'));
+    if (this.scene.fog) {
+      this.scene.fog.color.set(isPerformance ? '#080d28' : (isUltraPlus ? '#050d20' : '#07142a'));
+      this.scene.fog.density = isPerformance ? 0.018 : (isUltraPlus ? 0.023 : 0.021);
+    }
+  }
+
   // Window Resize handler
   onResize() {
     this.width = window.innerWidth;
@@ -96,12 +119,14 @@ export class Engine {
     this.camera.updateProjectionMatrix();
     
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    this.renderer.setPixelRatio(this.getTargetPixelRatio());
   }
 
   // Clean resources
   destroy() {
     window.removeEventListener('resize', this.resizeCallback);
+    cancelAnimationFrame(this.rafId);
+    this.timer.dispose();
     this.renderer.dispose();
   }
 }

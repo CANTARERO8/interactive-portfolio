@@ -41,6 +41,17 @@
 
 <br />
 
+## ✨ Experiencia actual
+
+- **Showroom 3D continuo** con biomas visuales para frontend, Vue, Laravel, PostgreSQL y proyectos, incluido un corredor de cabinas de bases de datos completamente transitable.
+- **Vitrinas tecnológicas generadas en tiempo real** para React, Vue, Laravel, Tailwind, PostgreSQL, Node.js, Socket.IO y Three.js.
+- **Modo Explorador** con desplazamiento libre por teclado, mirada con ratón, colisiones y telemetría HUD; `Esc` devuelve al recorrido principal.
+- **Tres perfiles gráficos persistentes**: Rendimiento, Ultra y Ultra+, con transición cinematográfica de pantalla completa al cambiar de modo.
+- **Nebulosa volumétrica por raymarching** con ruido 3D, bruma azul medianoche, humo carbón, halos cian y una variante violeta de alta densidad en Ultra+.
+- **Campo de partículas estable en coordenadas 3D**, con parallax de cámara sin estrellas que aparezcan o desaparezcan por reciclaje visual.
+
+---
+
 ## 📐 Arquitectura y Diseño de la Aplicación
 
 La aplicación está construida sobre un ecosistema desacoplado que sincroniza de forma fluida tres capas principales:
@@ -70,10 +81,16 @@ La aplicación está construida sobre un ecosistema desacoplado que sincroniza d
 - **Escena & Waypoints Cinemáticos (`Engine.js` & `App.js`)**:
   - Traqueo de cámara en un espacio tridimensional continuo con 8 waypoints posicionales interpolados matemáticamente según el progreso global del scroll.
   - Mitigación activa de presión en el recolector de basura (*Garbage Collector*) mediante la reutilización de objetos de vectores scratch (`Vector3`) en el bucle de render.
-- **Monolito y Estructuras 3D (`scenes/ColumnRuins.js`)**:
-  - Mallas geométricas procedurales combinadas con materiales de sombreado reactivo e iluminación direccional/puntual dinámica.
-- **Simulador de Partículas Térmicas (`effects/Particles.js`)**:
-  - Nube volumétrica de partículas que responde en tiempo real a la velocidad de desplazamiento (*scroll velocity*) y la posición del puntero.
+- **Arquitectura ambiental (`scenes/EnvironmentBiomes.js` & `scenes/ColumnRuins.js`)**:
+  - Torres, vitrinas y un corredor PostgreSQL con diez estaciones de trabajo 3D distribuidas por zonas sin ocultar la tecnología ni invadir el recorrido de cámara.
+- **Entidad morfológica (`scenes/MorphingCoreEntity.js`)**:
+  - Núcleo procedural que transforma su geometría y enlaza visualmente los ecosistemas del recorrido mediante trayectorias espaciales controladas.
+- **Partículas estratificadas (`effects/Particles.js`)**:
+  - Campo profundo estable, capa bokeh y densidad violeta exclusiva de Ultra+, con interacciones temporales de gravedad e hipervelocidad.
+- **Nebulosa y haces volumétricos (`effects/VolumetricNebula.js` & `effects/VolumetricLightBeams.js`)**:
+  - Shader de fragmentos con raymarching, ruido Simplex 3D y deformación tipo curl, combinado con haces de luz adaptados al perfil gráfico.
+- **Vitrinas generativas (`textures/TechnologyDisplayTextures.js`)**:
+  - Texturas Canvas creadas en ejecución para presentar las arquitecturas y tecnologías principales sin depender de imágenes remotas.
 - **Piso Infinito Reticular (`effects/GridFloor.js`)**:
   - Rejilla infinita en perspectiva con gradiente de niebla ambiental (*ambient fog vignette*) para sensación de profundidad sin límites.
 
@@ -84,6 +101,10 @@ La aplicación está construida sobre un ecosistema desacoplado que sincroniza d
   - Desplazamiento desacoplado del motor nativo del navegador para garantizar una tasa de cuadros estable y suave a 60 FPS.
 - **Coreografía con GSAP & ScrollTrigger (`PortfolioOrchestrator.js`)**:
   - Anclaje espacial (*pinning*), revelación escalonada (*staggering*) y transiciones de paralaje sincronizadas con la trayectoria de la cámara 3D.
+- **Perfiles gráficos (`GraphicsMode.js`)**:
+  - Selector persistente Rendimiento / Ultra / Ultra+ que reconfigura resolución, niebla, partículas, raymarching y haces con una transición GSAP de pantalla completa.
+- **Vuelo libre (`ExplorerMode.js`)**:
+  - Control alternativo de cámara con teclado y ratón, colisiones espaciales, soporte táctil y retorno seguro al recorrido narrativo.
 - **Tipografía Cinética & Decodificación de Texto (`TextAnimations.js` & `TextInteractions.js`)**:
   - Efectos dinámicos de decodificación de caracteres (*hacker text scramble*), división de palabras/letras y revelación basada en visibilidad del viewport.
 
@@ -114,6 +135,8 @@ La interfaz implementa un lenguaje visual **Cyber-Dark Minimalista** estructurad
 | **`layout.css`** | Cuadrículas fluidas (CSS Grid), contenedores adaptables y composición espacial. |
 | **`components.css`** | Componentes modulares con efectos de desenfoque (*glassmorphism / backdrop-filter*), bordes sutiles y botones interactivos. |
 | **`scenes.css`** | Capas atmosféricas, viñetas de niebla, terminal del loader y superposiciones cinemáticas. |
+| **`explorer.css`** | HUD, controles táctiles y estados visuales del modo de exploración libre. |
+| **`graphics-mode.css`** | Selector de calidad, transición de carga y variantes cromáticas de cada perfil. |
 | **`animations.css`** | Keyframes para destellos, transiciones de estado, barras de carga y pulsos. |
 
 ---
@@ -137,6 +160,8 @@ interactive-portfolio/
 │   │   ├── App.js                   # Orquestador principal e inicialización del ciclo de vida
 │   │   ├── ClickSparks.js           # Renderizador de partículas al hacer clic
 │   │   ├── Cursor.js                # Física y renderizado del cursor personalizado
+│   │   ├── ExplorerMode.js          # Vuelo libre, colisiones, HUD y controles táctiles
+│   │   ├── GraphicsMode.js          # Perfiles gráficos y transición de cambio
 │   │   ├── HoverTilt.js             # Cálculos de perspectiva e inclinación 3D
 │   │   ├── MagneticManager.js       # Atracción magnética de elementos interactivos
 │   │   ├── PortfolioOrchestrator.js # Control central de animaciones GSAP & Scroll
@@ -152,9 +177,15 @@ interactive-portfolio/
 │   │   ├── Engine.js                # Motor de escena, cámara, renderizador y loop RAF
 │   │   ├── effects/
 │   │   │   ├── GridFloor.js         # Rejilla infinita en perspectiva
-│   │   │   └── Particles.js         # Sistema de partículas volumétricas reactivas
-│   │   └── scenes/
-│   │       └── ColumnRuins.js       # Construcción geométrica y materiales del monolito 3D
+│   │   │   ├── Particles.js         # Campo profundo y partículas interactivas
+│   │   │   ├── VolumetricLightBeams.js # Haces atmosféricos por bioma
+│   │   │   └── VolumetricNebula.js  # Raymarching y ruido volumétrico 3D
+│   │   ├── scenes/
+│   │   │   ├── ColumnRuins.js       # Construcción geométrica de torres y columnas
+│   │   │   ├── EnvironmentBiomes.js # Zonas, vitrinas y distribución ambiental
+│   │   │   └── MorphingCoreEntity.js # Núcleo procedural y transformaciones
+│   │   └── textures/
+│   │       └── TechnologyDisplayTextures.js # Displays Canvas de tecnologías
 │   └── main.js                      # Punto de entrada de la aplicación
 ├── index.html                       # Marcado semántico, loader y meta-etiquetas SEO
 ├── package.json                     # Declaración de dependencias y scripts

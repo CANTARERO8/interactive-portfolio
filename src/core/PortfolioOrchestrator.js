@@ -683,12 +683,14 @@ export class PortfolioOrchestrator {
       window.APP_INSTANCE._domCache = null;
       
       // Re-trigger section entrance animation for the currently active section immediately!
-      const sections = ['hero', 'about', 'vue-frontend', 'laravel-backend', 'postgresql-showcase', 'wordpress-cms', 'projects', 'contact'];
+      const sections = ['hero', 'about', 'projects', 'vue-frontend', 'laravel-backend', 'postgresql-showcase', 'wordpress-cms', 'contact'];
       const currentIdx = window.APP_INSTANCE.scrollManager ? window.APP_INSTANCE.scrollManager.currentSection : 0;
       const currentSectionId = sections[currentIdx];
       if (currentSectionId && window.APP_INSTANCE.animator) {
         window.APP_INSTANCE.animator.animateSectionIn(currentSectionId);
       }
+      window.APP_INSTANCE.explorerMode?.refreshCopy();
+      window.APP_INSTANCE.graphicsMode?.refreshCopy();
     }
   }
 
@@ -1020,6 +1022,8 @@ export class PortfolioOrchestrator {
       { id: 'goto-portal', name: '/goto portal', desc: 'Scroll to Portal contact section', action: () => this.scrollTo(7) },
       { id: 'ir-contacto', name: '/ir contacto', desc: 'Desplazarse a la sección Contacto', action: () => this.scrollTo(7) },
       { id: 'overclock', name: '/overclock', desc: 'Toggle hardware overclock cores & alarm', action: () => this.toggleOverclockCommand() },
+      { id: 'explorer', name: '/explorer', desc: 'Enter the free-roam 6DoF drone explorer', action: () => this.toggleExplorerCommand() },
+      { id: 'explorador', name: '/explorador', desc: 'Entrar al explorador libre de dron 6DoF', action: () => this.toggleExplorerCommand() },
       { id: 'lang', name: '/lang', desc: 'Toggle site language (EN / ES)', action: () => this.toggleLanguageCommand() },
       { id: 'idioma', name: '/idioma', desc: 'Cambiar el idioma del sitio (EN / ES)', action: () => this.toggleLanguageCommand() },
       { id: 'clear', name: '/clear', desc: 'Clear search input field', action: () => this.clearCommandInput() },
@@ -1031,9 +1035,9 @@ export class PortfolioOrchestrator {
     const isEs = this.currentLang === 'es';
     return this.commands.filter(cmd => {
       if (isEs) {
-        return cmd.id.includes('ir') || cmd.id === 'ayuda' || cmd.id === 'idioma' || cmd.id === 'limpiar' || cmd.id === 'overclock';
+        return cmd.id.includes('ir') || cmd.id === 'ayuda' || cmd.id === 'idioma' || cmd.id === 'limpiar' || cmd.id === 'overclock' || cmd.id === 'explorador';
       } else {
-        return cmd.id.includes('goto') || cmd.id === 'help' || cmd.id === 'lang' || cmd.id === 'clear' || cmd.id === 'overclock';
+        return cmd.id.includes('goto') || cmd.id === 'help' || cmd.id === 'lang' || cmd.id === 'clear' || cmd.id === 'overclock' || cmd.id === 'explorer';
       }
     });
   }
@@ -1194,6 +1198,10 @@ export class PortfolioOrchestrator {
     if (window.APP_INSTANCE) {
       window.APP_INSTANCE.toggleOverclock();
     }
+  }
+
+  toggleExplorerCommand() {
+    window.APP_INSTANCE?.explorerMode?.toggle();
   }
 
   toggleLanguageCommand() {

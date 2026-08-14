@@ -5,6 +5,8 @@ export class Particles {
   constructor(scene, count = 4500) {
     this.scene = scene;
     this.count = count;
+    this.activeCount = count;
+    this.qualityMode = 'ultra';
     this.speedMultiplier = 1.0;
     
     // Gravity Vortex States
@@ -42,18 +44,39 @@ export class Particles {
     this.points = new THREE.Points(this.geometry, this.material);
     this.scene.add(this.points);
 
+    // 1.1 Ultra+ exclusive violet deep-field layer. It stays GPU-static and
+    // moves as one slow volume, adding density without another CPU particle loop.
+    this.ultraParticleCount = 3200;
+    const ultraPositions = new Float32Array(this.ultraParticleCount * 3);
+    for (let i = 0; i < this.ultraParticleCount; i++) {
+      ultraPositions[i * 3] = (Math.random() - 0.5) * 130;
+      ultraPositions[i * 3 + 1] = (Math.random() - 0.5) * 48;
+      ultraPositions[i * 3 + 2] = (Math.random() - 0.5) * 125 - 28;
+    }
+
+    this.ultraParticleGeometry = new THREE.BufferGeometry();
+    this.ultraParticleGeometry.setAttribute('position', new THREE.BufferAttribute(ultraPositions, 3));
+    this.ultraParticleMaterial = new THREE.PointsMaterial({
+      size: 0.28,
+      map: texture,
+      transparent: true,
+      opacity: 0.58,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      color: new THREE.Color('#a855f7')
+    });
+    this.ultraParticlePoints = new THREE.Points(this.ultraParticleGeometry, this.ultraParticleMaterial);
+    this.ultraParticlePoints.visible = false;
+    this.scene.add(this.ultraParticlePoints);
+
     // 2. Cinematic Bokeh Floaters Layer
     this.bokehCount = 120;
     const bokehPositions = new Float32Array(this.bokehCount * 3);
-    this._bokehSpeeds = new Float32Array(this.bokehCount);
-    this._bokehDrifts = new Float32Array(this.bokehCount);
 
     for (let i = 0; i < this.bokehCount; i++) {
       bokehPositions[i * 3 + 0] = (Math.random() - 0.5) * 70;
       bokehPositions[i * 3 + 1] = (Math.random() - 0.5) * 35;
       bokehPositions[i * 3 + 2] = (Math.random() - 0.5) * 110 - 25;
-      this._bokehSpeeds[i] = 0.02 + Math.random() * 0.05;
-      this._bokehDrifts[i] = (Math.random() - 0.5) * 0.02;
     }
 
     this.bokehGeometry = new THREE.BufferGeometry();
@@ -72,6 +95,23 @@ export class Particles {
 
     this.bokehPoints = new THREE.Points(this.bokehGeometry, this.bokehMaterial);
     this.scene.add(this.bokehPoints);
+  }
+
+  setQualityMode(mode) {
+    this.qualityMode = ['performance', 'ultra', 'ultra-plus'].includes(mode) ? mode : 'ultra';
+    const isPerformance = this.qualityMode === 'performance';
+    const isUltraPlus = this.qualityMode === 'ultra-plus';
+    const density = isPerformance ? 0.38 : (isUltraPlus ? 1 : 0.72);
+    this.activeCount = Math.max(900, Math.floor(this.count * density));
+    this.geometry.setDrawRange(0, this.activeCount);
+    this.material.opacity = isPerformance ? 0.68 : (isUltraPlus ? 1 : 0.86);
+    this.material.size = isPerformance ? 0.2 : (isUltraPlus ? 0.25 : 0.23);
+    this.bokehPoints.visible = !isPerformance;
+    this.bokehMaterial.opacity = isUltraPlus ? 0.26 : 0.16;
+    this.bokehMaterial.color.set(isUltraPlus ? '#a855f7' : '#00bfff');
+    this.ultraParticlePoints.visible = isUltraPlus;
+    this.ultraParticlePoints.rotation.set(0, 0, 0);
+    this.ultraParticleMaterial.opacity = 0.58;
   }
 
   createGlowTexture() {
@@ -118,7 +158,7 @@ export class Particles {
     const gy = this.gravityTarget.y;
     const gz = this.gravityTarget.z;
 
-    for (let i = 0; i < this.count; i++) {
+    for (let i = 0; i < this.activeCount; i++) {
       const idx = i * 3;
       const dx = positions[idx]     - gx;
       const dy = positions[idx + 1] - gy;
@@ -140,7 +180,7 @@ export class Particles {
     const cy = centerPos.y;
     const cz = centerPos.z;
 
-    for (let i = 0; i < this.count; i++) {
+    for (let i = 0; i < this.activeCount; i++) {
       const idx = i * 3;
       const dx = positions[idx] - cx;
       const dy = positions[idx + 1] - cy;
@@ -190,7 +230,7 @@ export class Particles {
     const positions = this.geometry.attributes.position.array;
     const vels = this.velocities;
     const speeds = this.speeds;
-    const count = this.count;
+    const count = this.activeCount;
 
     // Lerp speed multiplier back towards baseline unless actively in warp
     if (!this.isWarpActive) {
@@ -203,6 +243,9 @@ export class Particles {
     const attrScale  = deltaTime * 16.0 * 2.2;
     const orbitScale = deltaTime * 14.0 * 0.7;
     const driftScale = this.speedMultiplier * deltaTime * 2.2;
+    const isFixedDeepField = this.qualityMode !== 'performance'
+      && !this.isGravityActive
+      && !this.isWarpActive;
 
     if (this.isGravityActive) {
       for (let i = 0; i < count; i++) {
@@ -229,7 +272,7 @@ export class Particles {
           vels[idx] = vels[idx + 1] = vels[idx + 2] = 0;
         }
       }
-    } else {
+    } else if (!isFixedDeepField) {
       for (let i = 0; i < count; i++) {
         const idx = i * 3;
 
@@ -268,26 +311,8 @@ export class Particles {
         }
       }
     }
-    
-    const bokehPos = this.bokehGeometry.attributes.position.array;
-    const bCount = this.bokehCount;
-    const bSpeeds = this._bokehSpeeds;
-    const bDrifts = this._bokehDrifts;
-    
-    for (let i = 0; i < bCount; i++) {
-      const idx = i * 3;
-      bokehPos[idx + 1] += bSpeeds[i] * driftScale * 0.45;
-      bokehPos[idx]     += Math.sin(elapsedTime * 0.4 + i) * bDrifts[i] * deltaTime * 5;
-      bokehPos[idx + 2] += Math.cos(elapsedTime * 0.4 + i) * bDrifts[i] * deltaTime * 5;
-      
-      if (bokehPos[idx + 1] > 18) {
-        bokehPos[idx + 1] = -18;
-        bokehPos[idx]     = (Math.random() - 0.5) * 70;
-        bokehPos[idx + 2] = (Math.random() - 0.5) * 110 - 25;
-      }
+    if (!isFixedDeepField) {
+      this.geometry.attributes.position.needsUpdate = true;
     }
-    
-    this.geometry.attributes.position.needsUpdate = true;
-    this.bokehGeometry.attributes.position.needsUpdate = true;
   }
 }

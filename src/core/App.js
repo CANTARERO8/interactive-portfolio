@@ -1,7 +1,9 @@
 import { Engine } from '../three/Engine';
 import { Particles } from '../three/effects/Particles';
 import { GridFloor } from '../three/effects/GridFloor';
-import { ColumnRuins } from '../three/scenes/ColumnRuins';
+import { VolumetricNebula } from '../three/effects/VolumetricNebula';
+import { VolumetricLightBeams } from '../three/effects/VolumetricLightBeams';
+import { EnvironmentBiomes } from '../three/scenes/EnvironmentBiomes';
 import { MorphingCoreEntity } from '../three/scenes/MorphingCoreEntity';
 import { ScrollManager } from './ScrollManager';
 import { Cursor } from './Cursor';
@@ -10,8 +12,9 @@ import { PortfolioOrchestrator } from './PortfolioOrchestrator';
 import { HoverTilt } from './HoverTilt';
 import { ScrollCounters } from './ScrollCounters';
 import { ClickSparks } from './ClickSparks';
-import { MagneticManager } from './MagneticManager';
 import { TextInteractions } from './TextInteractions';
+import { ExplorerMode } from './ExplorerMode';
+import { GraphicsMode } from './GraphicsMode';
 import gsap from 'gsap';
 import * as THREE from 'three';
 
@@ -24,10 +27,14 @@ export class App {
     this.engine = new Engine(this.canvas);
 
     // 2. Initialize Environmental WebGL Elements & Interactive Morphing Core Entity
+    this.nebula = new VolumetricNebula(this.engine.scene, this.engine.camera, this.engine.renderer);
     this.particles = new Particles(this.engine.scene);
     this.gridFloor = new GridFloor(this.engine.scene);
-    this.columns = new ColumnRuins(this);
+    this.biomes = new EnvironmentBiomes(this);
+    this.lightBeams = new VolumetricLightBeams(this.engine.scene, this.engine.camera);
     this.morphingEntity = new MorphingCoreEntity(this);
+    this.explorerMode = new ExplorerMode(this);
+    this.graphicsMode = new GraphicsMode(this);
 
     // 3. Register environmental updates in Engine loop
     this.scrollProgress = 0;
@@ -39,25 +46,44 @@ export class App {
     this._gravVec = new THREE.Vector3();
     this._gravDir = new THREE.Vector3();
     this._gravPos = new THREE.Vector3();
+    this._sceneProbe = new THREE.Vector3();
+    this._sceneForward = new THREE.Vector3();
 
-    // Hoist camera waypoints — defined once, read every frame
+    // Camera waypoints tailored to each architectural biome
     this._cameraWaypoints = [
-      { pos: [0, 0.8, 8.5],    look: [0, 0.8, 0] },      // 0: Hero
-      { pos: [-2.2, 1.2, 5.0], look: [0, 0.6, -3] },     // 1: About
-      { pos: [0, -0.2, 1.0],   look: [0, 0.4, -7] },     // 2: Projects (Featured Works)
-      { pos: [2.2, -0.5, -3.0], look: [0, 0.2, -11] },   // 3: Vue
-      { pos: [-2.5, -0.8, -7.5], look: [0, -0.1, -15] },  // 4: Laravel
-      { pos: [1.8, -1.1, -11.0], look: [0, -0.3, -18] }, // 5: Postgres
-      { pos: [-1.2, -1.4, -15.0], look: [0, -0.4, -22] }, // 6: WordPress
-      { pos: [0, 3.8, -24.0],    look: [0, 0.8, -12.0] }  // 7: Contact
+      { pos: [0, 0.8, 8.5],       look: [0, 0.8, 0] },        // 0: Hero (Sanctum)
+      { pos: [-3.0, 1.2, -1.0],   look: [0, 0.2, -8.0] },     // 1: About (Data Vault)
+      { pos: [0, 0.0, -9.5],      look: [0, 0.0, -16.0] },    // 2: Projects
+      { pos: [3.2, 1.2, -18.0],   look: [0, 0.5, -25.0] },    // 3: Vue (Crystal Chamber)
+      { pos: [-3.4, -1.4, -28.0], look: [0, 0.8, -35.0] },   // 4: Laravel (Citadel)
+      { pos: [0.4, -0.5, -39.0],  look: [0, -0.25, -47.5] },  // 5: Postgres (DB Cabin Corridor)
+      { pos: [-2.0, -0.6, -51.0], look: [0, 0.2, -58.0] },   // 6: WordPress
+      { pos: [0, 5.5, -59.0],     look: [0, 3.2, -72.0] }     // 7: Contact (Singularity)
     ];
     
     this.engine.addTick((deltaTime, elapsedTime) => {
       this._tickCount++;
+
+      // Guided scroll camera and free-roam camera are mutually exclusive controllers.
+      if (this.explorerMode.active || this.explorerMode.returning) {
+        this.explorerMode.update(deltaTime, elapsedTime);
+      } else {
+        this.updateCamera(elapsedTime);
+      }
+
+      let sceneProgress = this.scrollProgress;
+      if (this.explorerMode.active) {
+        this.engine.camera.getWorldDirection(this._sceneForward);
+        this._sceneProbe.copy(this.engine.camera.position).addScaledVector(this._sceneForward, 6.5);
+        sceneProgress = this.biomes.getProgressForPosition(this._sceneProbe);
+      }
+
+      this.nebula.update(elapsedTime, this.isOverclocked);
       this.particles.update(deltaTime, elapsedTime);
       this.gridFloor.update(deltaTime, elapsedTime);
-      this.columns.update(deltaTime, elapsedTime, this.scrollProgress);
-      this.morphingEntity.update(deltaTime, elapsedTime, this.scrollProgress);
+      this.biomes.update(deltaTime, elapsedTime, sceneProgress);
+      this.lightBeams.update(elapsedTime, sceneProgress, this.explorerMode.active, this.isOverclocked);
+      this.morphingEntity.update(deltaTime, elapsedTime, sceneProgress);
       
       // Calculate scroll speed/velocity to boost particles
       const scrollDiff = Math.abs(this.scrollProgress - this.prevScroll);
@@ -100,11 +126,8 @@ export class App {
         }
       }
       
-      // Dynamic camera floating parallax and waypoint scroll tracking
-      this.updateCamera(elapsedTime);
-      
       // Real-time scroll-driven DOM transitions
-      this.updateDOMScrollEffects(elapsedTime);
+      if (!this.explorerMode.active) this.updateDOMScrollEffects(elapsedTime);
     });
 
     // 4. Initialize Core systems
@@ -113,7 +136,6 @@ export class App {
     this.hoverTilt = new HoverTilt();
     this.scrollCounters = new ScrollCounters();
     this.clickSparks = new ClickSparks();
-    this.magneticManager = new MagneticManager();
     this.textInteractions = new TextInteractions();
 
     // 5. Setup Mouse Parallax vectors
@@ -158,10 +180,14 @@ export class App {
       lerp(w1.look[2], w2.look[2], factor)
     ];
 
-    if (idx === 5) {
-      const sweepX = 7.0 * Math.sin(factor * Math.PI);
+    if (idx === 4) {
+      const sweepX = 3.2 * Math.sin(factor * Math.PI);
+      look[0] -= sweepX;
+      pos[0] += 0.7 * Math.sin(factor * Math.PI);
+    } else if (idx === 5) {
+      const sweepX = 5.2 * Math.sin(factor * Math.PI);
       look[0] += sweepX;
-      pos[0] += -1.8 * Math.sin(factor * Math.PI);
+      pos[0] -= 0.8 * Math.sin(factor * Math.PI);
     }
     
     return { pos, look };
@@ -177,7 +203,7 @@ export class App {
     // Responsive position and zoom offset checks
     const isMobile = window.innerWidth < 768;
     const xOffsetMultiplier = isMobile ? 0.35 : 1.0; // Keep camera centered on mobile
-    const zOffset = isMobile ? 1.2 : 0.0; // Pull camera back slightly on mobile to capture columns width
+    const zOffset = isMobile ? 1.2 : 0.0; // Pull camera back slightly on mobile to preserve corridor framing
 
     // High frequency camera shake displacement loops during overclock active state
     const shakeX = this.isOverclocked ? Math.sin(elapsedTime * 45.0) * 0.03 : 0;
@@ -337,6 +363,10 @@ export class App {
               this.scrollManager = new ScrollManager(this);
               // Instantiate the interactive portfolio orchestrator
               this.portfolio = new PortfolioOrchestrator();
+              this.explorerMode.setReady(true);
+              this.explorerMode.refreshCopy();
+              this.graphicsMode.setReady(true);
+              this.graphicsMode.refreshCopy();
             }
           });
         }, 650); // Pausa de 650ms al 100% para apreciar el éxito de carga del core
@@ -361,7 +391,7 @@ export class App {
 
   // Section index change callback
   onSectionChange(currentIdx, oldIdx) {
-    // Highlight active nav link in header for exactly 7 sections -> 7 header links
+    // Highlight the nav link that matches the eight physical scroll scenes.
     const links = document.querySelectorAll('.nav-link');
     links.forEach((link, idx) => {
       if (idx === currentIdx) {
@@ -372,14 +402,15 @@ export class App {
     });
 
     // CRITICAL: Re-enable GSAP staggers for the active section elements!
-    const sections = ['hero', 'about', 'vue-frontend', 'laravel-backend', 'postgresql-showcase', 'projects', 'contact'];
+    const sections = ['hero', 'about', 'projects', 'vue-frontend', 'laravel-backend', 'postgresql-showcase', 'wordpress-cms', 'contact'];
     if (sections[currentIdx]) {
       this.animator.animateSectionIn(sections[currentIdx]);
     }
   }
 
   initGravityInteraction() {
-    const handleDown = () => {
+    const handleDown = event => {
+      if (event.target?.closest?.('#explorer-mode-toggle, #explorer-hud')) return;
       if (window.soundManager && window.soundManager.audioCtx && window.soundManager.audioCtx.state === 'suspended') {
         window.soundManager.audioCtx.resume();
       }

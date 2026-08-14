@@ -49,6 +49,123 @@
     <!-- Custom Cursor -->
     <div class="custom-cursor" id="js-cursor"></div>
     <div class="custom-cursor-ring" id="js-cursor-ring"></div>
+
+    <!-- Persistent graphics profile selector -->
+    <div
+      class="graphics-mode-control mono"
+      id="graphics-mode-control"
+      role="group"
+      aria-label="Seleccionar calidad gráfica"
+      hidden
+    >
+      <span class="graphics-mode-control-label" id="graphics-mode-control-label">GRÁFICOS</span>
+      <div class="graphics-mode-options">
+        <button type="button" data-graphics-mode="performance" aria-pressed="false">RENDIMIENTO</button>
+        <button type="button" data-graphics-mode="ultra" aria-pressed="true">ULTRA</button>
+        <button type="button" data-graphics-mode="ultra-plus" aria-pressed="false">ULTRA+</button>
+      </div>
+    </div>
+
+    <!-- Fullscreen graphics pipeline transition -->
+    <div
+      class="graphics-transition-overlay"
+      id="graphics-transition-overlay"
+      role="status"
+      aria-live="polite"
+      aria-hidden="true"
+      hidden
+    >
+      <div class="graphics-transition-grid" aria-hidden="true"></div>
+      <div class="graphics-transition-scan" aria-hidden="true"></div>
+      <div class="graphics-transition-panel" id="graphics-transition-panel">
+        <span class="graphics-loading-kicker mono">GFX PIPELINE // 02</span>
+        <h2 class="graphics-loading-title" id="graphics-loading-title">RECONFIGURANDO MOTOR GRÁFICO</h2>
+        <strong class="graphics-loading-mode mono" id="graphics-loading-mode">MODO ULTRA</strong>
+        <p class="graphics-loading-description mono" id="graphics-loading-description">
+          NEBULOSA + GOD RAYS + POLVO VOLUMÉTRICO
+        </p>
+        <div class="graphics-loading-track" aria-hidden="true">
+          <span id="graphics-loading-progress"></span>
+        </div>
+        <div class="graphics-loading-readout mono">
+          <span id="graphics-loading-stage">INICIANDO RAYMARCHING DE NEBULOSA</span>
+          <strong id="graphics-loading-percent">00%</strong>
+        </div>
+        <div class="graphics-loading-specs mono" aria-hidden="true">
+          <span>WEBGL 2.0</span>
+          <span>GPU PIPELINE</span>
+          <span>60 FPS TARGET</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Free-Roam Drone Explorer: keeps the guided portfolio intact until activated -->
+    <button
+      type="button"
+      class="explorer-mode-toggle mono"
+      id="explorer-mode-toggle"
+      aria-controls="explorer-hud"
+      aria-pressed="false"
+      hidden
+    >
+      <span id="explorer-mode-label">[ 🎮 MODO EXPLORADOR ]</span>
+    </button>
+
+    <aside class="explorer-hud" id="explorer-hud" aria-hidden="true">
+      <div class="explorer-look-zone" id="explorer-look-zone" aria-hidden="true"></div>
+
+      <div class="explorer-hud-top mono">
+        <div class="explorer-status-line">
+          <span id="explorer-status-copy">DRON FREE-ROAM // EN LÍNEA</span>
+        </div>
+        <div class="explorer-biome-readout">
+          <span>BIOME</span>
+          <strong id="explorer-biome-value">HERO</strong>
+        </div>
+      </div>
+
+      <div class="explorer-reticle" aria-hidden="true">
+        <span class="reticle-corner reticle-corner-tl"></span>
+        <span class="reticle-corner reticle-corner-tr"></span>
+        <span class="reticle-corner reticle-corner-bl"></span>
+        <span class="reticle-corner reticle-corner-br"></span>
+        <span class="reticle-dot"></span>
+      </div>
+
+      <div class="explorer-telemetry mono" aria-live="polite">
+        <div>
+          <span>VELOCITY</span>
+          <strong id="explorer-speed-value">0.0 M/S</strong>
+        </div>
+        <div>
+          <span>COORDINATES</span>
+          <strong id="explorer-coordinates-value">0.0 / 0.0 / 0.0</strong>
+        </div>
+        <div>
+          <span>COLLISION</span>
+          <strong class="explorer-safe-value">PROXIMITY SAFE</strong>
+        </div>
+      </div>
+
+      <p class="explorer-help mono" id="explorer-help-copy">
+        WASD/FLECHAS MOVER · ESPACIO/SHIFT ALTURA · Q/E BALANCEO · RATÓN MIRAR · ESC SALIR
+      </p>
+
+      <div class="explorer-touch-controls" aria-label="Controles táctiles del dron">
+        <div class="explorer-touch-pad explorer-move-pad">
+          <button type="button" data-explorer-control="forward" aria-label="Avanzar">▲</button>
+          <button type="button" data-explorer-control="left" aria-label="Mover a la izquierda">◀</button>
+          <button type="button" data-explorer-control="backward" aria-label="Retroceder">▼</button>
+          <button type="button" data-explorer-control="right" aria-label="Mover a la derecha">▶</button>
+        </div>
+        <div class="explorer-touch-pad explorer-altitude-pad">
+          <button type="button" data-explorer-control="up" aria-label="Ascender">UP</button>
+          <button type="button" data-explorer-control="down" aria-label="Descender">DN</button>
+          <button type="button" data-explorer-control="roll-left" aria-label="Balancear a la izquierda">Q</button>
+          <button type="button" data-explorer-control="roll-right" aria-label="Balancear a la derecha">E</button>
+        </div>
+      </div>
+    </aside>
     
     <!-- Cinematic Immersive Loader -->
     <div id="loader-container">

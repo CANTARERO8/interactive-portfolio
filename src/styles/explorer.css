@@ -1,0 +1,378 @@
+/* ========================================================================
+   FREE-ROAM DRONE EXPLORER
+   ======================================================================== */
+.explorer-mode-toggle {
+  position: fixed;
+  right: clamp(18px, 3vw, 48px);
+  bottom: clamp(18px, 3vw, 42px);
+  z-index: 890;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(0, 242, 254, 0.38);
+  border-radius: 4px;
+  background:
+    linear-gradient(135deg, rgba(0, 242, 254, 0.08), transparent 42%),
+    rgba(2, 7, 16, 0.76);
+  color: #dffcff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.42), inset 0 0 24px rgba(0, 242, 254, 0.035);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, background 0.3s ease;
+}
+
+.explorer-mode-toggle[hidden] {
+  display: none;
+}
+
+.explorer-mode-toggle::before,
+.explorer-mode-toggle::after {
+  content: '';
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  pointer-events: none;
+}
+
+.explorer-mode-toggle::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid #8df7ff;
+  border-left: 1px solid #8df7ff;
+}
+
+.explorer-mode-toggle::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 1px solid #8df7ff;
+  border-bottom: 1px solid #8df7ff;
+}
+
+.explorer-mode-toggle:hover,
+.explorer-mode-toggle:focus-visible {
+  transform: translateY(-3px);
+  border-color: rgba(0, 242, 254, 0.78);
+  background-color: rgba(4, 17, 30, 0.9);
+  outline: none;
+}
+
+.explorer-mode-toggle[aria-pressed='true'] {
+  top: clamp(18px, 3vw, 38px);
+  bottom: auto;
+  border-color: rgba(255, 112, 94, 0.65);
+  color: #ffd8d2;
+  background: rgba(22, 5, 7, 0.72);
+}
+
+/* Desktop Explorer exits through Esc, already documented in the HUD. Touch
+   devices retain the button because they do not provide a physical Esc key. */
+@media (pointer: fine) and (min-width: 769px) {
+  .explorer-active .explorer-mode-toggle[aria-pressed='true'] {
+    display: none;
+  }
+}
+
+.explorer-hud {
+  position: fixed;
+  inset: 0;
+  z-index: 850;
+  display: block;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  color: #baf7ff;
+  transition: opacity 0.45s ease, visibility 0.45s;
+}
+
+.explorer-hud::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0, 242, 254, 0.025) 1px, transparent 1px) 0 0 / 100% 5px,
+    radial-gradient(circle at center, transparent 45%, rgba(0, 8, 18, 0.45) 100%);
+  mix-blend-mode: screen;
+  opacity: 0.55;
+}
+
+.explorer-hud.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.explorer-look-zone {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: auto;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.explorer-hud-top {
+  position: absolute;
+  top: clamp(22px, 4vw, 52px);
+  left: clamp(18px, 4vw, 58px);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.explorer-status-line {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(215, 250, 255, 0.82);
+}
+
+.explorer-biome-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: rgba(139, 210, 221, 0.55);
+}
+
+.explorer-biome-readout strong {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  text-shadow: 0 0 16px rgba(0, 242, 254, 0.42);
+}
+
+.explorer-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  width: 76px;
+  height: 76px;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(0, 242, 254, 0.1);
+  border-radius: 50%;
+  box-shadow: 0 0 42px rgba(0, 242, 254, 0.05);
+}
+
+.explorer-reticle::before,
+.explorer-reticle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: rgba(138, 247, 255, 0.58);
+  transform: translate(-50%, -50%);
+}
+
+.explorer-reticle::before {
+  width: 28px;
+  height: 1px;
+}
+
+.explorer-reticle::after {
+  width: 1px;
+  height: 28px;
+}
+
+.reticle-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px #00f2fe;
+  transform: translate(-50%, -50%);
+}
+
+.reticle-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(0, 242, 254, 0.66);
+}
+
+.reticle-corner-tl { top: 4px; left: 4px; border-top: 1px solid; border-left: 1px solid; }
+.reticle-corner-tr { top: 4px; right: 4px; border-top: 1px solid; border-right: 1px solid; }
+.reticle-corner-bl { bottom: 4px; left: 4px; border-bottom: 1px solid; border-left: 1px solid; }
+.reticle-corner-br { right: 4px; bottom: 4px; border-right: 1px solid; border-bottom: 1px solid; }
+
+.explorer-telemetry {
+  position: absolute;
+  right: clamp(18px, 4vw, 58px);
+  bottom: clamp(76px, 8vw, 112px);
+  z-index: 4;
+  display: grid;
+  min-width: min(310px, calc(100vw - 36px));
+  border-top: 1px solid rgba(0, 242, 254, 0.22);
+  border-bottom: 1px solid rgba(0, 242, 254, 0.1);
+  background: linear-gradient(90deg, transparent, rgba(2, 11, 20, 0.62));
+}
+
+.explorer-telemetry > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 8px 0 8px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.explorer-telemetry span {
+  color: rgba(149, 201, 211, 0.52);
+}
+
+.explorer-telemetry strong {
+  color: rgba(235, 254, 255, 0.9);
+  font-weight: 500;
+}
+
+.explorer-telemetry .explorer-safe-value {
+  color: #34d399;
+}
+
+.explorer-help {
+  position: absolute;
+  bottom: clamp(22px, 3vw, 42px);
+  left: 50%;
+  z-index: 4;
+  width: min(760px, calc(100vw - 40px));
+  margin: 0;
+  transform: translateX(-50%);
+  color: rgba(183, 229, 235, 0.56);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+.explorer-touch-controls {
+  display: none;
+}
+
+.explorer-active #app-container,
+.explorer-active #nav-header,
+.explorer-active .mobile-menu-overlay,
+.explorer-active .custom-cursor,
+.explorer-active .custom-cursor-ring {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.explorer-active #app-container,
+.explorer-active #nav-header {
+  transition: opacity 0.35s ease;
+}
+
+@media (pointer: coarse), (max-width: 768px) {
+  .explorer-mode-toggle {
+    right: 14px;
+    bottom: 16px;
+    min-height: 40px;
+    padding: 0 12px;
+    font-size: 8px;
+  }
+
+  .explorer-mode-toggle[aria-pressed='true'] {
+    top: 14px;
+    right: 14px;
+  }
+
+  .explorer-hud-top {
+    top: 18px;
+    left: 16px;
+    max-width: 56vw;
+    font-size: 8px;
+  }
+
+  .explorer-reticle {
+    width: 58px;
+    height: 58px;
+  }
+
+  .explorer-telemetry {
+    right: 14px;
+    bottom: 116px;
+    min-width: 190px;
+    width: 46vw;
+  }
+
+  .explorer-telemetry > div {
+    gap: 8px;
+    padding: 6px 0 6px 8px;
+    font-size: 7px;
+  }
+
+  .explorer-telemetry > div:last-child {
+    display: none;
+  }
+
+  .explorer-help {
+    top: 72px;
+    bottom: auto;
+    font-size: 7px;
+    line-height: 1.5;
+  }
+
+  .explorer-touch-controls {
+    position: absolute;
+    inset: auto 14px 18px 14px;
+    z-index: 6;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    pointer-events: none;
+  }
+
+  .explorer-touch-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 38px);
+    grid-template-rows: repeat(2, 38px);
+    gap: 4px;
+    pointer-events: auto;
+  }
+
+  .explorer-touch-pad button {
+    border: 1px solid rgba(0, 242, 254, 0.26);
+    border-radius: 4px;
+    background: rgba(2, 10, 18, 0.58);
+    color: rgba(222, 253, 255, 0.82);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    touch-action: none;
+  }
+
+  .explorer-touch-pad button:active {
+    border-color: #00f2fe;
+    background: rgba(0, 242, 254, 0.16);
+  }
+
+  .explorer-move-pad button:nth-child(1) { grid-column: 2; grid-row: 1; }
+  .explorer-move-pad button:nth-child(2) { grid-column: 1; grid-row: 2; }
+  .explorer-move-pad button:nth-child(3) { grid-column: 2; grid-row: 2; }
+  .explorer-move-pad button:nth-child(4) { grid-column: 3; grid-row: 2; }
+
+  .explorer-altitude-pad {
+    grid-template-columns: repeat(2, 38px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .explorer-mode-toggle,
+  .explorer-hud,
+  .explorer-active #app-container,
+  .explorer-active #nav-header {
+    transition-duration: 0.01ms;
+  }
+}

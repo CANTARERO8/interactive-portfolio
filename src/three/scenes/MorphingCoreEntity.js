@@ -27,22 +27,24 @@ export class MorphingCoreEntity {
     this.forms = {};
     this.buildHeroMonolith();
     this.buildAboutPolyhedron();
+    this.buildProjectsArchiveCore();
     this.buildVuePrism();
     this.buildLaravelColumns();
-    this.buildPostgresDiscs();
+    this.buildPostgresBeacon();
+    this.buildWordPressLayoutCore();
     this.buildContactSingularity();
 
     // Waypoints for the entity placement along the scroll corridor
-    // Z positions and offsets carefully matched to each section's camera position
+    // Z positions and offsets carefully matched to each section's biome center
     this.entityWaypoints = [
       { pos: [0, 0.8, 1.5],     scale: 1.0, activeForm: 'hero' },      // 0: Hero
-      { pos: [-0.6, 1.0, -1.0], scale: 0.9, activeForm: 'about' },     // 1: About
-      { pos: [1.2, -0.1, -4.5], scale: 0.85, activeForm: 'hero' },     // 2: Projects
-      { pos: [0.8, -0.4, -8.0], scale: 0.95, activeForm: 'vue' },      // 3: Vue
-      { pos: [-1.2, -0.7, -12.5], scale: 0.95, activeForm: 'laravel' }, // 4: Laravel
-      { pos: [0.6, -1.0, -16.0], scale: 0.95, activeForm: 'postgres' },// 5: Postgres
-      { pos: [-0.4, -1.3, -20.0], scale: 0.9, activeForm: 'hero' },    // 6: WordPress
-      { pos: [0, 3.2, -28.5],   scale: 1.4, activeForm: 'contact' }    // 7: Contact
+      { pos: [0, 0.5, -8.0],    scale: 0.95, activeForm: 'about' },    // 1: About (Data Vault)
+      { pos: [0, 0.0, -16.0],   scale: 0.9, activeForm: 'projects' },  // 2: Projects Archive
+      { pos: [0, 0.5, -25.0],   scale: 1.0, activeForm: 'vue' },       // 3: Vue (Crystal Chamber)
+      { pos: [0, 0.8, -35.0],   scale: 1.05, activeForm: 'laravel' },  // 4: Laravel (Citadel)
+      { pos: [0, 3.45, -46.0],  scale: 0.62, activeForm: 'postgres' }, // 5: Postgres (overhead DB beacon)
+      { pos: [0, 0.2, -58.0],   scale: 0.95, activeForm: 'wordpress' },// 6: WordPress Foundry
+      { pos: [0, 3.2, -72.0],   scale: 1.5, activeForm: 'contact' }    // 7: Contact (Singularity)
     ];
 
     // Setup pointer events
@@ -213,7 +215,37 @@ export class MorphingCoreEntity {
     this.forms.about = root;
   }
 
-  // ─── 3. FORM C: VUE QUANTUM PRISM ─────────────────────────────────────
+  // ─── 3. FORM C: PROJECTS SYSTEM ARCHIVE ──────────────────────────────
+  buildProjectsArchiveCore() {
+    const root = new THREE.Group();
+    root.visible = false;
+    this.projectCoreCards = [];
+
+    const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.55, 1), this.coreEnergyMaterial);
+    root.add(core);
+    this.projectArchiveCore = core;
+
+    for (let i = 0; i < 6; i++) {
+      const cardGroup = new THREE.Group();
+      const angle = (i / 6) * Math.PI * 2;
+      cardGroup.position.set(Math.cos(angle) * 1.35, Math.sin(i * 1.4) * 0.35, Math.sin(angle) * 1.35);
+      cardGroup.lookAt(0, cardGroup.position.y, 0);
+
+      const card = new THREE.Mesh(
+        new THREE.BoxGeometry(0.72, 1.05, 0.08),
+        i % 2 === 0 ? this.armorMaterial : this.auraMaterial
+      );
+      cardGroup.add(card);
+      cardGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(card.geometry), this.wireframeCyan));
+      root.add(cardGroup);
+      this.projectCoreCards.push({ group: cardGroup, angle, phase: i * 0.8 });
+    }
+
+    this.group.add(root);
+    this.forms.projects = root;
+  }
+
+  // ─── 4. FORM D: VUE QUANTUM PRISM ─────────────────────────────────────
   buildVuePrism() {
     const root = new THREE.Group();
     root.visible = false;
@@ -259,7 +291,7 @@ export class MorphingCoreEntity {
     this.forms.vue = root;
   }
 
-  // ─── 4. FORM D: LARAVEL INTERLOCKING QUAD-COLUMNS ─────────────────────
+  // ─── 5. FORM E: LARAVEL INTERLOCKING QUAD-COLUMNS ─────────────────────
   buildLaravelColumns() {
     const root = new THREE.Group();
     root.visible = false;
@@ -302,47 +334,76 @@ export class MorphingCoreEntity {
     this.forms.laravel = root;
   }
 
-  // ─── 5. FORM E: POSTGRESQL DATABASE DISCS ─────────────────────────────
-  buildPostgresDiscs() {
+  // ─── 6. FORM F: POSTGRESQL HOLOGRAPHIC BEACON ─────────────────────────
+  buildPostgresBeacon() {
     const root = new THREE.Group();
     root.visible = false;
 
-    this.postgresPlatters = [];
-    const discCount = 5;
-    const discGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.18, 24);
+    const beaconCore = new THREE.Mesh(new THREE.OctahedronGeometry(0.48, 0), this.postgresMaterial);
+    beaconCore.add(new THREE.LineSegments(
+      new THREE.EdgesGeometry(beaconCore.geometry),
+      new THREE.LineBasicMaterial({ color: '#93c5fd', transparent: true, opacity: 0.82 })
+    ));
+    root.add(beaconCore);
+    this.postgresBeaconCore = beaconCore;
 
-    for (let i = 0; i < discCount; i++) {
-      const y = (i - 2) * 0.45;
-      const discMesh = new THREE.Mesh(discGeo, this.postgresMaterial);
-      discMesh.position.y = y;
-
-      const wire = new THREE.LineSegments(
-        new THREE.EdgesGeometry(discGeo),
-        new THREE.MeshBasicMaterial({ color: '#60a5fa' })
+    this.postgresBeaconRings = [
+      { radius: 0.76, rotation: [Math.PI / 2, 0, 0], speed: 0.62 },
+      { radius: 1.02, rotation: [Math.PI / 3, Math.PI / 5, 0], speed: -0.48 },
+      { radius: 1.26, rotation: [0, Math.PI / 2.5, Math.PI / 4], speed: 0.34 }
+    ].map((config, index) => {
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(config.radius, 0.025 - index * 0.004, 10, 56),
+        new THREE.MeshBasicMaterial({
+          color: index === 1 ? '#22d3ee' : '#60a5fa',
+          transparent: true,
+          opacity: 0.78 - index * 0.12
+        })
       );
-      discMesh.add(wire);
-
-      root.add(discMesh);
-      this.postgresPlatters.push({
-        mesh: discMesh,
-        speed: (i % 2 === 0 ? 1 : -1) * (0.4 + i * 0.15)
-      });
-    }
-
-    // Holographic Optical Laser Read Heads
-    const laserGeo = new THREE.BoxGeometry(0.2, 2.6, 0.2);
-    const laserMesh = new THREE.Mesh(
-      laserGeo,
-      new THREE.MeshBasicMaterial({ color: '#00f2fe', transparent: true, opacity: 0.75 })
-    );
-    laserMesh.position.set(1.25, 0, 0);
-    root.add(laserMesh);
+      ring.rotation.set(...config.rotation);
+      root.add(ring);
+      return { ring, speed: config.speed };
+    });
 
     this.group.add(root);
     this.forms.postgres = root;
   }
 
-  // ─── 6. FORM F: CONTACT QUANTUM SINGULARITY ───────────────────────────
+  // ─── 7. FORM G: WORDPRESS MODULAR LAYOUT CORE ────────────────────────
+  buildWordPressLayoutCore() {
+    const root = new THREE.Group();
+    root.visible = false;
+    this.wordpressCorePanels = [];
+
+    const centralCore = new THREE.Mesh(new THREE.DodecahedronGeometry(0.72, 0), this.armorMaterial);
+    centralCore.add(new THREE.LineSegments(new THREE.EdgesGeometry(centralCore.geometry), this.wireframeCyan));
+    root.add(centralCore);
+    this.wordpressLayoutCore = centralCore;
+
+    const panelConfigs = [
+      [-1.15, 0.62, 0], [0, 0.82, 0], [1.15, 0.62, 0],
+      [-1.15, -0.62, 0], [0, -0.82, 0], [1.15, -0.62, 0]
+    ];
+    panelConfigs.forEach((position, index) => {
+      const panel = new THREE.Mesh(
+        new THREE.BoxGeometry(index % 3 === 1 ? 0.82 : 0.62, 0.42, 0.08),
+        index % 2 === 0 ? this.auraMaterial : this.coreEnergyMaterial
+      );
+      panel.position.set(...position);
+      root.add(panel);
+      this.wordpressCorePanels.push({ panel, baseX: position[0], phase: index * 0.65 });
+    });
+
+    const orbit = new THREE.Mesh(new THREE.TorusGeometry(1.85, 0.025, 12, 64), this.wireframeCyan);
+    orbit.rotation.x = Math.PI / 2;
+    root.add(orbit);
+    this.wordpressOrbit = orbit;
+
+    this.group.add(root);
+    this.forms.wordpress = root;
+  }
+
+  // ─── 8. FORM H: CONTACT QUANTUM SINGULARITY ───────────────────────────
   buildContactSingularity() {
     const root = new THREE.Group();
     root.visible = false;
@@ -494,6 +555,20 @@ export class MorphingCoreEntity {
       if (this.aboutOuterMesh) this.aboutOuterMesh.rotation.y += deltaTime * 0.5;
     }
 
+    if (this.forms.projects.visible && this.projectCoreCards) {
+      this.projectCoreCards.forEach((card, index) => {
+        const angle = card.angle + elapsedTime * (0.18 + index * 0.01);
+        card.group.position.x = Math.cos(angle) * 1.35;
+        card.group.position.z = Math.sin(angle) * 1.35;
+        card.group.position.y = Math.sin(elapsedTime * 0.8 + card.phase) * 0.35;
+        card.group.lookAt(0, card.group.position.y, 0);
+      });
+      if (this.projectArchiveCore) {
+        this.projectArchiveCore.rotation.y += deltaTime * 0.7;
+        this.projectArchiveCore.rotation.x -= deltaTime * 0.32;
+      }
+    }
+
     if (this.forms.vue.visible && this.vueNodes) {
       if (this.vuePrismMesh) this.vuePrismMesh.rotation.y += deltaTime * 0.7;
       if (this.vueChevron) this.vueChevron.rotation.y -= deltaTime * 1.2;
@@ -512,10 +587,27 @@ export class MorphingCoreEntity {
       if (this.laravelConduit) this.laravelConduit.rotation.y += deltaTime * 2.0;
     }
 
-    if (this.forms.postgres.visible && this.postgresPlatters) {
-      this.postgresPlatters.forEach(p => {
-        p.mesh.rotation.y += deltaTime * p.speed;
+    if (this.forms.postgres.visible && this.postgresBeaconRings) {
+      this.postgresBeaconRings.forEach((item, index) => {
+        item.ring.rotation.y += deltaTime * item.speed;
+        item.ring.rotation.z += deltaTime * item.speed * (index % 2 === 0 ? 0.35 : -0.28);
       });
+      if (this.postgresBeaconCore) {
+        this.postgresBeaconCore.rotation.x += deltaTime * 0.24;
+        this.postgresBeaconCore.rotation.y -= deltaTime * 0.38;
+      }
+    }
+
+    if (this.forms.wordpress.visible && this.wordpressCorePanels) {
+      this.wordpressCorePanels.forEach(item => {
+        item.panel.position.x = item.baseX + Math.sin(elapsedTime * 0.9 + item.phase) * 0.08;
+        item.panel.rotation.z = Math.sin(elapsedTime * 0.55 + item.phase) * 0.08;
+      });
+      if (this.wordpressLayoutCore) {
+        this.wordpressLayoutCore.rotation.x += deltaTime * 0.22;
+        this.wordpressLayoutCore.rotation.y -= deltaTime * 0.36;
+      }
+      if (this.wordpressOrbit) this.wordpressOrbit.rotation.z += deltaTime * 0.48;
     }
 
     if (this.forms.contact.visible && this.singularityRings) {
@@ -542,9 +634,17 @@ export class MorphingCoreEntity {
     const w1 = waypoints[idx];
     const w2 = waypoints[idx + 1];
 
-    // Lerp 3D Position
-    this.group.position.x = w1.pos[0] + (w2.pos[0] - w1.pos[0]) * factor + Math.sin(elapsedTime * 0.8) * 0.08;
-    this.group.position.y = w1.pos[1] + (w2.pos[1] - w1.pos[1]) * factor + Math.cos(elapsedTime * 0.6) * 0.06;
+    // Lerp 3D Position. The PostgreSQL form stays above the clear center
+    // aisle while entering and leaving the workstation corridor.
+    const transitionArc = idx === 4 ? Math.sin(factor * Math.PI) : 0;
+    const postgresExitLift = idx === 5 ? Math.sin(factor * Math.PI) * 1.2 : 0;
+    this.group.position.x = w1.pos[0] + (w2.pos[0] - w1.pos[0]) * factor
+      - transitionArc * 4.2
+      + Math.sin(elapsedTime * 0.8) * 0.08;
+    this.group.position.y = w1.pos[1] + (w2.pos[1] - w1.pos[1]) * factor
+      + transitionArc * 1.35
+      + postgresExitLift
+      + Math.cos(elapsedTime * 0.6) * 0.06;
     this.group.position.z = w1.pos[2] + (w2.pos[2] - w1.pos[2]) * factor;
 
     // Lerp Scale

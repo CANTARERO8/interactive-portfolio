@@ -22,7 +22,7 @@
   --size-container-min: 375px;
   --size-container-max: 1920px;
   --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
-  --size-font: calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit)));
+  --size-font: clamp(12px, calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit))), 21.333px);
 
   /* Z-Index Layer Map */
   --z-canvas: 1;

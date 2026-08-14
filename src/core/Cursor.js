@@ -49,7 +49,7 @@ export class Cursor {
   // GSAP-only: magnetic elements subtly track the cursor within their bounds,
   // creating an organic "pull" feeling — impossible with pure CSS
   setupHoverListeners() {
-    const hoverElements = 'a, button, .project-row, .scroll-to, .metric-card, .contact-item';
+    const hoverElements = 'a, button, .nav-logo, .project-row, .scroll-to, .metric-card, .contact-item';
 
     document.addEventListener('mouseover', (e) => {
       const target = e.target.closest(hoverElements);
