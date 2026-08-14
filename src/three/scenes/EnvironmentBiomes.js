@@ -31,16 +31,17 @@ export class EnvironmentBiomes {
     this.buildBiomeWordPressFoundry();
     this.buildBiomeContactSingularity();
 
-    // Biome Z centers along the scroll corridor
+    // Explorer entry boundaries. PostgreSQL begins before its visual center so
+    // its blue operations beacon is active as soon as the first cabin appears.
     this.biomeRanges = [
-      { key: 'hero',      centerProgress: 0.0, z: 0 },
-      { key: 'about',     centerProgress: 0.14, z: -8 },
-      { key: 'projects',  centerProgress: 0.28, z: -16 },
-      { key: 'vue',       centerProgress: 0.43, z: -25 },
-      { key: 'laravel',   centerProgress: 0.57, z: -35 },
-      { key: 'postgres',  centerProgress: 0.71, z: -46 },
-      { key: 'wordpress', centerProgress: 0.85, z: -58 },
-      { key: 'contact',   centerProgress: 1.0,  z: -72 }
+      { key: 'hero',      centerProgress: 0.0,  z: 0,   entryZ: Infinity },
+      { key: 'about',     centerProgress: 0.14, z: -8,  entryZ: -4.0 },
+      { key: 'projects',  centerProgress: 0.28, z: -16, entryZ: -12.0 },
+      { key: 'vue',       centerProgress: 0.43, z: -25, entryZ: -20.5 },
+      { key: 'laravel',   centerProgress: 0.57, z: -35, entryZ: -29.5 },
+      { key: 'postgres',  centerProgress: 0.71, z: -46, entryZ: -37.3 },
+      { key: 'wordpress', centerProgress: 0.85, z: -58, entryZ: -53.0 },
+      { key: 'contact',   centerProgress: 1.0,  z: -72, entryZ: -65.0 }
     ];
 
     this.rootGroup.updateMatrixWorld(true);
@@ -327,17 +328,19 @@ export class EnvironmentBiomes {
     const group = new THREE.Group();
     group.position.set(0, 0, -35);
 
-    // Modular ascending blocks emerging from the floor at varying heights
+    // Exterior Laravel terraces: they frame their own section without spilling
+    // into the database approach or the workstation sightlines.
     this.citadelBlocks = [];
     const blockCount = 14;
+    const terraceOffset = 8.8;
+    const terraceDepthStart = 1.6;
+    const terraceDepthStep = 1.05;
 
     for (let i = 0; i < blockCount; i++) {
       const isLeft = i % 2 === 0;
       const laneIndex = Math.floor(i / 2);
-      const x = (isLeft ? -1 : 1) * (4.2 + (i % 3) * 1.8);
-      // Keep the citadel inside its own corridor. The previous 22.4-unit spread
-      // reached the PostgreSQL silos and made both architectures intersect.
-      const z = -2.4 + laneIndex * 1.15;
+      const x = (isLeft ? -1 : 1) * (terraceOffset + (i % 3) * 1.6);
+      const z = terraceDepthStart + laneIndex * terraceDepthStep;
       const height = 4.0 + (i * 0.9) % 7.0;
 
       const blockGroup = new THREE.Group();
@@ -869,29 +872,17 @@ export class EnvironmentBiomes {
   }
 
   getProgressForPosition(position) {
-    let nearestIndex = 0;
-    let nearestDistance = Infinity;
-    this.biomeRanges.forEach((biome, index) => {
-      const distance = Math.abs(position.z - biome.z);
-      if (distance < nearestDistance) {
-        nearestDistance = distance;
-        nearestIndex = index;
-      }
-    });
-    return nearestIndex / Math.max(1, this.biomeRanges.length - 1);
+    return this.getBiomeAtPosition(position).centerProgress;
   }
 
   getBiomeAtPosition(position) {
-    let nearest = this.biomeRanges[0];
-    let nearestDistance = Infinity;
-    for (const biome of this.biomeRanges) {
-      const distance = Math.abs(position.z - biome.z);
-      if (distance < nearestDistance) {
-        nearest = biome;
-        nearestDistance = distance;
-      }
+    let activeBiome = this.biomeRanges[0];
+    for (let index = 1; index < this.biomeRanges.length; index++) {
+      const biome = this.biomeRanges[index];
+      if (position.z > biome.entryZ) break;
+      activeBiome = biome;
     }
-    return nearest;
+    return activeBiome;
   }
 
   resolveCameraCollision(position, velocity, radius = 0.62) {

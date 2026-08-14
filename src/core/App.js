@@ -48,8 +48,6 @@ export class App {
     this._gravVec = new THREE.Vector3();
     this._gravDir = new THREE.Vector3();
     this._gravPos = new THREE.Vector3();
-    this._sceneProbe = new THREE.Vector3();
-    this._sceneForward = new THREE.Vector3();
 
     // Camera waypoints tailored to each architectural biome
     this._cameraWaypoints = [
@@ -75,9 +73,10 @@ export class App {
 
       let sceneProgress = this.scrollProgress;
       if (this.explorerMode.active) {
-        this.engine.camera.getWorldDirection(this._sceneForward);
-        this._sceneProbe.copy(this.engine.camera.position).addScaledVector(this._sceneForward, 6.5);
-        sceneProgress = this.biomes.getProgressForPosition(this._sceneProbe);
+        // Scene state follows the drone itself, not whichever neighbouring
+        // section it is looking at. This prevents Laravel artifacts from
+        // remaining active once the player has entered the server corridor.
+        sceneProgress = this.biomes.getProgressForPosition(this.engine.camera.position);
       }
 
       this.nebula.update(elapsedTime, this.isOverclocked);
