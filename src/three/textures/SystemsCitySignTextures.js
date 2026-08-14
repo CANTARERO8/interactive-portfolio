@@ -140,7 +140,7 @@ const createSignCanvas = (district, compact) => {
   context.fillText(`DISTRICT // ${district.code}`, 18 * scale, 22 * scale);
   context.textAlign = 'right';
   context.fillStyle = '#34d399';
-  context.fillText('● GRID ONLINE', width - 18 * scale, 22 * scale);
+  context.fillText('GRID ONLINE', width - 18 * scale, 22 * scale);
 
   context.textAlign = 'left';
   context.fillStyle = '#f1f7ff';

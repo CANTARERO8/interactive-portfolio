@@ -459,7 +459,7 @@ const createDatabaseTerminalCanvas = (station, index, compact) => {
   context.textAlign = 'right';
   context.fillStyle = green;
   context.font = `700 ${Math.round(11 * scale)}px monospace`;
-  context.fillText('● PRIMARY ONLINE', width - 18 * scale, 27 * scale);
+  context.fillText('PRIMARY ONLINE', width - 18 * scale, 27 * scale);
   context.fillStyle = accent;
   context.fillText(station.query, width - 18 * scale, 44 * scale);
 
