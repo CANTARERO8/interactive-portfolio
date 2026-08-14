@@ -388,22 +388,37 @@ export class EnvironmentBiomes {
     const corridorHalfSpan = ((stationCountPerSide - 1) * stationSpacing) / 2;
     const corridorContentLength = corridorHalfSpan * 2 + stationFootprintZ;
     const walkwayLength = corridorContentLength + 1.2;
+    const workstation = Object.freeze({
+      monitorX: -0.18,
+      monitorY: 0.18,
+      monitorZ: 0.04,
+      monitorWidth: 1.62,
+      monitorHeight: 1.02,
+      screenWidth: 1.42,
+      screenHeight: 0.78,
+      keyboardY: -0.83,
+      keyboardZ: 0.5,
+      mouseX: 0.54,
+      mouseY: -0.8,
+      mouseZ: 0.52
+    });
 
     const assets = {
       backPanel: new THREE.BoxGeometry(boothWidth, 4.72, 0.16),
       roof: new THREE.BoxGeometry(boothWidth, 0.16, boothDepth),
       sideRail: new THREE.BoxGeometry(0.11, 4.65, 0.14),
       header: new THREE.BoxGeometry(2.82, 0.4, 0.14),
-      desk: new THREE.BoxGeometry(2.74, 0.14, 1.04),
-      monitor: new THREE.BoxGeometry(2.06, 1.3, 0.16),
-      monitorScreen: new THREE.PlaneGeometry(1.83, 1.06),
-      monitorStem: new THREE.BoxGeometry(0.13, 0.48, 0.12),
-      monitorBase: new THREE.BoxGeometry(0.78, 0.08, 0.36),
-      tower: new THREE.BoxGeometry(0.52, 1.3, 0.68),
-      towerGlass: new THREE.PlaneGeometry(0.43, 1.14),
-      keyboard: new THREE.BoxGeometry(1.48, 0.065, 0.48),
-      key: new THREE.BoxGeometry(0.12, 0.045, 0.085),
-      mouse: new THREE.SphereGeometry(0.14, 16, 10),
+      desk: new THREE.BoxGeometry(2.35, 0.12, 0.9),
+      monitor: new THREE.BoxGeometry(workstation.monitorWidth, workstation.monitorHeight, 0.12),
+      monitorScreen: new THREE.PlaneGeometry(workstation.screenWidth, workstation.screenHeight),
+      monitorStem: new THREE.BoxGeometry(0.1, 0.4, 0.1),
+      monitorBase: new THREE.BoxGeometry(0.6, 0.06, 0.28),
+      tower: new THREE.BoxGeometry(0.42, 1.05, 0.56),
+      towerGlass: new THREE.PlaneGeometry(0.35, 0.91),
+      keyboard: new THREE.BoxGeometry(1.05, 0.045, 0.34),
+      key: new THREE.BoxGeometry(0.08, 0.03, 0.055),
+      mouse: new THREE.SphereGeometry(0.1, 20, 14),
+      mouseWheel: new THREE.BoxGeometry(0.022, 0.024, 0.076),
       status: new THREE.BoxGeometry(0.08, 0.08, 0.035),
       fanRing: new THREE.TorusGeometry(0.22, 0.018, 8, 32),
       fanHub: new THREE.CylinderGeometry(0.052, 0.052, 0.035, 16),
@@ -469,9 +484,9 @@ export class EnvironmentBiomes {
         desk.position.set(0, -0.93, 0.16);
         booth.add(desk);
 
-        const monitorX = -0.24;
+        const monitorX = workstation.monitorX;
         const monitor = new THREE.Mesh(assets.monitor, this.matObsidian);
-        monitor.position.set(monitorX, 0.3, 0.02);
+        monitor.position.set(monitorX, workstation.monitorY, workstation.monitorZ);
         booth.add(monitor);
 
         const screenMaterial = new THREE.MeshBasicMaterial({
@@ -485,32 +500,32 @@ export class EnvironmentBiomes {
         });
         const screen = new THREE.Mesh(assets.monitorScreen, screenMaterial);
         screen.name = `${booth.name}_ACTIVE_TERMINAL`;
-        screen.position.set(monitorX, 0.3, 0.106);
+        screen.position.set(monitorX, workstation.monitorY, 0.106);
         screen.renderOrder = 5;
         booth.add(screen);
 
         const webcam = new THREE.Mesh(new THREE.SphereGeometry(0.025, 10, 8), this.glowCyan);
-        webcam.position.set(monitorX, 0.885, 0.116);
+        webcam.position.set(monitorX, 0.735, 0.116);
         booth.add(webcam);
 
         const stem = new THREE.Mesh(assets.monitorStem, this.matSlate);
-        stem.position.set(monitorX, -0.58, -0.01);
+        stem.position.set(monitorX, -0.53, 0.02);
         booth.add(stem);
         const base = new THREE.Mesh(assets.monitorBase, this.matSlate);
-        base.position.set(monitorX, -0.82, 0.11);
+        base.position.set(monitorX, -0.79, 0.14);
         booth.add(base);
 
         const tower = new THREE.Mesh(assets.tower, this.matObsidian);
-        tower.position.set(1.13, -0.18, -0.02);
+        tower.position.set(0.94, -0.29, 0.02);
         booth.add(tower);
 
         const towerGlass = new THREE.Mesh(assets.towerGlass, computerGlass);
-        towerGlass.position.set(1.13, -0.18, 0.328);
+        towerGlass.position.set(0.94, -0.29, 0.307);
         towerGlass.renderOrder = 4;
         booth.add(towerGlass);
 
         const fan = new THREE.Group();
-        fan.position.set(1.13, 0.04, 0.35);
+        fan.position.set(0.94, -0.05, 0.315);
         const fanRing = new THREE.Mesh(assets.fanRing, this.glowBlue);
         fan.add(fanRing);
         const fanHub = new THREE.Mesh(assets.fanHub, this.glowCyan);
@@ -530,14 +545,14 @@ export class EnvironmentBiomes {
         const vents = new THREE.InstancedMesh(assets.vent, this.glowBlue, 5);
         const ventMatrix = new THREE.Matrix4();
         for (let ventIndex = 0; ventIndex < 5; ventIndex++) {
-          ventMatrix.makeTranslation(1.13, -0.43 - ventIndex * 0.095, 0.35);
+          ventMatrix.makeTranslation(0.94, -0.48 - ventIndex * 0.075, 0.315);
           vents.setMatrixAt(ventIndex, ventMatrix);
         }
         vents.instanceMatrix.needsUpdate = true;
         booth.add(vents);
 
         const keyboard = new THREE.Mesh(assets.keyboard, this.matObsidian);
-        keyboard.position.set(-0.24, -0.8, 0.52);
+        keyboard.position.set(monitorX, workstation.keyboardY, workstation.keyboardZ);
         booth.add(keyboard);
         const keyCaps = new THREE.InstancedMesh(assets.key, this.glowBlue, 28);
         const keyMatrix = new THREE.Matrix4();
@@ -545,9 +560,9 @@ export class EnvironmentBiomes {
         for (let row = 0; row < 4; row++) {
           for (let column = 0; column < 7; column++) {
             keyMatrix.makeTranslation(
-              -0.72 + column * 0.16,
-              -0.755,
-              0.39 + row * 0.105
+              monitorX - 0.39 + column * 0.13,
+              -0.785,
+              0.375 + row * 0.083
             );
             keyCaps.setMatrixAt(keyIndex++, keyMatrix);
           }
@@ -556,18 +571,21 @@ export class EnvironmentBiomes {
         booth.add(keyCaps);
 
         const mouse = new THREE.Mesh(assets.mouse, this.matSlate);
-        mouse.scale.set(1, 0.42, 1.3);
-        mouse.position.set(0.72, -0.77, 0.55);
+        mouse.scale.set(1, 0.35, 1.45);
+        mouse.position.set(workstation.mouseX, workstation.mouseY, workstation.mouseZ);
         booth.add(mouse);
-        const mouseLed = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.025, 0.18), this.glowCyan);
-        mouseLed.position.set(0.72, -0.71, 0.55);
+        const mouseWheel = new THREE.Mesh(assets.mouseWheel, this.glowCyan);
+        mouseWheel.position.set(workstation.mouseX, -0.755, workstation.mouseZ + 0.02);
+        booth.add(mouseWheel);
+        const mouseLed = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.012, 0.075), this.glowCyan);
+        mouseLed.position.set(workstation.mouseX, -0.756, workstation.mouseZ - 0.07);
         booth.add(mouseLed);
 
         const cableGeometry = new THREE.BufferGeometry().setFromPoints([
-          new THREE.Vector3(1.13, -0.78, -0.36),
-          new THREE.Vector3(0.7, -1.12, -0.54),
-          new THREE.Vector3(-0.24, -1.12, -0.58),
-          new THREE.Vector3(-0.24, -0.58, -0.07)
+          new THREE.Vector3(0.94, -0.75, -0.26),
+          new THREE.Vector3(0.56, -1.04, -0.43),
+          new THREE.Vector3(monitorX, -1.04, -0.48),
+          new THREE.Vector3(monitorX, -0.54, 0.0)
         ]);
         booth.add(new THREE.Line(cableGeometry, new THREE.LineBasicMaterial({
           color: '#2563eb',

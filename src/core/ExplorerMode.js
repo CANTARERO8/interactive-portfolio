@@ -62,6 +62,7 @@ export class ExplorerMode {
     this.ready = false;
     this.hadPointerLock = false;
     this.draggingLook = false;
+    this.ignoreNextPointerLockMove = false;
     this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     this.velocity = new THREE.Vector3();
@@ -325,6 +326,10 @@ export class ExplorerMode {
   onMouseMove(event) {
     if (!this.active || document.pointerLockElement !== this.canvas) return;
     this.hadPointerLock = true;
+    if (this.ignoreNextPointerLockMove) {
+      this.ignoreNextPointerLockMove = false;
+      return;
+    }
     this.applyLookDelta(event.movementX, event.movementY);
   }
 
@@ -332,8 +337,14 @@ export class ExplorerMode {
     if (!this.active) return;
     if (document.pointerLockElement === this.canvas) {
       this.hadPointerLock = true;
+      this.draggingLook = false;
+      this.ignoreNextPointerLockMove = true;
     } else if (this.hadPointerLock) {
-      this.deactivate();
+      // Browsers can release pointer lock when focus changes. Stay in explorer
+      // mode and fall back to drag-to-look instead of returning the camera to a
+      // distant scroll waypoint.
+      this.hadPointerLock = false;
+      this.draggingLook = false;
     }
   }
 
@@ -347,6 +358,7 @@ export class ExplorerMode {
     // Pointer Lock is requested only from a direct gesture. Drag-to-look remains
     // the fallback in embedded browsers or touch environments that reject it.
     if (event.pointerType === 'mouse' && this.canvas.requestPointerLock) {
+      this.ignoreNextPointerLockMove = true;
       try {
         const pointerLockRequest = this.canvas.requestPointerLock();
         pointerLockRequest?.catch?.(() => {});
@@ -371,9 +383,17 @@ export class ExplorerMode {
   }
 
   applyLookDelta(deltaX, deltaY) {
+    if (!Number.isFinite(deltaX) || !Number.isFinite(deltaY)) return;
+
+    // Ignore the anomalous delta emitted by some browsers when pointer lock
+    // starts or ends. Normal mouse movement stays responsive through the many
+    // small events received per frame.
+    const maximumDelta = window.innerWidth <= 768 ? 34 : 48;
+    const safeDeltaX = THREE.MathUtils.clamp(deltaX, -maximumDelta, maximumDelta);
+    const safeDeltaY = THREE.MathUtils.clamp(deltaY, -maximumDelta, maximumDelta);
     const sensitivity = window.innerWidth <= 768 ? 0.0032 : 0.00175;
-    this.yaw -= deltaX * sensitivity;
-    this.pitch -= deltaY * sensitivity;
+    this.yaw -= safeDeltaX * sensitivity;
+    this.pitch -= safeDeltaY * sensitivity;
     this.pitch = THREE.MathUtils.clamp(this.pitch, -Math.PI * 0.47, Math.PI * 0.47);
   }
 
