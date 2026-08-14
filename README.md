@@ -50,6 +50,7 @@
 - **Nebulosa volumétrica por raymarching** con ruido 3D, bruma azul medianoche, humo carbón, halos cian y una variante violeta de alta densidad en Ultra+.
 - **Campo de partículas estable en coordenadas 3D**, con parallax de cámara sin estrellas que aparezcan o desaparezcan por reciclaje visual.
 - **Ciudad de Sistemas en segundo plano** con ocho distritos temáticos, arquitectura procedural oscura, vías de datos, tránsito aéreo y densidad escalable sin invadir el corredor de las vitrinas.
+- **Portal de proyectos orbital** con núcleo cristalino, anillos de transmisión, paquetes de datos y ocho expedientes técnicos que presentan el stack real de cada sistema mientras orbitan en profundidad.
 
 ---
 
@@ -95,6 +96,8 @@ La aplicación está construida sobre un ecosistema desacoplado que sincroniza d
   - Shader de fragmentos con raymarching, ruido Simplex 3D y deformación tipo curl, combinado con haces de luz adaptados al perfil gráfico.
 - **Vitrinas generativas (`textures/TechnologyDisplayTextures.js`)**:
   - Texturas Canvas creadas en ejecución para presentar las arquitecturas y tecnologías principales sin depender de imágenes remotas.
+- **Expedientes orbitales (`textures/ProjectOrbitalTextures.js`)**:
+  - Ocho paneles Canvas de alta definición con nombres, categorías, tecnologías, mapas de sistema y telemetría derivados de los datos reales de los proyectos.
 - **Piso Infinito Reticular (`effects/GridFloor.js`)**:
   - Rejilla infinita en perspectiva con gradiente de niebla ambiental (*ambient fog vignette*) para sensación de profundidad sin límites.
 

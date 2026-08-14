@@ -3,6 +3,7 @@ import {
   createDatabaseTerminalTextures,
   createTechnologyDisplayTextures
 } from '../textures/TechnologyDisplayTextures.js';
+import { createProjectOrbitalTextures } from '../textures/ProjectOrbitalTextures.js';
 
 export class EnvironmentBiomes {
   constructor(app) {
@@ -783,57 +784,74 @@ export class EnvironmentBiomes {
       };
     });
 
-    // Six compact receiver pods replace the former rotating columns.
-    this.contactAntennas = [];
-    const antennaBaseGeometry = new THREE.BoxGeometry(0.78, 0.3, 1.05);
-    const antennaPanelGeometry = new THREE.BoxGeometry(0.72, 0.055, 0.42);
-    const antennaDishGeometry = new THREE.ConeGeometry(0.56, 0.24, 28, 1, true);
-    for (let antennaIndex = 0; antennaIndex < 6; antennaIndex++) {
-      const angle = (antennaIndex / 6) * Math.PI * 2;
-      const radius = antennaIndex % 2 === 0 ? 5.35 : 6.3;
-      const pod = new THREE.Group();
-      pod.position.set(
-        Math.sin(angle) * radius,
-        (antennaIndex % 3 - 1) * 1.25,
-        Math.cos(angle) * radius
+    // Eight project archives restore the broad orbit of the original monoliths,
+    // but every object now communicates real work instead of acting as filler.
+    const projectDisplays = createProjectOrbitalTextures(this.app.engine.renderer);
+    this.contactProjectModules = [];
+    this.contactCameraWorldPosition = new THREE.Vector3();
+    this.contactCameraLocalPosition = new THREE.Vector3();
+    const moduleBodyGeometry = new THREE.BoxGeometry(3.15, 1.92, 0.18, 2, 2, 1);
+    const moduleScreenGeometry = new THREE.PlaneGeometry(2.92, 1.64);
+    const moduleRailGeometry = new THREE.BoxGeometry(0.08, 2.18, 0.12);
+    const moduleStatusGeometry = new THREE.BoxGeometry(2.58, 0.035, 0.035);
+    const moduleNodeGeometry = new THREE.SphereGeometry(0.075, 12, 8);
+    const moduleHeights = [-2.8, -0.85, 2.35, 0.65, -2.15, 2.85, 1.25, -0.2];
+    const accentMaterials = [
+      new THREE.MeshBasicMaterial({ color: '#67e8f9', transparent: true, opacity: 0.82, toneMapped: false }),
+      new THREE.MeshBasicMaterial({ color: '#a78bfa', transparent: true, opacity: 0.8, toneMapped: false })
+    ];
+
+    projectDisplays.forEach((display, projectIndex) => {
+      const orbitalModule = new THREE.Group();
+      orbitalModule.name = `ORBITAL_PROJECT_${String(projectIndex + 1).padStart(2, '0')}`;
+      const visual = new THREE.Group();
+      orbitalModule.add(visual);
+
+      const body = new THREE.Mesh(moduleBodyGeometry, this.matObsidian);
+      visual.add(body);
+
+      const screen = new THREE.Mesh(
+        moduleScreenGeometry,
+        new THREE.MeshBasicMaterial({
+          map: display.texture,
+          toneMapped: false
+        })
       );
-      pod.rotation.y = angle;
+      screen.position.z = 0.096;
+      visual.add(screen);
 
-      const base = new THREE.Mesh(antennaBaseGeometry, this.matObsidian);
-      pod.add(base);
+      const accentMaterial = accentMaterials[projectIndex % accentMaterials.length];
+      [-1, 1].forEach((side) => {
+        const rail = new THREE.Mesh(moduleRailGeometry, this.matSlate);
+        rail.position.set(side * 1.66, 0, -0.01);
+        visual.add(rail);
 
-      [-1, 1].forEach(side => {
-        const panel = new THREE.Mesh(
-          antennaPanelGeometry,
-          antennaIndex % 2 === 0 ? this.glowCyan : this.glowPurple
-        );
-        panel.position.set(side * 0.64, 0, 0.02);
-        panel.rotation.z = side * 0.08;
-        pod.add(panel);
+        const node = new THREE.Mesh(moduleNodeGeometry, accentMaterial);
+        node.position.set(side * 1.66, side * 0.82, 0.08);
+        visual.add(node);
       });
 
-      const dishPivot = new THREE.Group();
-      dishPivot.position.z = 0.62;
-      const dish = new THREE.Mesh(antennaDishGeometry, this.matSlate);
-      dish.rotation.x = Math.PI / 2;
-      dishPivot.add(dish);
-      const emitter = new THREE.Mesh(
-        new THREE.SphereGeometry(0.1, 14, 10),
-        antennaIndex % 2 === 0 ? this.glowCyan : this.glowPurple
-      );
-      emitter.position.z = 0.23;
-      dishPivot.add(emitter);
-      pod.add(dishPivot);
+      const statusBar = new THREE.Mesh(moduleStatusGeometry, accentMaterial);
+      statusBar.position.set(0, -1.02, 0.08);
+      visual.add(statusBar);
 
-      this.contactOrbitalStation.add(pod);
-      this.contactAntennas.push({
-        pod,
-        dishPivot,
-        emitter,
-        baseY: pod.position.y,
-        phase: antennaIndex * 0.84
+      const scanLine = new THREE.Mesh(moduleStatusGeometry, accentMaterial);
+      scanLine.position.z = 0.125;
+      visual.add(scanLine);
+
+      this.contactOrbitalStation.add(orbitalModule);
+      this.contactProjectModules.push({
+        group: orbitalModule,
+        visual,
+        scanLine,
+        statusBar,
+        baseAngle: (projectIndex / projectDisplays.length) * Math.PI * 2,
+        radius: projectIndex % 2 === 0 ? 9.25 : 11.15,
+        baseY: moduleHeights[projectIndex],
+        phase: projectIndex * 0.79,
+        orbitSpeed: 0.052
       });
-    }
+    });
 
     // Instanced packets keep the orbital traffic detailed and inexpensive.
     const packetGeometry = new THREE.BoxGeometry(0.24, 0.055, 0.09);
@@ -944,12 +962,27 @@ export class EnvironmentBiomes {
     }
     if (this.contactHubFins) this.contactHubFins.rotation.y -= deltaTime * 0.12;
     if (this.contactHubCollar) this.contactHubCollar.rotation.z += deltaTime * 0.08;
-    if (this.contactAntennas) {
-      this.contactAntennas.forEach(antenna => {
-        antenna.dishPivot.rotation.x = Math.sin(elapsedTime * 0.42 + antenna.phase) * 0.16;
-        antenna.dishPivot.rotation.y = Math.cos(elapsedTime * 0.31 + antenna.phase) * 0.12;
-        antenna.pod.position.y = antenna.baseY + Math.sin(elapsedTime * 0.48 + antenna.phase) * 0.16;
-        antenna.emitter.scale.setScalar(0.82 + Math.sin(elapsedTime * 2.2 + antenna.phase) * 0.18);
+    if (this.contactProjectModules) {
+      this.app.engine.camera.getWorldPosition(this.contactCameraWorldPosition);
+      this.contactCameraLocalPosition.copy(this.contactCameraWorldPosition);
+      this.contactOrbitalStation.worldToLocal(this.contactCameraLocalPosition);
+      this.contactProjectModules.forEach(projectModule => {
+        const angle = projectModule.baseAngle + elapsedTime * projectModule.orbitSpeed;
+        const moduleY = projectModule.baseY + Math.sin(elapsedTime * 0.42 + projectModule.phase) * 0.34;
+        projectModule.group.position.set(
+          Math.sin(angle) * projectModule.radius,
+          moduleY,
+          Math.cos(angle) * projectModule.radius
+        );
+        projectModule.group.rotation.y = Math.atan2(
+          this.contactCameraLocalPosition.x - projectModule.group.position.x,
+          this.contactCameraLocalPosition.z - projectModule.group.position.z
+        );
+        projectModule.visual.rotation.z = Math.sin(elapsedTime * 0.26 + projectModule.phase) * 0.035;
+        projectModule.scanLine.position.y = -0.72 + (
+          (elapsedTime * 0.16 + projectModule.phase * 0.11) % 1
+        ) * 1.44;
+        projectModule.statusBar.scale.x = 0.82 + Math.sin(elapsedTime * 1.4 + projectModule.phase) * 0.12;
       });
     }
     if (this.contactPacketStreams) {
