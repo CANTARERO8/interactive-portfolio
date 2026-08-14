@@ -1,6 +1,6 @@
 <div align="center">
 
-  # ⚡ Eduardo Cordova — Creative & Fullstack Portfolio
+  # ⚡ Interactive Portfolio
 
   <p align="center">
     <strong>Portafolio Web Inmersivo 3D // Desarrollador Fullstack & Ingeniero de Sistemas</strong>
@@ -43,7 +43,7 @@
 
 ## 🌟 Visión General
 
-Este repositorio alberga el **Portafolio Profesional e Inmersivo** de **Eduardo Cordova**. Diseñado desde cero para romper los esquemas convencionales de la web estática, combinando:
+Este repositorio alberga el **Interactive Portfolio** de **Eduardo Cordova**. Diseñado desde cero para romper los esquemas convencionales de la web estática, combinando:
 
 - 🎮 **Renderizado 3D en Tiempo Real**: Escenas WebGL alimentadas por Three.js y shaders personalizados.
 - ⚡ **Animaciones Cinemáticas**: Orquestación milimétrica con GSAP y ScrollTrigger.
@@ -95,7 +95,7 @@ Este repositorio alberga el **Portafolio Profesional e Inmersivo** de **Eduardo 
 ## 📂 Estructura del Proyecto
 
 ```bash
-portfolio-edu/
+interactive-portfolio/
 ├── public/                 # Recursos estáticos (imágenes, iconos, audios)
 ├── src/
 │   ├── animations/         # Timelines y controladores GSAP / ScrollTrigger
@@ -120,8 +120,8 @@ Sigue estos sencillos pasos para clonar y levantar el proyecto en tu entorno loc
 
 ### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/CANTARERO8/portfolio-edu.git
-cd portfolio-edu
+git clone https://github.com/CANTARERO8/interactive-portfolio.git
+cd interactive-portfolio
 ```
 
 ### 2. Instalar dependencias
