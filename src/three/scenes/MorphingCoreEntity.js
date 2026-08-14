@@ -52,20 +52,22 @@ export class MorphingCoreEntity {
   }
 
   initMaterials() {
-    // Dark Brutalist Obsidian / Matte Armor Material
-    this.armorMaterial = new THREE.MeshStandardMaterial({
+    // Dark polished armor keeps the artifacts dimensional without drawn outlines.
+    this.armorMaterial = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color('#0b1120'),
-      roughness: 0.35,
-      metalness: 0.85,
-      flatShading: true
+      roughness: 0.28,
+      metalness: 0.86,
+      clearcoat: 0.3,
+      clearcoatRoughness: 0.28,
+      flatShading: false
     });
 
-    // Wireframe Holographic Overlay
-    this.wireframeCyan = new THREE.MeshBasicMaterial({
+    // Solid emissive rings remain as intentional energy cues, not mesh outlines.
+    this.ringMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color('#00f2fe'),
-      wireframe: true,
       transparent: true,
-      opacity: 0.35
+      opacity: 0.58,
+      toneMapped: false
     });
 
     // Glowing Inner Energy Core Material
@@ -80,31 +82,45 @@ export class MorphingCoreEntity {
     this.auraMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color('#38bdf8'),
       transparent: true,
-      opacity: 0.25,
-      wireframe: true,
-      blending: THREE.AdditiveBlending
+      opacity: 0.14,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      toneMapped: false
     });
 
     // Tech Accents
-    this.vueMaterial = new THREE.MeshStandardMaterial({
+    this.vueMaterial = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color('#10b981'),
-      roughness: 0.2,
-      metalness: 0.9,
+      emissive: new THREE.Color('#053e2b'),
+      emissiveIntensity: 0.5,
+      roughness: 0.22,
+      metalness: 0.78,
+      clearcoat: 0.38,
+      clearcoatRoughness: 0.2,
       flatShading: true
     });
 
-    this.laravelMaterial = new THREE.MeshStandardMaterial({
+    this.laravelMaterial = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color('#ef4444'),
-      roughness: 0.25,
-      metalness: 0.85,
-      flatShading: true
+      emissive: new THREE.Color('#5a0b10'),
+      emissiveIntensity: 0.42,
+      roughness: 0.26,
+      metalness: 0.82,
+      clearcoat: 0.3,
+      clearcoatRoughness: 0.25,
+      flatShading: false
     });
 
-    this.postgresMaterial = new THREE.MeshStandardMaterial({
+    this.postgresMaterial = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color('#3b82f6'),
+      emissive: new THREE.Color('#0b2c69'),
+      emissiveIntensity: 0.5,
       roughness: 0.2,
-      metalness: 0.9,
-      flatShading: true
+      metalness: 0.84,
+      clearcoat: 0.36,
+      clearcoatRoughness: 0.2,
+      flatShading: false
     });
   }
 
@@ -118,9 +134,9 @@ export class MorphingCoreEntity {
     this.heroInnerCore = new THREE.Mesh(coreGeo, this.coreEnergyMaterial);
     root.add(this.heroInnerCore);
 
-    // Inner Wireframe Energy Cage
+    // Translucent energy shell, cleanly separated from the solid core.
     const cageGeo = new THREE.IcosahedronGeometry(0.75, 1);
-    this.heroInnerCage = new THREE.Mesh(cageGeo, this.wireframeCyan);
+    this.heroInnerCage = new THREE.Mesh(cageGeo, this.auraMaterial);
     root.add(this.heroInnerCage);
 
     // 6 Segmented Outer Floating Obsidian Plates (Deconstruction Target)
@@ -148,11 +164,6 @@ export class MorphingCoreEntity {
       const mesh = new THREE.Mesh(geo, this.armorMaterial);
       plateGroup.add(mesh);
 
-      // Add thin glowing cyber seam on plate edges
-      const edgeGeo = new THREE.EdgesGeometry(geo);
-      const edgeLine = new THREE.LineSegments(edgeGeo, this.wireframeCyan);
-      plateGroup.add(edgeLine);
-
       root.add(plateGroup);
 
       mesh.userData = { isCorePlate: true, plateIndex: idx };
@@ -168,7 +179,7 @@ export class MorphingCoreEntity {
 
     // 2 Orbital Energy Rings around monolith
     const ringGeo = new THREE.TorusGeometry(1.6, 0.02, 16, 64);
-    this.heroRing1 = new THREE.Mesh(ringGeo, this.wireframeCyan);
+    this.heroRing1 = new THREE.Mesh(ringGeo, this.ringMaterial);
     this.heroRing1.rotation.x = Math.PI / 3;
     root.add(this.heroRing1);
 
@@ -191,10 +202,6 @@ export class MorphingCoreEntity {
     this.aboutOuterMesh = new THREE.Mesh(outerGeo, this.armorMaterial);
     root.add(this.aboutOuterMesh);
 
-    const wireGeo = new THREE.DodecahedronGeometry(1.25, 0);
-    const wireMesh = new THREE.LineSegments(new THREE.EdgesGeometry(wireGeo), this.wireframeCyan);
-    root.add(wireMesh);
-
     const innerGeo = new THREE.OctahedronGeometry(0.65, 0);
     this.aboutInnerMesh = new THREE.Mesh(innerGeo, this.coreEnergyMaterial);
     root.add(this.aboutInnerMesh);
@@ -204,7 +211,7 @@ export class MorphingCoreEntity {
     [1.5, 1.8, 2.1].forEach((rad, i) => {
       const ring = new THREE.Mesh(
         new THREE.TorusGeometry(rad, 0.02, 16, 64),
-        i % 2 === 0 ? this.wireframeCyan : this.auraMaterial
+        i % 2 === 0 ? this.ringMaterial : this.auraMaterial
       );
       ring.rotation.set(i * 0.8, i * 0.5, i * 0.3);
       root.add(ring);
@@ -236,7 +243,6 @@ export class MorphingCoreEntity {
         i % 2 === 0 ? this.armorMaterial : this.auraMaterial
       );
       cardGroup.add(card);
-      cardGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(card.geometry), this.wireframeCyan));
       root.add(cardGroup);
       this.projectCoreCards.push({ group: cardGroup, angle, phase: i * 0.8 });
     }
@@ -255,12 +261,6 @@ export class MorphingCoreEntity {
     prismGeo.scale(1.0, 1.6, 1.0);
     this.vuePrismMesh = new THREE.Mesh(prismGeo, this.vueMaterial);
     root.add(this.vuePrismMesh);
-
-    const prismWire = new THREE.LineSegments(
-      new THREE.EdgesGeometry(prismGeo),
-      new THREE.MeshBasicMaterial({ color: '#10b981', wireframe: true })
-    );
-    root.add(prismWire);
 
     // Inner glowing Vue Chevron Core
     const coreGeo = new THREE.ConeGeometry(0.5, 0.9, 3);
@@ -312,12 +312,6 @@ export class MorphingCoreEntity {
       const pillarMesh = new THREE.Mesh(pillarGeo, this.laravelMaterial);
       colGroup.add(pillarMesh);
 
-      const wire = new THREE.LineSegments(
-        new THREE.EdgesGeometry(pillarGeo),
-        new THREE.MeshBasicMaterial({ color: '#f87171' })
-      );
-      colGroup.add(wire);
-
       root.add(colGroup);
       this.laravelPillars.push({ group: colGroup, phase: i * 0.7 });
     });
@@ -340,10 +334,6 @@ export class MorphingCoreEntity {
     root.visible = false;
 
     const beaconCore = new THREE.Mesh(new THREE.OctahedronGeometry(0.48, 0), this.postgresMaterial);
-    beaconCore.add(new THREE.LineSegments(
-      new THREE.EdgesGeometry(beaconCore.geometry),
-      new THREE.LineBasicMaterial({ color: '#93c5fd', transparent: true, opacity: 0.82 })
-    ));
     root.add(beaconCore);
     this.postgresBeaconCore = beaconCore;
 
@@ -376,7 +366,6 @@ export class MorphingCoreEntity {
     this.wordpressCorePanels = [];
 
     const centralCore = new THREE.Mesh(new THREE.DodecahedronGeometry(0.72, 0), this.armorMaterial);
-    centralCore.add(new THREE.LineSegments(new THREE.EdgesGeometry(centralCore.geometry), this.wireframeCyan));
     root.add(centralCore);
     this.wordpressLayoutCore = centralCore;
 
@@ -394,7 +383,7 @@ export class MorphingCoreEntity {
       this.wordpressCorePanels.push({ panel, baseX: position[0], phase: index * 0.65 });
     });
 
-    const orbit = new THREE.Mesh(new THREE.TorusGeometry(1.85, 0.025, 12, 64), this.wireframeCyan);
+    const orbit = new THREE.Mesh(new THREE.TorusGeometry(1.85, 0.025, 12, 64), this.ringMaterial);
     orbit.rotation.x = Math.PI / 2;
     root.add(orbit);
     this.wordpressOrbit = orbit;
@@ -677,7 +666,7 @@ export class MorphingCoreEntity {
     const targetColor = active ? new THREE.Color('#ff3300') : new THREE.Color('#00f2fe');
     
     if (this.coreEnergyMaterial) this.coreEnergyMaterial.color.copy(targetColor);
-    if (this.wireframeCyan) this.wireframeCyan.color.copy(targetColor);
+    if (this.ringMaterial) this.ringMaterial.color.copy(targetColor);
     if (this.auraMaterial) this.auraMaterial.color.copy(targetColor);
   }
 }

@@ -19,10 +19,10 @@ export class Engine {
     this.camera = new THREE.PerspectiveCamera(55, this.width / this.height, 0.1, 150);
     this.camera.position.set(0, 0.5, 8); // Posicionamiento abisal inicial
 
-    // High performance renderer — antialias disabled (cost outweighs benefit at high dpi)
+    // Clean sub-pixel contours are especially important for the architectural silhouettes.
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
-      antialias: false,
+      antialias: true,
       alpha: false,
       powerPreference: 'high-performance'
     });
@@ -32,8 +32,9 @@ export class Engine {
     this.renderer.setPixelRatio(this.getTargetPixelRatio());
     
     // Cinematic tone mapping
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.2;
+    this.renderer.toneMappingExposure = 1.1;
     // Shadows disabled — we have 6 SpotLights with PCFSoft which costs enormous GPU time
     this.renderer.shadowMap.enabled = false;
 

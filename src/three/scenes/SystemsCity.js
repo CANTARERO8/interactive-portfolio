@@ -110,13 +110,15 @@ export class SystemsCity {
 
   createBodyMaterial(tier) {
     const tierIntensity = tier === 'base' ? 0.06 : (tier === 'ultra' ? 0.085 : 0.11);
-    return new THREE.MeshStandardMaterial({
+    return new THREE.MeshPhysicalMaterial({
       color: tier === 'base' ? '#02050a' : '#030711',
       emissive: new THREE.Color(tier === 'ultra-plus' ? '#151229' : '#071827'),
       emissiveIntensity: tierIntensity,
-      roughness: 0.5,
-      metalness: 0.78,
-      flatShading: true
+      roughness: 0.44,
+      metalness: 0.84,
+      clearcoat: 0.16,
+      clearcoatRoughness: 0.34,
+      flatShading: false
     });
   }
 
@@ -131,15 +133,12 @@ export class SystemsCity {
     return material;
   }
 
-  addBox(parent, size, position, material, name = '', wireMaterial = null) {
+  addBox(parent, size, position, material, name = '') {
     const geometry = new THREE.BoxGeometry(size[0], size[1], size[2]);
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(position[0], position[1], position[2]);
     mesh.name = name;
     parent.add(mesh);
-    if (wireMaterial) {
-      mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry), wireMaterial));
-    }
     return mesh;
   }
 
@@ -395,17 +394,12 @@ export class SystemsCity {
       opacity: 0.72,
       toneMapped: false
     });
-    const wireMaterial = new THREE.LineBasicMaterial({
-      color: definition.accent,
-      transparent: true,
-      opacity: 0.42
-    });
     let collider = null;
     let signY = 0.1;
     let signZ = 2.2;
 
     if (layout.landmark === 'gateway') {
-      collider = this.addBox(landmark, [3.8, 10.8, 3.4], [0, 2.22, 0], bodyMaterial, 'CITY_GATEWAY_TOWER', wireMaterial);
+      collider = this.addBox(landmark, [3.8, 10.8, 3.4], [0, 2.22, 0], bodyMaterial, 'CITY_GATEWAY_TOWER');
       this.addBox(landmark, [2.7, 0.16, 3.5], [0, 6.8, 0], glowMaterial);
       const crown = new THREE.Mesh(new THREE.TorusGeometry(2.05, 0.06, 10, 64), glowMaterial);
       crown.position.y = 7.3;
@@ -415,27 +409,26 @@ export class SystemsCity {
       signY = 1.2;
       signZ = 1.78;
     } else if (layout.landmark === 'lab') {
-      collider = this.addBox(landmark, [6.2, 3.4, 4.4], [0, -1.42, 0], bodyMaterial, 'DEVELOPER_LAB', wireMaterial);
+      collider = this.addBox(landmark, [6.2, 3.4, 4.4], [0, -1.42, 0], bodyMaterial, 'DEVELOPER_LAB');
       [-1.8, 0, 1.8].forEach((x, index) => {
-        this.addBox(landmark, [1.25, 1.05 + index * 0.25, 1.5], [x, 0.45 + index * 0.12, -0.4], bodyMaterial, '', wireMaterial);
+        this.addBox(landmark, [1.25, 1.05 + index * 0.25, 1.5], [x, 0.45 + index * 0.12, -0.4], bodyMaterial);
         this.addBox(landmark, [0.75, 0.05, 1.56], [x, 0.95 + index * 0.25, -0.4], glowMaterial);
       });
       signY = -0.75;
       signZ = 2.25;
     } else if (layout.landmark === 'archive') {
-      const left = this.addBox(landmark, [1.45, 5.8, 4.0], [-2.2, -0.25, 0], bodyMaterial, 'PROJECT_ARCHIVE_MUSEUM', wireMaterial);
-      this.addBox(landmark, [1.45, 5.8, 4.0], [2.2, -0.25, 0], bodyMaterial, '', wireMaterial);
-      this.addBox(landmark, [5.8, 0.4, 4.0], [0, 2.45, 0], bodyMaterial, '', wireMaterial);
+      const left = this.addBox(landmark, [1.45, 5.8, 4.0], [-2.2, -0.25, 0], bodyMaterial, 'PROJECT_ARCHIVE_MUSEUM');
+      this.addBox(landmark, [1.45, 5.8, 4.0], [2.2, -0.25, 0], bodyMaterial);
+      this.addBox(landmark, [5.8, 0.4, 4.0], [0, 2.45, 0], bodyMaterial);
       this.addBox(landmark, [4.1, 0.06, 0.08], [0, 1.7, 2.05], glowMaterial);
       collider = left;
       signY = 0.25;
       signZ = 2.08;
     } else if (layout.landmark === 'reactive') {
-      collider = this.addBox(landmark, [5.4, 1.15, 4.2], [0, -2.55, 0], bodyMaterial, 'VUE_REACTIVE_TOWER', wireMaterial);
+      collider = this.addBox(landmark, [5.4, 1.15, 4.2], [0, -2.55, 0], bodyMaterial, 'VUE_REACTIVE_TOWER');
       const prism = new THREE.Mesh(new THREE.OctahedronGeometry(2.05, 0), bodyMaterial);
       prism.scale.set(1, 2.35, 1);
       prism.position.y = 1.45;
-      prism.add(new THREE.LineSegments(new THREE.EdgesGeometry(prism.geometry), wireMaterial));
       landmark.add(prism);
       const orbit = new THREE.Mesh(new THREE.TorusGeometry(2.65, 0.045, 10, 64), glowMaterial);
       orbit.position.y = 1.45;
@@ -444,18 +437,18 @@ export class SystemsCity {
       signY = -1.15;
       signZ = 2.15;
     } else if (layout.landmark === 'backend') {
-      collider = this.addBox(landmark, [6.4, 2.9, 4.6], [0, -1.67, 0], bodyMaterial, 'LARAVEL_BACKEND_FOUNDRY', wireMaterial);
+      collider = this.addBox(landmark, [6.4, 2.9, 4.6], [0, -1.67, 0], bodyMaterial, 'LARAVEL_BACKEND_FOUNDRY');
       [-1.9, 0, 1.9].forEach((x, index) => {
-        this.addBox(landmark, [1.45, 1.25, 2.8], [x, 0.28 + index * 0.18, -0.35], bodyMaterial, '', wireMaterial);
+        this.addBox(landmark, [1.45, 1.25, 2.8], [x, 0.28 + index * 0.18, -0.35], bodyMaterial);
         this.addBox(landmark, [1.1, 0.07, 2.85], [x, 0.9 + index * 0.18, -0.35], glowMaterial);
       });
       this.addBox(landmark, [5.2, 0.1, 0.12], [0, -0.58, 2.35], glowMaterial);
       signY = -1.03;
       signZ = 2.36;
     } else if (layout.landmark === 'database') {
-      collider = this.addBox(landmark, [6.4, 3.2, 4.8], [0, -1.55, 0], bodyMaterial, 'POSTGRES_BACKUP_FACILITY', wireMaterial);
+      collider = this.addBox(landmark, [6.4, 3.2, 4.8], [0, -1.55, 0], bodyMaterial, 'POSTGRES_BACKUP_FACILITY');
       for (let panel = 0; panel < 5; panel++) {
-        this.addBox(landmark, [0.78, 1.28, 0.08], [-2.0 + panel, -1.28, 2.45], bodyMaterial, '', wireMaterial);
+        this.addBox(landmark, [0.78, 1.28, 0.08], [-2.0 + panel, -1.28, 2.45], bodyMaterial);
         this.addBox(landmark, [0.52, 0.05, 0.05], [-2.0 + panel, -1.2, 2.51], glowMaterial);
       }
       this.addBox(landmark, [4.8, 0.08, 0.08], [0, 0.18, 2.45], glowMaterial);
@@ -474,8 +467,7 @@ export class SystemsCity {
           [module[3], module[4], module[5]],
           [module[0], module[1], module[2]],
           bodyMaterial,
-          index === 0 ? 'WORDPRESS_CONTENT_WORKS' : '',
-          wireMaterial
+          index === 0 ? 'WORDPRESS_CONTENT_WORKS' : ''
         );
         if (index === 0) collider = mesh;
       });
@@ -483,8 +475,8 @@ export class SystemsCity {
       signY = -0.95;
       signZ = 2.14;
     } else {
-      collider = this.addBox(landmark, [4.5, 2.2, 4.5], [0, -2.04, 0], bodyMaterial, 'CONTACT_UPLINK_PORT', wireMaterial);
-      this.addBox(landmark, [0.28, 9.2, 0.28], [0, 2.0, 0], bodyMaterial, '', wireMaterial);
+      collider = this.addBox(landmark, [4.5, 2.2, 4.5], [0, -2.04, 0], bodyMaterial, 'CONTACT_UPLINK_PORT');
+      this.addBox(landmark, [0.28, 9.2, 0.28], [0, 2.0, 0], bodyMaterial);
       [1.15, 1.75, 2.35].forEach((radius, index) => {
         const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.04, 10, 56), glowMaterial);
         ring.position.y = 4.1 + index * 0.38;
@@ -496,8 +488,7 @@ export class SystemsCity {
         new THREE.MeshBasicMaterial({
           color: definition.accent,
           transparent: true,
-          opacity: 0.42,
-          wireframe: true,
+          opacity: 0.16,
           toneMapped: false
         })
       );

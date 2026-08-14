@@ -49,27 +49,31 @@ export class EnvironmentBiomes {
 
   initSharedMaterials() {
     // Brutalist Matte Dark Slate / Carbon
-    this.matSlate = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#0c1322'),
-      roughness: 0.55,
-      metalness: 0.4,
-      flatShading: true
+    this.matSlate = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color('#0b1422'),
+      roughness: 0.46,
+      metalness: 0.64,
+      clearcoat: 0.22,
+      clearcoatRoughness: 0.38,
+      flatShading: false
     });
 
     // Dark Obsidian with High Specularity
-    this.matObsidian = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#060913'),
-      roughness: 0.2,
-      metalness: 0.85,
-      flatShading: true
+    this.matObsidian = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color('#030711'),
+      roughness: 0.26,
+      metalness: 0.82,
+      clearcoat: 0.28,
+      clearcoatRoughness: 0.3,
+      flatShading: false
     });
 
-    // Wireframe Overlays
-    this.wireCyan = new THREE.MeshBasicMaterial({ color: '#00f2fe', wireframe: true, transparent: true, opacity: 0.35 });
-    this.wireEmerald = new THREE.MeshBasicMaterial({ color: '#10b981', wireframe: true, transparent: true, opacity: 0.4 });
-    this.wireRuby = new THREE.MeshBasicMaterial({ color: '#ef4444', wireframe: true, transparent: true, opacity: 0.4 });
-    this.wireBlue = new THREE.MeshBasicMaterial({ color: '#3b82f6', wireframe: true, transparent: true, opacity: 0.4 });
-    this.wirePurple = new THREE.MeshBasicMaterial({ color: '#a855f7', wireframe: true, transparent: true, opacity: 0.35 });
+    this.dataLineMaterial = new THREE.LineBasicMaterial({
+      color: '#4cc9f0',
+      transparent: true,
+      opacity: 0.16,
+      toneMapped: false
+    });
 
     // Emissive Core Glowing Strips
     this.glowCyan = new THREE.MeshBasicMaterial({ color: '#00f2fe', transparent: true, opacity: 0.85 });
@@ -135,9 +139,6 @@ export class EnvironmentBiomes {
       gateGroup.add(mesh);
       this.registerCollider(mesh);
 
-      const wire = new THREE.LineSegments(new THREE.EdgesGeometry(pillarGeo), this.wireCyan);
-      gateGroup.add(wire);
-
       // Vertical energy channel strip
       const stripGeo = new THREE.BoxGeometry(0.12, 12, 0.12);
       const strip = new THREE.Mesh(stripGeo, this.glowCyan);
@@ -178,9 +179,6 @@ export class EnvironmentBiomes {
       rackGroup.add(mesh);
       this.registerCollider(mesh);
 
-      const wire = new THREE.LineSegments(new THREE.EdgesGeometry(rackGeo), this.wirePurple);
-      rackGroup.add(wire);
-
       // Server LED blink arrays
       for (let l = 0; l < 4; l++) {
         const led = new THREE.Mesh(ledGeo, this.glowCyan);
@@ -197,9 +195,6 @@ export class EnvironmentBiomes {
     const walkway = new THREE.Mesh(walkwayGeo, this.matSlate);
     walkway.position.set(0, -3.4, 0);
     group.add(walkway);
-
-    const walkwayEdge = new THREE.LineSegments(new THREE.EdgesGeometry(walkwayGeo), this.wireCyan);
-    walkway.add(walkwayEdge);
 
     this.biomes.about = { group, baseScale: 1.0, activeRange: [0.10, 0.32] };
     this.rootGroup.add(group);
@@ -228,9 +223,6 @@ export class EnvironmentBiomes {
       vault.add(shell);
       this.registerCollider(shell);
 
-      const edgeMaterial = i % 2 === 0 ? this.wireCyan : this.wirePurple;
-      vault.add(new THREE.LineSegments(new THREE.EdgesGeometry(frameGeometry), edgeMaterial));
-
       const screenMaterial = new THREE.MeshBasicMaterial({
         map: display.texture,
         color: '#ffffff',
@@ -245,20 +237,6 @@ export class EnvironmentBiomes {
       screen.position.z = 0.226;
       screen.renderOrder = 3;
       vault.add(screen);
-
-      const screenBorderMaterial = new THREE.LineBasicMaterial({
-        color: display.accent,
-        transparent: true,
-        opacity: 0.48,
-        blending: THREE.AdditiveBlending
-      });
-      const screenBorder = new THREE.LineSegments(
-        new THREE.EdgesGeometry(screenGeometry),
-        screenBorderMaterial
-      );
-      screenBorder.position.z = 0.239;
-      screenBorder.renderOrder = 4;
-      vault.add(screenBorder);
 
       const scannerMaterial = new THREE.MeshBasicMaterial({
         color: display.accent,
@@ -279,7 +257,6 @@ export class EnvironmentBiomes {
         scanner,
         scannerMaterial,
         screenMaterial,
-        screenBorderMaterial,
         phase: i * 0.72
       });
     }
@@ -287,7 +264,6 @@ export class EnvironmentBiomes {
     // Suspended data bridge and a constellation that maps the project systems.
     const bridge = new THREE.Mesh(new THREE.BoxGeometry(3.8, 0.16, 16), this.matSlate);
     bridge.position.y = -3.2;
-    bridge.add(new THREE.LineSegments(new THREE.EdgesGeometry(bridge.geometry), this.wireCyan));
     group.add(bridge);
 
     const constellationPositions = [];
@@ -298,7 +274,7 @@ export class EnvironmentBiomes {
     }
     const constellationGeometry = new THREE.BufferGeometry();
     constellationGeometry.setAttribute('position', new THREE.Float32BufferAttribute(constellationPositions, 3));
-    this.projectConstellation = new THREE.LineSegments(constellationGeometry, this.wireCyan);
+    this.projectConstellation = new THREE.LineSegments(constellationGeometry, this.dataLineMaterial);
     group.add(this.projectConstellation);
 
     this.biomes.projects = { group, baseScale: 1.0, activeRange: [0.20, 0.38] };
@@ -330,14 +306,10 @@ export class EnvironmentBiomes {
       mesh.scale.set(cfg.scale, cfg.scale * 1.5, cfg.scale);
       cGroup.add(mesh);
 
-      const wire = new THREE.LineSegments(new THREE.EdgesGeometry(crystalGeo), this.wireEmerald);
-      wire.scale.copy(mesh.scale);
-      cGroup.add(wire);
-
       // Orbital holographic ring
       const ring = new THREE.Mesh(
         new THREE.TorusGeometry(cfg.scale * 1.4, 0.02, 16, 48),
-        this.wireCyan
+        this.glowCyan
       );
       ring.rotation.x = Math.PI / 3;
       cGroup.add(ring);
@@ -376,9 +348,6 @@ export class EnvironmentBiomes {
       mesh.name = `LARAVEL_CITADEL_BLOCK_${i + 1}`;
       blockGroup.add(mesh);
       this.registerCollider(mesh);
-
-      const wire = new THREE.LineSegments(new THREE.EdgesGeometry(geo), this.wireRuby);
-      blockGroup.add(wire);
 
       // Top glowing energy cap
       const topCapGeo = new THREE.BoxGeometry(2.02, 0.15, 2.02);
@@ -464,8 +433,6 @@ export class EnvironmentBiomes {
         backPanel.position.z = -0.7;
         booth.add(backPanel);
         this.registerCollider(backPanel);
-        booth.add(new THREE.LineSegments(new THREE.EdgesGeometry(assets.backPanel), this.wireBlue));
-        booth.children[booth.children.length - 1].position.z = -0.7;
 
         const roof = new THREE.Mesh(assets.roof, this.matSlate);
         roof.position.set(0, 2.32, 0);
@@ -483,7 +450,6 @@ export class EnvironmentBiomes {
         const header = new THREE.Mesh(assets.header, this.matObsidian);
         header.position.set(0, 1.82, 0.08);
         booth.add(header);
-        header.add(new THREE.LineSegments(new THREE.EdgesGeometry(assets.header), this.wireCyan));
 
         const headerLine = new THREE.Mesh(
           new THREE.BoxGeometry(2.35, 0.035, 0.04),
@@ -504,7 +470,6 @@ export class EnvironmentBiomes {
         const monitor = new THREE.Mesh(assets.monitor, this.matObsidian);
         monitor.position.set(monitorX, 0.3, 0.02);
         booth.add(monitor);
-        monitor.add(new THREE.LineSegments(new THREE.EdgesGeometry(assets.monitor), this.wireCyan));
 
         const screenMaterial = new THREE.MeshBasicMaterial({
           map: this.databaseTerminalTextures[laneIndex],
@@ -622,7 +587,6 @@ export class EnvironmentBiomes {
     const walkway = new THREE.Mesh(walkwayGeometry, this.matObsidian);
     walkway.position.set(0, -3.0, -0.15);
     group.add(walkway);
-    walkway.add(new THREE.LineSegments(new THREE.EdgesGeometry(walkwayGeometry), this.wireBlue));
 
     [-2.95, 2.95].forEach(x => {
       const aisleLight = new THREE.Mesh(
@@ -651,7 +615,6 @@ export class EnvironmentBiomes {
       );
       ceilingRib.position.set(0, 2.5, ribZ);
       group.add(ceilingRib);
-      ceilingRib.add(new THREE.LineSegments(new THREE.EdgesGeometry(ceilingRib.geometry), this.wireBlue));
 
       const centerLamp = new THREE.Mesh(
         new THREE.BoxGeometry(1.8, 0.045, 0.14),
@@ -665,7 +628,6 @@ export class EnvironmentBiomes {
     const overviewFrame = new THREE.Mesh(new THREE.BoxGeometry(3.9, 1.72, 0.16), this.matObsidian);
     overviewFrame.position.set(0, 1.15, -corridorHalfSpan - 1.0);
     group.add(overviewFrame);
-    overviewFrame.add(new THREE.LineSegments(new THREE.EdgesGeometry(overviewFrame.geometry), this.wireCyan));
     const overviewMaterial = new THREE.MeshBasicMaterial({
       map: this.databaseTerminalTextures[0],
       color: '#ffffff',
@@ -712,10 +674,6 @@ export class EnvironmentBiomes {
       panel.name = `WORDPRESS_CONTENT_MODULE_${i + 1}`;
       moduleGroup.add(panel);
       this.registerCollider(panel);
-      moduleGroup.add(new THREE.LineSegments(
-        new THREE.EdgesGeometry(moduleGeometry),
-        i % 3 === 0 ? this.wireCyan : this.wirePurple
-      ));
 
       const contentBarCount = 3;
       for (let barIndex = 0; barIndex < contentBarCount; barIndex++) {
@@ -739,13 +697,12 @@ export class EnvironmentBiomes {
     // A central CMS assembly ring with floating page-layout blocks.
     this.wordpressCoreRing = new THREE.Mesh(
       new THREE.TorusGeometry(3.35, 0.12, 12, 64),
-      this.wirePurple
+      this.glowPurple
     );
     this.wordpressCoreRing.rotation.x = Math.PI / 2;
     group.add(this.wordpressCoreRing);
 
     const core = new THREE.Mesh(new THREE.DodecahedronGeometry(1.15, 0), this.matSlate);
-    core.add(new THREE.LineSegments(new THREE.EdgesGeometry(core.geometry), this.wireCyan));
     group.add(core);
     this.wordpressCore = core;
 
@@ -760,12 +717,12 @@ export class EnvironmentBiomes {
 
     // Vast floating orbital arch ring surrounding the exit portal
     const grandRingGeo = new THREE.TorusGeometry(14, 0.08, 16, 100);
-    this.contactGrandRing = new THREE.Mesh(grandRingGeo, this.wireCyan);
+    this.contactGrandRing = new THREE.Mesh(grandRingGeo, this.glowCyan);
     this.contactGrandRing.rotation.x = Math.PI / 2.5;
     group.add(this.contactGrandRing);
 
     const grandRingGeo2 = new THREE.TorusGeometry(18, 0.06, 16, 100);
-    this.contactGrandRing2 = new THREE.Mesh(grandRingGeo2, this.wirePurple);
+    this.contactGrandRing2 = new THREE.Mesh(grandRingGeo2, this.glowPurple);
     this.contactGrandRing2.rotation.y = Math.PI / 3;
     group.add(this.contactGrandRing2);
 
@@ -774,8 +731,6 @@ export class EnvironmentBiomes {
     for (let i = 0; i < 16; i++) {
       const geo = new THREE.BoxGeometry(0.8 + Math.random() * 0.8, 2.5 + Math.random() * 3.5, 0.8);
       const mesh = new THREE.Mesh(geo, this.matSlate);
-      const wire = new THREE.LineSegments(new THREE.EdgesGeometry(geo), this.wireCyan);
-      mesh.add(wire);
 
       group.add(mesh);
       this.singularityDebris.push({
@@ -800,7 +755,6 @@ export class EnvironmentBiomes {
         project.scanner.position.y = Math.sin(elapsedTime * 1.1 + project.phase) * 1.35;
         project.screenMaterial.opacity = 0.76 + Math.sin(elapsedTime * 0.72 + index) * 0.045;
         project.scannerMaterial.opacity = 0.72 + Math.sin(elapsedTime * 1.35 + project.phase) * 0.2;
-        project.screenBorderMaterial.opacity = 0.38 + Math.sin(elapsedTime * 0.5 + project.phase) * 0.1;
       });
       if (this.projectConstellation) {
         this.projectConstellation.rotation.y = elapsedTime * 0.08;
