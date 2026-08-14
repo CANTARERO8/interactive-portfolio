@@ -206,17 +206,14 @@ const drawNodeGlyph = (context, centerX, centerY, size) => {
 
 const drawGsapGlyph = (context, centerX, centerY, size) => {
   context.save();
+  context.translate(centerX, centerY);
   context.textAlign = 'center';
   context.textBaseline = 'middle';
   context.font = `900 italic ${Math.round(size * 0.235)}px Arial Black, Arial, sans-serif`;
   context.transform(1, 0, -0.12, 1, 0, 0);
 
   context.fillStyle = '#88ce02';
-  context.fillText('GSAP', centerX, centerY - size * 0.13);
-
-  context.fillStyle = '#d8dde5';
-  context.globalAlpha = 0.92;
-  context.fillText('GSAP', centerX, centerY + size * 0.18);
+  context.fillText('GSAP', 0, 0);
   context.restore();
 };
 
