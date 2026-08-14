@@ -50,10 +50,10 @@ export const TECHNOLOGY_ARCHITECTURES = Object.freeze([
     accent: '#84cc16'
   },
   {
-    id: 'socket',
-    name: 'SOCKET.IO',
-    code: 'SIO',
-    role: 'REALTIME BUS',
+    id: 'gsap',
+    name: 'GSAP',
+    code: 'GSP',
+    role: 'MOTION ENGINE',
     projects: 2,
     accent: '#c084fc'
   },
@@ -204,19 +204,33 @@ const drawNodeGlyph = (context, centerX, centerY, size) => {
   ]);
 };
 
-const drawSocketGlyph = (context, centerX, centerY, size) => {
-  context.beginPath();
-  context.arc(centerX, centerY, size * 0.43, Math.PI * 0.17, Math.PI * 1.83);
-  context.stroke();
-  context.beginPath();
-  context.arc(centerX, centerY, size * 0.43, Math.PI * 1.17, Math.PI * 0.83, true);
-  context.stroke();
-  strokePolyline(context, [
-    [centerX + size * 0.08, centerY - size * 0.39],
-    [centerX - size * 0.1, centerY - size * 0.03],
-    [centerX + size * 0.1, centerY - size * 0.03],
-    [centerX - size * 0.08, centerY + size * 0.39]
-  ]);
+const drawGsapGlyph = (context, centerX, centerY, size) => {
+  context.save();
+  context.lineWidth = Math.max(3, size * 0.035);
+  for (let row = -1; row <= 1; row++) {
+    const offsetY = row * size * 0.22;
+    context.beginPath();
+    context.moveTo(centerX - size * 0.46, centerY + offsetY + size * 0.08);
+    context.bezierCurveTo(
+      centerX - size * 0.22,
+      centerY + offsetY - size * 0.2,
+      centerX + size * 0.1,
+      centerY + offsetY + size * 0.2,
+      centerX + size * 0.46,
+      centerY + offsetY - size * 0.08
+    );
+    context.stroke();
+  }
+  context.lineWidth = Math.max(2, size * 0.018);
+  [-0.34, 0, 0.34].forEach(offsetX => {
+    context.strokeRect(
+      centerX + offsetX * size - size * 0.045,
+      centerY - size * 0.48,
+      size * 0.09,
+      size * 0.96
+    );
+  });
+  context.restore();
 };
 
 const drawThreeGlyph = (context, centerX, centerY, size) => {
@@ -240,7 +254,7 @@ const GLYPH_DRAWERS = {
   tailwind: drawTailwindGlyph,
   postgresql: drawPostgresGlyph,
   node: drawNodeGlyph,
-  socket: drawSocketGlyph,
+  gsap: drawGsapGlyph,
   three: drawThreeGlyph
 };
 

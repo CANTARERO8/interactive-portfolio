@@ -44,7 +44,7 @@
 ## ✨ Experiencia actual
 
 - **Showroom 3D continuo** con biomas visuales para frontend, Vue, Laravel, PostgreSQL y proyectos, incluido un corredor de cabinas de bases de datos completamente transitable.
-- **Vitrinas tecnológicas generadas en tiempo real** para React, Vue, Laravel, Tailwind, PostgreSQL, Node.js, Socket.IO y Three.js.
+- **Vitrinas tecnológicas generadas en tiempo real** para React, Vue, Laravel, Tailwind, PostgreSQL, Node.js, GSAP y Three.js.
 - **Modo Explorador** con desplazamiento libre por teclado, mirada con ratón, colisiones y telemetría HUD; `Esc` devuelve al recorrido principal.
 - **Tres perfiles gráficos persistentes**: Rendimiento, Ultra y Ultra+, con transición cinematográfica de pantalla completa al cambiar de modo.
 - **Nebulosa volumétrica por raymarching** con ruido 3D, bruma azul medianoche, humo carbón, halos cian y una variante violeta de alta densidad en Ultra+.
