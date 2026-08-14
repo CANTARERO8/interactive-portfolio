@@ -17,7 +17,6 @@ import { TextInteractions } from './TextInteractions';
 import { ExplorerMode } from './ExplorerMode';
 import { GraphicsMode } from './GraphicsMode';
 import gsap from 'gsap';
-import * as THREE from 'three';
 
 export class App {
   constructor() {
@@ -44,11 +43,6 @@ export class App {
     this.isOverclocked = false;
     this._tickCount = 0; // frame counter for throttling
     
-    // Cache reusable scratch Vector3 objects — avoids GC pressure every frame
-    this._gravVec = new THREE.Vector3();
-    this._gravDir = new THREE.Vector3();
-    this._gravPos = new THREE.Vector3();
-
     // Camera waypoints tailored to each architectural biome
     this._cameraWaypoints = [
       { pos: [0, 0.8, 8.5],       look: [0, 0.8, 0] },        // 0: Hero (Sanctum)
@@ -95,9 +89,6 @@ export class App {
       const baseBoost = 1.0 + (scrollDiff * 180.0);
       this.particles.speedMultiplier = this.isOverclocked ? baseBoost * 4.0 : baseBoost;
       this.prevScroll = this.scrollProgress;
-
-      // Project mouse coordinates to 3D for gravity target (only when gravity active or mouse moved)
-      this.updateParticleGravityTarget();
 
       // Compute rolling FPS telemetry average
       const currentFps = 1.0 / (deltaTime || 0.016);
@@ -148,10 +139,7 @@ export class App {
       this.targetMouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
     });
 
-    // 6. Setup Particle Gravity interaction triggers (Idea B)
-    this.initGravityInteraction();
-
-    // 7. Start loader sequence
+    // 6. Start loader sequence
     this.startLoader();
   }
 
@@ -408,47 +396,6 @@ export class App {
     if (sections[currentIdx]) {
       this.animator.animateSectionIn(sections[currentIdx]);
     }
-  }
-
-  initGravityInteraction() {
-    const handleDown = event => {
-      if (event.target?.closest?.('#explorer-mode-toggle, #explorer-hud')) return;
-      if (window.soundManager && window.soundManager.audioCtx && window.soundManager.audioCtx.state === 'suspended') {
-        window.soundManager.audioCtx.resume();
-      }
-      if (this.portfolio && this.portfolio.audioCtx && this.portfolio.audioCtx.state === 'suspended') {
-        this.portfolio.audioCtx.resume();
-      }
-      this.particles.isGravityActive = true;
-    };
-    
-    const handleUp = () => {
-      if (this.particles.isGravityActive) {
-        this.particles.isGravityActive = false;
-        this.particles.triggerBlast();
-      }
-    };
-    
-    window.addEventListener('mousedown', handleDown);
-    window.addEventListener('mouseup', handleUp);
-    window.addEventListener('touchstart', handleDown, { passive: true });
-    window.addEventListener('touchend', handleUp, { passive: true });
-  }
-
-  updateParticleGravityTarget() {
-    if (!this.engine || !this.engine.camera || !this.particles) return;
-    
-    // Reuse pre-allocated scratch vectors — eliminates GC pressure from new THREE.Vector3() each frame
-    this._gravVec.set(this.mouse.x, -this.mouse.y, 0.5);
-    this._gravVec.unproject(this.engine.camera);
-    
-    this._gravDir.copy(this._gravVec).sub(this.engine.camera.position).normalize();
-    const dz = this._gravDir.z;
-    if (Math.abs(dz) < 0.0001) return; // degenerate case guard
-    const distance = -this.engine.camera.position.z / dz;
-    
-    this._gravPos.copy(this.engine.camera.position).addScaledVector(this._gravDir, distance);
-    this.particles.gravityTarget.copy(this._gravPos);
   }
 
   updateTelemetryHUD() {

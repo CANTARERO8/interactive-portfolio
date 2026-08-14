@@ -9,9 +9,6 @@ export class Particles {
     this.qualityMode = 'ultra';
     this.speedMultiplier = 1.0;
     
-    // Gravity Vortex States
-    this.isGravityActive = false;
-    this.gravityTarget = new THREE.Vector3();
     this.isWarpActive = false;
     
     const texture = this.createGlowTexture();
@@ -150,52 +147,6 @@ export class Particles {
     return new THREE.CanvasTexture(canvas);
   }
 
-  // Trigger outward radial explosion shockwave
-  triggerBlast() {
-    const positions = this.geometry.attributes.position.array;
-    const vels = this.velocities;
-    const gx = this.gravityTarget.x;
-    const gy = this.gravityTarget.y;
-    const gz = this.gravityTarget.z;
-
-    for (let i = 0; i < this.activeCount; i++) {
-      const idx = i * 3;
-      const dx = positions[idx]     - gx;
-      const dy = positions[idx + 1] - gy;
-      const dz = positions[idx + 2] - gz;
-      const invDist = 1.0 / (Math.sqrt(dx*dx + dy*dy + dz*dz) + 0.1);
-      const blastPower = 1.2 + Math.random() * 2.8;
-      const scale = blastPower * invDist;
-      vels[idx]     = dx * scale;
-      vels[idx + 1] = dy * scale;
-      vels[idx + 2] = dz * scale;
-    }
-  }
-
-  // Trigger high-power shockwave from 3D object center
-  triggerShockwave(centerPos) {
-    const positions = this.geometry.attributes.position.array;
-    const vels = this.velocities;
-    const cx = centerPos.x;
-    const cy = centerPos.y;
-    const cz = centerPos.z;
-
-    for (let i = 0; i < this.activeCount; i++) {
-      const idx = i * 3;
-      const dx = positions[idx] - cx;
-      const dy = positions[idx + 1] - cy;
-      const dz = positions[idx + 2] - cz;
-      const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
-      if (dist < 25.0) {
-        const invDist = 1.0 / (dist + 0.1);
-        const power = (25.0 - dist) * 0.35;
-        vels[idx]     += dx * invDist * power;
-        vels[idx + 1] += dy * invDist * power;
-        vels[idx + 2] += dz * invDist * power;
-      }
-    }
-  }
-
   // Trigger Hyperspace Warp Speed acceleration
   triggerWarpSpeed(duration = 1.4) {
     this.isWarpActive = true;
@@ -237,42 +188,11 @@ export class Particles {
       this.speedMultiplier += (1.0 - this.speedMultiplier) * 0.05;
     }
 
-    const gx = this.gravityTarget.x;
-    const gy = this.gravityTarget.y;
-    const gz = this.gravityTarget.z;
-    const attrScale  = deltaTime * 16.0 * 2.2;
-    const orbitScale = deltaTime * 14.0 * 0.7;
     const driftScale = this.speedMultiplier * deltaTime * 2.2;
     const isFixedDeepField = this.qualityMode !== 'performance'
-      && !this.isGravityActive
       && !this.isWarpActive;
 
-    if (this.isGravityActive) {
-      for (let i = 0; i < count; i++) {
-        const idx = i * 3;
-        const dx = gx - positions[idx];
-        const dy = gy - positions[idx + 1];
-        const dz = gz - positions[idx + 2];
-
-        const invDist = 1.0 / (Math.sqrt(dx*dx + dy*dy + dz*dz) + 0.1);
-        const attract = invDist * invDist * attrScale;
-        
-        vels[idx]     = (vels[idx]     + dx * invDist * attract + (-dz * invDist) * orbitScale) * 0.94;
-        vels[idx + 1] = (vels[idx + 1] + dy * invDist * attract) * 0.94;
-        vels[idx + 2] = (vels[idx + 2] + dz * invDist * attract +  (dx * invDist) * orbitScale) * 0.94;
-
-        positions[idx]     += vels[idx];
-        positions[idx + 1] += vels[idx + 1];
-        positions[idx + 2] += vels[idx + 2];
-
-        if (positions[idx + 1] > 20) {
-          positions[idx + 1] = -20;
-          positions[idx]     = (Math.random() - 0.5) * 110;
-          positions[idx + 2] = (Math.random() - 0.5) * 110 - 25;
-          vels[idx] = vels[idx + 1] = vels[idx + 2] = 0;
-        }
-      }
-    } else if (!isFixedDeepField) {
+    if (!isFixedDeepField) {
       for (let i = 0; i < count; i++) {
         const idx = i * 3;
 

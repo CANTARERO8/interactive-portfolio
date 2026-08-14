@@ -526,11 +526,6 @@ export class MorphingCoreEntity {
       window.soundManager.playChirp();
     }
 
-    // Trigger explosive particle shockwave
-    if (this.app.particles && this.app.particles.triggerShockwave) {
-      this.app.particles.triggerShockwave(this.group.position);
-    }
-
     // Rapid 360 Spin + Scale Surge Animation
     gsap.to(this.group.rotation, {
       y: this.group.rotation.y + Math.PI * 2,
