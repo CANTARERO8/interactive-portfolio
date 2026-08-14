@@ -394,14 +394,12 @@ export class MorphingCoreEntity {
           if (window.soundManager && window.soundManager.playCoreDeconstruct) {
             window.soundManager.playCoreDeconstruct();
           }
-          this.showArtifactHint(true);
         }
       } else {
         if (this.isHovered) {
           this.isHovered = false;
           this.targetHover = 0.0;
           document.body.style.cursor = 'default';
-          this.showArtifactHint(false);
         }
       }
     });
@@ -417,17 +415,6 @@ export class MorphingCoreEntity {
         this.triggerSurgeSpin();
       }
     });
-  }
-
-  showArtifactHint(show) {
-    const hintEl = document.getElementById('artifact-interact-badge');
-    if (hintEl) {
-      if (show) {
-        hintEl.classList.add('active');
-      } else {
-        hintEl.classList.remove('active');
-      }
-    }
   }
 
   triggerSurgeSpin() {
