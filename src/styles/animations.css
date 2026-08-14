@@ -1,0 +1,67 @@
+/* Blinking text cursor for terminal effects */
+.blink {
+  animation: cursor-blink 1s step-end infinite;
+}
+
+@keyframes cursor-blink {
+  from, to { border-color: transparent }
+  50% { border-color: currentColor }
+}
+
+/* Subtle holographic pulse */
+.pulse-glow {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(0, 242, 254, 0.1), 0 0 20px rgba(0, 242, 254, 0.05);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(0, 242, 254, 0.3), 0 0 40px rgba(0, 242, 254, 0.15);
+  }
+}
+
+/* Liquid fluid effect on background grids */
+.ambient-fog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: calc(var(--z-canvas) + 1);
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(2, 4, 10, 0) 0%,
+    rgba(2, 4, 10, 0.8) 80%,
+    rgba(2, 4, 10, 1) 100%
+  );
+}
+
+/* Continuous underwater liquid waving and glowing text animation */
+#hero-main-title .char-span {
+  display: inline-block;
+  animation: underwater-wave 4s ease-in-out infinite;
+  animation-delay: calc(var(--char-idx) * 0.12s);
+}
+
+@keyframes underwater-wave {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    text-shadow: 0 0 12px rgba(0, 242, 254, 0.5), 0 0 25px rgba(0, 242, 254, 0.15);
+    filter: blur(0px);
+  }
+  33% {
+    transform: translateY(-5px) scale(1.04) rotate(0.8deg);
+    text-shadow: 0 0 24px rgba(0, 242, 254, 0.85), 0 0 35px rgba(0, 242, 254, 0.4), 0 0 45px rgba(168, 85, 247, 0.35);
+    filter: blur(0.4px);
+    color: #ffffff;
+  }
+  66% {
+    transform: translateY(3px) scale(0.96) rotate(-0.8deg);
+    text-shadow: 0 0 16px rgba(0, 242, 254, 0.65), 0 0 28px rgba(0, 242, 254, 0.25);
+    filter: blur(0.2px);
+    color: var(--color-accent-cyan);
+  }
+}

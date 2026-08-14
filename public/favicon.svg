@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="fav-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+  </defs>
+  <!-- Background cinematic void circle -->
+  <circle cx="16" cy="16" r="15" fill="#02040a" />
+  <!-- Top Cap Facet -->
+  <polygon points="16,5 25,11.5 16,17 7,11.5" fill="rgba(0, 242, 254, 0.12)" stroke="url(#fav-grad)" stroke-width="1.6" stroke-linejoin="round" />
+  <!-- Left Facet -->
+  <polygon points="7,11.5 16,17 16,27" fill="rgba(0, 242, 254, 0.05)" stroke="url(#fav-grad)" stroke-width="1.6" stroke-linejoin="round" />
+  <!-- Right Facet -->
+  <polygon points="25,11.5 16,17 16,27" fill="rgba(168, 85, 247, 0.08)" stroke="url(#fav-grad)" stroke-width="1.6" stroke-linejoin="round" />
+</svg>

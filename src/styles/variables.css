@@ -1,0 +1,38 @@
+:root {
+  /* Color Palette — Cinematic Cosmic Forge (mimicking joseph-san.com signature void aesthetics) */
+  --color-bg-primary: #030304;      /* Pure cinematic void black */
+  --color-bg-secondary: #07080a;    /* High-fidelity card black */
+  --color-accent-blue: #0052ff;     /* Cyber deep blue */
+  --color-accent-cyan: #00f3ff;     /* Holographic electric cyan */
+  --color-accent-purple: #9d00ff;   /* Ambient nebula violet */
+  --color-accent-amber: #fbbf24;    /* Circuit gold highlight */
+  
+  --color-text-main: #ffffff;
+  --color-text-sub: #86869a;        /* Soft silver slate */
+  --color-text-muted: #49495c;      /* Muted dark grey */
+  
+  /* Fonts */
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  /* Fluid Typography System — Replicates joseph-san.com dynamic scaling */
+  --size-unit: 16;
+  --size-container-ideal: 1440;
+  --size-container-min: 375px;
+  --size-container-max: 1920px;
+  --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
+  --size-font: calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit)));
+
+  /* Z-Index Layer Map */
+  --z-canvas: 1;
+  --z-bg-grid: 2;
+  --z-scenes: 10;
+  --z-nav: 100;
+  --z-cursor: 999;
+  --z-loader: 1000;
+  
+  /* Transitions */
+  --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}

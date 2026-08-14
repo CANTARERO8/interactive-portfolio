@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Optimization -->
+    <title>Eduardo Cordova // Portafolio</title>
+    <meta name="description" content="Portafolio creativo e inmersivo de Eduardo Cordova, Desarrollador Fullstack e Ingeniero de Sistemas especializado en construir sistemas de software robustos y experiencias WebGL." />
+    <meta name="keywords" content="Eduardo Cordova, Fullstack Engineer, Creative Developer, Three.js, GSAP, Fullstack Developer, Web 3D, Nicaragua" />
+    <meta name="author" content="Eduardo Cordova" />
+    
+    <!-- Open Graph (Facebook / LinkedIn) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Eduardo Cordova // Desarrollador Fullstack & Web" />
+    <meta property="og:description" content="Experiencia digital inmersiva. Diseñando y programando ecosistemas digitales." />
+    <meta property="og:image" content="/og.jpg" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Critical inline CSS to prevent FOUC before JS module loads -->
+    <style>
+      #loader-container {
+        position: fixed; inset: 0; z-index: 1000;
+        background: #02040a; display: grid;
+        grid-template-rows: 1fr auto; align-items: center;
+        padding: 4em; overflow: hidden;
+      }
+      #nav-header, .custom-cursor, .custom-cursor-ring { display: none; }
+    </style>
+
+    <!-- Force scroll to top on refresh to prevent halfway restore -->
+    <script>history.scrollRestoration='manual';window.scrollTo(0,0);</script>
+  </head>
+  <body>
+    <!-- Three.js Canvas -->
+    <canvas id="webgl-canvas"></canvas>
+    
+    <!-- Ambient Fog Vignette -->
+    <div class="ambient-fog"></div>
+    
+    <!-- Portal Transition Overlay for Smooth Wrap-around -->
+    <div id="transition-overlay" style="position: fixed; inset: 0; background: #080d28; z-index: 1200; pointer-events: none; opacity: 0;"></div>
+    
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="js-cursor"></div>
+    <div class="custom-cursor-ring" id="js-cursor-ring"></div>
+    
+    <!-- Cinematic Immersive Loader -->
+    <div id="loader-container">
+      <div class="loader-center-display">
+        <h1 class="loader-percentage" id="loader-percent-text">00%</h1>
+        <span class="loader-sublabel mono" id="loader-subtitle-tag">// LOADING SYSTEMS CORES</span>
+      </div>
+      <div class="loader-terminal">
+        <div class="terminal-logs" id="loader-logs">
+          <div class="log-line active">IGNITING CYBER-THERMAL CORES...</div>
+          <div class="log-line">LOADING HARDWARE SHADERS & CIRCUIT MAPS...</div>
+          <div class="log-line">COMPILING 3D HARDWARE MONOLITHS...</div>
+          <div class="log-line">STABILIZING 2500 THERMAL SPARKS SWARM...</div>
+        </div>
+        <div class="loader-progress-panel">
+          <div class="loader-bar-bg">
+            <div class="loader-bar-fill" id="loader-fill-progress"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header id="nav-header">
+      <div class="nav-logo" id="header-logo">
+        <svg class="logo-svg" viewBox="0 0 32 32" width="22" height="22">
+          <defs>
+            <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00f2fe" />
+              <stop offset="100%" stop-color="#a855f7" />
+            </linearGradient>
+          </defs>
+          <!-- Top Cap Facet -->
+          <polygon points="16,4 26,11 16,17 6,11" fill="rgba(0, 242, 254, 0.08)" stroke="url(#logo-grad)" stroke-width="1.6" stroke-linejoin="round" />
+          <!-- Left Facet -->
+          <polygon points="6,11 16,17 16,28" fill="rgba(0, 242, 254, 0.03)" stroke="url(#logo-grad)" stroke-width="1.6" stroke-linejoin="round" />
+          <!-- Right Facet -->
+          <polygon points="26,11 16,17 16,28" fill="rgba(168, 85, 247, 0.05)" stroke="url(#logo-grad)" stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+        <span>Eduardo Cordova</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#hero" class="nav-link scroll-to" data-target="0" data-i18n="nav.home">Inicio</a>
+        <a href="#about" class="nav-link scroll-to" data-target="1" data-i18n="nav.about">Desarrollador</a>
+        <a href="#projects" class="nav-link scroll-to" data-target="2" data-i18n="nav.works">Proyectos</a>
+        <a href="#vue-frontend" class="nav-link scroll-to" data-target="3" data-i18n="nav.vue">Núcleo Vue</a>
+        <a href="#laravel-backend" class="nav-link scroll-to" data-target="4" data-i18n="nav.laravel">Núcleo Laravel</a>
+        <a href="#postgresql-showcase" class="nav-link scroll-to" data-target="5" data-i18n="nav.postgres">Base Datos</a>
+        <a href="#wordpress-cms" class="nav-link scroll-to" data-target="6" data-i18n="nav.wordpress">WordPress</a>
+        <a href="#contact" class="nav-link scroll-to" data-target="7" data-i18n="nav.portal">Portal</a>
+      </nav>
+      
+      <!-- Header Controls -->
+      <div class="header-controls">
+        <button id="cmd-palette-trigger" class="cmd-trigger-btn" aria-label="Open Command Palette" title="Command Palette (Ctrl + K)">
+          <svg class="cmd-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5" width="18" height="14" rx="2" ry="2"></rect>
+            <line x1="6" y1="10" x2="10" y2="10"></line>
+            <line x1="14" y1="14" x2="18" y2="14"></line>
+          </svg>
+          <span class="cmd-hotkey mono">⌘K</span>
+        </button>
+        <div class="lang-selector">
+          <button id="lang-btn" class="lang-btn" aria-label="Switch Language">
+            <span class="lang-code" id="lang-code-en">EN</span>
+            <span class="lang-divider">/</span>
+            <span class="lang-code active" id="lang-code-es">ES</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Trigger -->
+      <button id="mobile-menu-trigger" class="menu-trigger" aria-label="Toggle Navigation Menu">
+        <span class="menu-line"></span>
+        <span class="menu-line"></span>
+        <span class="menu-line"></span>
+      </button>
+    </header>
+
+    <!-- Mobile Navigation Overlay (Slides/Fades full screen) -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay">
+      <nav class="mobile-nav-links">
+        <a href="#hero" class="mobile-nav-link scroll-to" data-target="0"><span class="mono">01/</span> <span data-i18n="nav.home">Inicio</span></a>
+        <a href="#about" class="mobile-nav-link scroll-to" data-target="1"><span class="mono">02/</span> <span data-i18n="nav.about">Desarrollador</span></a>
+        <a href="#projects" class="mobile-nav-link scroll-to" data-target="2"><span class="mono">03/</span> <span data-i18n="nav.works">Proyectos</span></a>
+        <a href="#vue-frontend" class="mobile-nav-link scroll-to" data-target="3"><span class="mono">04/</span> <span data-i18n="nav.vue">Núcleo Vue</span></a>
+        <a href="#laravel-backend" class="mobile-nav-link scroll-to" data-target="4"><span class="mono">05/</span> <span data-i18n="nav.laravel">Núcleo Laravel</span></a>
+        <a href="#postgresql-showcase" class="mobile-nav-link scroll-to" data-target="5"><span class="mono">06/</span> <span data-i18n="nav.postgres">Base Datos</span></a>
+        <a href="#wordpress-cms" class="mobile-nav-link scroll-to" data-target="6"><span class="mono">07/</span> <span data-i18n="nav.wordpress">WordPress</span></a>
+        <a href="#contact" class="mobile-nav-link scroll-to" data-target="7"><span class="mono">08/</span> <span data-i18n="nav.portal">Portal</span></a>
+      </nav>
+    </div>
+
+    <!-- Master Scroll Content -->
+    <main id="app-container">
+      
+      <!-- SCENE 1: HERO -->
+      <section class="scene-section" id="hero">
+        <div class="hero-wrapper">
+          <span class="hero-subtitle mono sm" id="hero-subtitle-tag" data-i18n="hero.subtitle">// EDUARDO CORDOVA // DESARROLLADOR FULLSTACK & WEB</span>
+          <h1 class="hero-title" id="hero-main-title" data-i18n="hero.title">
+            Portafolio<br />
+            <span>Interactivo</span>
+          </h1>
+          <p class="hero-desc" id="hero-description" data-i18n="hero.desc">
+            Una exhibición inmersiva de sistemas fullstack robustos, sistemas de bases de datos escalables y experiencias creativas en WebGL. Diseñando ecosistemas digitales de alto rendimiento con precisión, velocidad y diseño interactivo fluido.
+          </p>
+          <div class="hero-footer" id="hero-action-footer">
+            <div class="scroll-indicator">
+              <span class="mono sm" data-i18n="hero.scroll">// HAZ SCROLL PARA CONTINUAR</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 2: ABOUT ME -->
+      <section class="scene-section" id="about">
+        <div class="about-grid">
+          <div class="about-content">
+            <h2 class="about-title" id="about-title-heading" data-i18n="about.title">Bases Sólidas, Infraestructuras Diseñadas para Durar</h2>
+            <p class="about-text" id="about-body-text" data-i18n="about.desc">
+              Como Desarrollador Fullstack e Ingeniero de Sistemas, veo el software como ingeniería robusta. Así como los ingenieros diseñan sistemas confiables que resisten al tiempo, yo diseño y programo ecosistemas activos de software: plataformas escalables, APIs seguras y experiencias inmersivas WebGL optimizadas para un rendimiento absoluto.
+            </p>
+          </div>
+          <div class="about-specs" id="about-profile-specs">
+            <!-- Systems Core status ticker -->
+            <div class="systems-status-tag mono sm" id="about-specs-status">[ SYSTEMS CORE ACTIVE ]</div>
+            <div class="spec-item">
+              <span class="spec-label" data-i18n="about.spec.loc.label">Ubicación</span>
+              <span class="spec-value" data-i18n="about.spec.loc.val">Managua, Nicaragua</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label" data-i18n="about.spec.focus.label">Enfoque</span>
+              <span class="spec-value" data-i18n="about.spec.focus.val">Desarrollo Fullstack & Creativo</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label" data-i18n="about.spec.exp.label">Especialidad</span>
+              <span class="spec-value" data-i18n="about.spec.exp.val">Sistemas Distribuidos & Experiencias WebGL</span>
+            </div>
+            
+            <!-- Cyber HUD Static Dashboard (Moved here to be static and non-obtrusive!) -->
+            <div id="cyber-hud" class="cyber-hud-console">
+              <div class="hud-header">
+                <span class="mono sm" data-i18n="hud.title">// CYBER MONITOR V1.0.4</span>
+              </div>
+              <div class="hud-metrics">
+                <div class="hud-metric">
+                  <span class="hud-label mono">FPS:</span>
+                  <span class="hud-value mono" id="hud-fps-val">--</span>
+                </div>
+                <div class="hud-metric">
+                  <span class="hud-label mono">V-SCROLL:</span>
+                  <span class="hud-value mono" id="hud-scroll-val">0 px/s</span>
+                </div>
+                <div class="hud-metric">
+                  <span class="hud-label mono">SYS-RAM:</span>
+                  <span class="hud-value mono" id="hud-ram-val">-- MB</span>
+                </div>
+                <div class="hud-metric">
+                  <span class="hud-label mono">SYS-ADDR:</span>
+                  <span class="hud-value mono sim-accent-cyan" id="hud-addr-val" style="font-weight:700;">0x4C8D</span>
+                </div>
+              </div>
+              <button id="overclock-btn" class="overclock-btn mono sm" data-i18n="hud.overclock_btn">
+                [ ARRANCAR OVERCLOCK ]
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 3: PROJECTS -->
+      <section class="scene-section" id="projects">
+        <div class="projects-wrapper">
+          <div class="section-header">
+            <h2 class="mono sm" data-i18n="projects.title">// CONSTRUCTED SYSTEMS</h2>
+          </div>
+          <div class="project-carrusel" id="projects-rows-container">
+            <!-- Project 1: Elite Performance -->
+            <div class="project-row" data-project="0">
+              <span class="project-num">01</span>
+              <h3 class="project-name">Elite Performance</h3>
+              <div class="project-techs">
+                <span class="project-tech-tag">React 19</span>
+                <span class="project-tech-tag">Tailwind v4</span>
+                <span class="project-tech-tag">Supabase</span>
+                <span class="project-tech-tag">Express</span>
+              </div>
+              <span class="project-arrow">→</span>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-row" data-project="1">
+              <span class="project-num">02</span>
+              <h3 class="project-name">Banco de Sangre</h3>
+              <div class="project-techs">
+                <span class="project-tech-tag">Laravel</span>
+                <span class="project-tech-tag">Vue 3</span>
+                <span class="project-tech-tag">PostgreSQL</span>
+                <span class="project-tech-tag">Docker</span>
+              </div>
+              <span class="project-arrow">→</span>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="project-row" data-project="2">
+              <span class="project-num">03</span>
+              <h3 class="project-name">CEMED Hub</h3>
+              <div class="project-techs">
+                <span class="project-tech-tag">Laravel</span>
+                <span class="project-tech-tag">Vue 3</span>
+                <span class="project-tech-tag">Vuetify 3</span>
+                <span class="project-tech-tag">Pinia</span>
+              </div>
+              <span class="project-arrow">→</span>
+            </div>
+
+            <!-- Project 4 -->
+            <div class="project-row" data-project="3">
+              <span class="project-num">04</span>
+              <h3 class="project-name">Jules Showcase</h3>
+              <div class="project-techs">
+                <span class="project-tech-tag">Vue 3</span>
+                <span class="project-tech-tag">GSAP</span>
+                <span class="project-tech-tag">Animate.css</span>
+                <span class="project-tech-tag">Vite</span>
+              </div>
+              <span class="project-arrow">→</span>
+            </div>
+
+            <!-- Project 5 -->
+            <div class="project-row" data-project="4">
+              <span class="project-num">05</span>
+              <h3 class="project-name">LetsGo App</h3>
+              <div class="project-techs">
+                <span class="project-tech-tag">Laravel</span>
+                <span class="project-tech-tag">Vue 3</span>
+                <span class="project-tech-tag">Pinia</span>
+                <span class="project-tech-tag">Sanctum</span>
+              </div>
+              <span class="project-arrow">→</span>
+            </div>
+
+            <!-- Project 6 -->
+            <div class="project-row" data-project="5">
+              <span class="project-num">06</span>
+              <h3 class="project-name">Sistema Logístico</h3>
+              <div class="project-techs">
+                <span class="project-tech-tag">Laravel</span>
+                <span class="project-tech-tag">Node.js</span>
+                <span class="project-tech-tag">Socket.io</span>
+                <span class="project-tech-tag">GIS SQL</span>
+              </div>
+              <span class="project-arrow">→</span>
+            </div>
+
+            <!-- Project 7 -->
+            <div class="project-row" data-project="6">
+              <span class="project-num">07</span>
+              <h3 class="project-name">Sistema Pyme</h3>
+              <div class="project-techs">
+                <span class="project-tech-tag">Laravel 12</span>
+                <span class="project-tech-tag">Vue 3</span>
+                <span class="project-tech-tag">PostgreSQL</span>
+                <span class="project-tech-tag">Vuetify 3</span>
+              </div>
+              <span class="project-arrow">→</span>
+            </div>
+
+            <!-- Project 8 -->
+            <div class="project-row" data-project="7">
+              <span class="project-num">08</span>
+              <h3 class="project-name">Sistema Fotos</h3>
+              <div class="project-techs">
+                <span class="project-tech-tag">Vue 3</span>
+                <span class="project-tech-tag">Tailwind v4</span>
+                <span class="project-tech-tag">Laravel 12</span>
+                <span class="project-tech-tag">Cloudflare R2</span>
+              </div>
+              <span class="project-arrow">→</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 4: VUE.JS FRONTEND ARCHITECTURE -->
+      <section class="scene-section" id="vue-frontend">
+        <div class="showcase-grid">
+          <div class="showcase-details">
+            <h2 class="about-title" id="vue-title-heading" data-i18n="vue.title">Vue.js — Modern Reactive Frontend Systems</h2>
+            <p class="about-text" data-i18n="vue.desc">
+              Developing fluid, high-performance user interfaces using **Vue 3 (Composition API)**, **Pinia**, and modular component decoupling. Focused on absolute speed, 60 FPS visual telemetry, structural micro-interactions, and reactive state management designed to coordinate complex multi-layered workflows without FOUC or visual latency.
+            </p>
+            <div class="tech-metrics">
+              <div class="metric-card">
+                <div class="metric-num">Vue 3</div>
+                <div class="metric-label" data-i18n="vue.metric1.lbl">Reactive Store & Composition API</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-num">&lt; 15ms</div>
+                <div class="metric-label" data-i18n="vue.metric2.lbl">State Propagation Speed</div>
+              </div>
+            </div>
+          </div>
+          <div class="showcase-code-panel" id="panel-vue">
+            <div class="panel-header">
+              <div class="mac-buttons">
+                <span class="mac-btn close"></span>
+                <span class="mac-btn minimize"></span>
+                <span class="mac-btn maximize"></span>
+              </div>
+              <span class="panel-filename mono sm">// StateOrchestrator.js</span>
+              <div class="panel-controls">
+                <button class="panel-control-btn active" data-action="code" data-i18n="vue.ctrl.code">[ CODE ]</button>
+                <button class="panel-control-btn" data-action="sim" data-i18n="vue.ctrl.sim">[ SIMULATOR ]</button>
+              </div>
+            </div>
+            <div class="panel-code-view">
+              <span class="code-comment">// Decoupled Central State management via Pinia Store</span><br />
+              <span class="code-keyword">import</span> { defineStore } <span class="code-keyword">from</span> <span class="code-string">'pinia'</span>;<br />
+              <span class="code-keyword">import</span> { ref, computed } <span class="code-keyword">from</span> <span class="code-string">'vue'</span>;<br /><br />
+              <span class="code-keyword">export const</span> useSystemStore = defineStore(<span class="code-string">'system'</span>, <span class="code-function">() =></span> {<br />
+              &nbsp;&nbsp;<span class="code-keyword">const</span> coreLoad = ref(<span class="code-tag">42</span>);<br />
+              &nbsp;&nbsp;<span class="code-keyword">const</span> isHealthy = computed(<span class="code-function">() =></span> coreLoad.value &lt; <span class="code-tag">85</span>);<br /><br />
+              &nbsp;&nbsp;<span class="code-keyword">function</span> <span class="code-function">scaleTelemetry</span>(factor) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;coreLoad.value = Math.min(<span class="code-tag">100</span>, Math.floor(coreLoad.value * factor));<br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;<span class="code-keyword">return</span> { coreLoad, isHealthy, scaleTelemetry };<br />
+              });
+            </div>
+            <div class="panel-sim-view" style="display: none;">
+              <!-- Telemetry Simulator Screen -->
+              <div class="simulator-terminal mono">
+                <div class="simulator-header">[ TELEMETRY SCANNER ACTIVE ]</div>
+                <div class="simulator-body">
+                  <div class="sim-metric-row">
+                    <span>PINIA CORE STATE:</span>
+                    <span class="sim-accent-cyan" id="sim-vue-status">OK // DECOUPLED</span>
+                  </div>
+                  <div class="sim-metric-row">
+                    <span>CLIENT CORE LOAD:</span>
+                    <span id="sim-vue-load">42%</span>
+                  </div>
+                  <div class="sim-chart-bar-container">
+                    <div class="sim-chart-bar" id="sim-vue-bar" style="width: 42%;"></div>
+                  </div>
+                  <div class="sim-log-output" id="sim-vue-logs">
+                    <span class="log-info">[SYSTEM] Initializing client-side state...</span>
+                  </div>
+                  <div class="cli-command-suggestions mono sm">
+                    <span class="suggestion-label">// SUGGESTIONS:</span>
+                    <button class="cli-suggest-btn" data-cmd="help">help</button>
+                    <button class="cli-suggest-btn" data-cmd="telemetry">telemetry</button>
+                    <button class="cli-suggest-btn" data-cmd="database query">database query</button>
+                    <button class="cli-suggest-btn" data-cmd="overclock">overclock</button>
+                  </div>
+                  <div class="terminal-cli-prompt">
+                    <span class="cli-user">visitor@cordova-core:~$</span>
+                    <input type="text" class="cli-input-field mono" data-target="vue" placeholder="Type help..." autocomplete="off" spellcheck="false" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 4: PHP LARAVEL BACKEND ARCHITECTURE -->
+      <section class="scene-section" id="laravel-backend">
+        <div class="showcase-grid">
+          <div class="showcase-code-panel" id="panel-laravel">
+            <div class="panel-header">
+              <div class="mac-buttons">
+                <span class="mac-btn close"></span>
+                <span class="mac-btn minimize"></span>
+                <span class="mac-btn maximize"></span>
+              </div>
+              <span class="panel-filename mono sm">// BackendDispatcher.php</span>
+              <div class="panel-controls">
+                <button class="panel-control-btn active" data-action="code" data-i18n="laravel.ctrl.code">[ CODE ]</button>
+                <button class="panel-control-btn" data-action="sim" data-i18n="laravel.ctrl.sim">[ SIMULATOR ]</button>
+              </div>
+            </div>
+            <div class="panel-code-view">
+              <span class="code-comment">// SOLID Service/Repository pattern controller</span><br />
+              <span class="code-keyword">namespace</span> App\Core\Services;<br />
+              <span class="code-keyword">use</span> App\Repositories\Contracts\EventRepo;<br /><br />
+              <span class="code-keyword">class</span> BackendDispatcher <span class="code-keyword">extends</span> Controller {<br />
+              &nbsp;&nbsp;<span class="code-keyword">protected</span> EventRepo $events;<br />
+              &nbsp;&nbsp;<span class="code-keyword">public function</span> <span class="code-function">__construct</span>(EventRepo $events) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;$this->events = $events;<br />
+              &nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;<span class="code-keyword">public function</span> <span class="code-function">dispatchEvent</span>(Request $request) {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;$route = $this->events->pushToQueue($request->all());<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> response()->json($route, <span class="code-tag">201</span>);<br />
+              &nbsp;&nbsp;}<br />
+              }
+            </div>
+            <div class="panel-sim-view" style="display: none;">
+              <!-- Laravel Router Simulator Screen -->
+              <div class="simulator-terminal mono">
+                <div class="simulator-header">[ REST DISPATCH ROUTER ACTIVE ]</div>
+                <div class="simulator-body">
+                  <div class="sim-metric-row">
+                    <span>API CONTROLLER:</span>
+                    <span class="sim-accent-amber">LARAVEL EXECUTOR</span>
+                  </div>
+                  <div class="sim-metric-row">
+                    <span>DISPATCH SPEED:</span>
+                    <span id="sim-laravel-latency">12ms // VERIFIED</span>
+                  </div>
+                  <div class="sim-metric-row">
+                    <span>JSON RESPONSE DUMP:</span>
+                  </div>
+                  <pre class="sim-code-dump" id="sim-laravel-dump">{ "status": "idle" }</pre>
+                  <div class="sim-log-output" id="sim-laravel-logs">
+                    <span class="log-info">[API] Dispatcher booting routing pipeline...</span>
+                  </div>
+                  <div class="cli-command-suggestions mono sm">
+                    <span class="suggestion-label">// SUGGESTIONS:</span>
+                    <button class="cli-suggest-btn" data-cmd="help">help</button>
+                    <button class="cli-suggest-btn" data-cmd="telemetry">telemetry</button>
+                    <button class="cli-suggest-btn" data-cmd="database query">database query</button>
+                    <button class="cli-suggest-btn" data-cmd="overclock">overclock</button>
+                  </div>
+                  <div class="terminal-cli-prompt">
+                    <span class="cli-user">visitor@cordova-core:~$</span>
+                    <input type="text" class="cli-input-field mono" data-target="laravel" placeholder="Type help..." autocomplete="off" spellcheck="false" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="showcase-details">
+            <h2 class="about-title" id="laravel-title-heading" data-i18n="laravel.title">Laravel — Enterprise Backend Systems</h2>
+            <p class="about-text" data-i18n="laravel.desc">
+              Building robust, secure backend systems using **PHP 8** and **Laravel**. Implementing strict **SOLID principles**, isolated Service layers, Repository patterns, secure rate-limiters, queues, and event dispatch pipelines that scale seamlessly while preserving absolute sub-second operational processing speeds.
+            </p>
+            <div class="tech-metrics">
+              <div class="metric-card">
+                <div class="metric-num">PHP 8.x</div>
+                <div class="metric-label" data-i18n="laravel.metric1.lbl">Strict OOP & SOLID Layouts</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-num">Laravel</div>
+                <div class="metric-label" data-i18n="laravel.metric2.lbl">Isolated Queues & Pipelines</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 5: POSTGRESQL DATA ARCHITECTURE -->
+      <section class="scene-section" id="postgresql-showcase">
+        <div class="showcase-grid">
+          <div class="showcase-details">
+            <h2 class="about-title" id="postgresql-title-heading" data-i18n="postgres.title">PostgreSQL — High-Performance Databases</h2>
+            <p class="about-text" data-i18n="postgres.desc">
+              Designing relational databases engineered for complex integrity and massive scale using **PostgreSQL**. Implementing optimized custom indexes, normalized schemas, relational hierarchy mappings via recursive CTEs, structured transaction hooks, and custom analytics tables to execute queries under sub-millisecond margins.
+            </p>
+            <div class="tech-metrics">
+              <div class="metric-card">
+                <div class="metric-num">SQL</div>
+                <div class="metric-label" data-i18n="postgres.metric1.lbl">Recursive CTEs & Query Plans</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-num">ACID</div>
+                <div class="metric-label" data-i18n="postgres.metric2.lbl">Absolute Transaction Security</div>
+              </div>
+            </div>
+          </div>
+          <div class="showcase-code-panel" id="panel-postgres">
+            <div class="panel-header">
+              <div class="mac-buttons">
+                <span class="mac-btn close"></span>
+                <span class="mac-btn minimize"></span>
+                <span class="mac-btn maximize"></span>
+              </div>
+              <span class="panel-filename mono sm">// DatabaseIndexCTEs.sql</span>
+              <div class="panel-controls">
+                <button class="panel-control-btn active" data-action="code" data-i18n="postgres.ctrl.code">[ CODE ]</button>
+                <button class="panel-control-btn" data-action="sim" data-i18n="postgres.ctrl.sim">[ SIMULATOR ]</button>
+              </div>
+            </div>
+            <div class="panel-code-view">
+              <span class="code-comment">// Normalized query analyzing node hierarchy</span><br />
+              <span class="code-keyword">WITH RECURSIVE</span> telemetry_hierarchy <span class="code-keyword">AS</span> (<br />
+              &nbsp;&nbsp;<span class="code-keyword">SELECT</span> id, parent_id, node_name, <span class="code-tag">1</span> <span class="code-keyword">AS</span> depth<br />
+              &nbsp;&nbsp;<span class="code-keyword">FROM</span> system_nodes <span class="code-keyword">WHERE</span> parent_id <span class="code-keyword">IS NULL</span><br />
+              &nbsp;&nbsp;<span class="code-keyword">UNION ALL</span><br />
+              &nbsp;&nbsp;<span class="code-keyword">SELECT</span> n.id, n.parent_id, n.node_name, h.depth + <span class="code-tag">1</span><br />
+              &nbsp;&nbsp;<span class="code-keyword">FROM</span> system_nodes n<br />
+              &nbsp;&nbsp;<span class="code-keyword">INNER JOIN</span> telemetry_hierarchy h <span class="code-keyword">ON</span> n.parent_id = h.id<br />
+              )<br />
+              <span class="code-keyword">SELECT</span> depth, COUNT(*) <span class="code-keyword">FROM</span> telemetry_hierarchy<br />
+              <span class="code-keyword">GROUP BY</span> depth <span class="code-keyword">ORDER BY</span> depth <span class="code-keyword">ASC</span>;
+            </div>
+            <div class="panel-sim-view" style="display: none;">
+              <!-- PostgreSQL CTE Query Simulator Screen -->
+              <div class="simulator-terminal mono">
+                <div class="simulator-header">[ SQL COMPILER AGENT ACTIVE ]</div>
+                <div class="simulator-body">
+                  <div class="sim-metric-row">
+                    <span>PLANNER EXPLAIN:</span>
+                    <span class="sim-accent-cyan" id="sim-sql-scan">INDEX SCAN // OK</span>
+                  </div>
+                  <div class="sim-metric-row">
+                    <span>EXECUTION TIME:</span>
+                    <span id="sim-sql-speed">0.08ms</span>
+                  </div>
+                  <div class="sim-metric-row">
+                    <span>CTE QUERY RESULT TABLE:</span>
+                  </div>
+                  <pre class="sim-table-dump" id="sim-sql-table">
++-------+------------+------------+
+| depth | node_count | avg_load % |
++-------+------------+------------+
+|     1 |          1 |       34.5 |
++-------+------------+------------+
+                  </pre>
+                  <div class="sim-log-output" id="sim-sql-logs">
+                    <span class="log-info">[DB] Checking relational database structure indices...</span>
+                  </div>
+                  <div class="cli-command-suggestions mono sm">
+                    <span class="suggestion-label">// SUGGESTIONS:</span>
+                    <button class="cli-suggest-btn" data-cmd="help">help</button>
+                    <button class="cli-suggest-btn" data-cmd="telemetry">telemetry</button>
+                    <button class="cli-suggest-btn" data-cmd="database query">database query</button>
+                    <button class="cli-suggest-btn" data-cmd="overclock">overclock</button>
+                  </div>
+                  <div class="terminal-cli-prompt">
+                    <span class="cli-user">visitor@cordova-core:~$</span>
+                    <input type="text" class="cli-input-field mono" data-target="postgres" placeholder="Type help..." autocomplete="off" spellcheck="false" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 5.5: WORDPRESS & ELEMENTOR ARCHITECTURE (CMS Showcase) -->
+      <section class="scene-section" id="wordpress-cms">
+        <div class="showcase-grid">
+          <div class="showcase-code-panel" id="panel-wordpress">
+            <div class="panel-header">
+              <div class="mac-buttons">
+                <span class="mac-btn close"></span>
+                <span class="mac-btn minimize"></span>
+                <span class="mac-btn maximize"></span>
+              </div>
+              <span class="panel-filename mono sm">// CustomThemeCustomizer.css</span>
+              <div class="panel-controls">
+                <button class="panel-control-btn active" data-action="code" data-i18n="wordpress.ctrl.code">[ CODE ]</button>
+                <button class="panel-control-btn" data-action="sim" data-i18n="wordpress.ctrl.sim">[ SIMULATOR ]</button>
+              </div>
+            </div>
+            <div class="panel-code-view">
+              <span class="code-comment">/* Custom Responsive Child Theme Stylesheet */</span><br />
+              <span class="code-keyword">@media</span> (max-width: <span class="code-tag">1024px</span>) {<br />
+              &nbsp;&nbsp;<span class="code-keyword">.custom-elementor-container</span> {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">display</span>: grid;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">grid-template-columns</span>: repeat(<span class="code-tag">2</span>, <span class="code-tag">1fr</span>);<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">gap</span>: <span class="code-tag">1.5rem</span>;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">padding</span>: <span class="code-tag">2rem</span>;<br />
+              &nbsp;&nbsp;}<br />
+              }<br />
+              <span class="code-comment">/* Custom query loop builder overrides */</span><br />
+              <span class="code-keyword">.elementor-loop-item</span> {<br />
+              &nbsp;&nbsp;<span class="code-keyword">transition</span>: var(--transition-smooth);<br />
+              &nbsp;&nbsp;<span class="code-keyword">box-shadow</span>: <span class="code-tag">0 10px 30px rgba(0,0,0,0.15)</span>;<br />
+              }
+            </div>
+            <div class="panel-sim-view" style="display: none;">
+              <!-- WordPress & Elementor Simulator Screen -->
+              <div class="simulator-terminal mono">
+                <div class="simulator-header">[ ELEMENTOR BUILDER SCANNER ACTIVE ]</div>
+                <div class="simulator-body">
+                  <div class="sim-metric-row">
+                    <span>ELEMENTOR ENGINE:</span>
+                    <span class="sim-accent-cyan" id="sim-wp-status">RUNNING // ACTIVE</span>
+                  </div>
+                  <div class="sim-metric-row">
+                    <span>PAGE BUILDER:</span>
+                    <span class="sim-accent-amber">DYNAMIC QUERY LOOPS</span>
+                  </div>
+                  <div class="sim-log-output" id="sim-wp-logs">
+                    <span class="log-info">[CMS] Loading custom page builder metadata...</span>
+                  </div>
+                  <div class="cli-command-suggestions mono sm">
+                    <span class="suggestion-label">// SUGGESTIONS:</span>
+                    <button class="cli-suggest-btn" data-cmd="help">help</button>
+                    <button class="cli-suggest-btn" data-cmd="telemetry">telemetry</button>
+                    <button class="cli-suggest-btn" data-cmd="database query">database query</button>
+                    <button class="cli-suggest-btn" data-cmd="overclock">overclock</button>
+                  </div>
+                  <div class="terminal-cli-prompt">
+                    <span class="cli-user">visitor@cordova-core:~$</span>
+                    <input type="text" class="cli-input-field mono" data-target="wordpress" placeholder="Type help..." autocomplete="off" spellcheck="false" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="showcase-details">
+            <h2 class="about-title" id="wordpress-title-heading" data-i18n="wordpress.title">WordPress & Elementor — Advanced Interactive CMS</h2>
+            <p class="about-text" data-i18n="wordpress.desc">
+              Building custom-designed, fast-loading, and interactive digital solutions using WordPress and Elementor. Implementing advanced theme development, custom CSS overrides, dynamic loop builders, third-party API integrations, and database migrations optimized for SEO and core performance metrics.
+            </p>
+            <div class="tech-metrics">
+              <div class="metric-card">
+                <div class="metric-num">WP Core</div>
+                <div class="metric-label" data-i18n="wordpress.metric1.lbl">Advanced Custom Theme Controls</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-num">Elementor</div>
+                <div class="metric-label" data-i18n="wordpress.metric2.lbl">Elementor Layout & Loop Builders</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <!-- SCENE 7: FOOTER -->
+      <section class="scene-section" id="contact">
+        <div class="footer-grid">
+          <div class="footer-left">
+            <div class="footer-credits" id="footer-text-credits" data-i18n="footer.credits">
+              // 2026 © EDUARDO CORDOVA. ALL RIGHTS RESERVED.<br />
+              // FULLSTACK & WEB DEVELOPER FROM MANAGUA, NICARAGUA TO THE WORLD.
+            </div>
+          </div>
+          <div class="footer-right">
+            <div class="contact-links" id="footer-links-container">
+              <a href="mailto:eduardojosuexd@gmail.com" class="contact-item" id="mail-link">eduardojosuexd@gmail.com</a>
+              <a href="https://github.com/CANTARERO8" target="_blank" rel="noopener noreferrer" class="contact-item" id="github-link">github.com/cantarero8</a>
+              <a href="https://www.instagram.com/cantarero_8/" target="_blank" rel="noopener noreferrer" class="contact-item" id="instagram-link">instagram.com/cantarero_8</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Project Details Glassmorphic Drawer (Slides in from the right) -->
+    <div id="project-details-drawer" class="details-drawer">
+      <div class="drawer-backdrop" id="drawer-close-backdrop"></div>
+      <div class="drawer-panel">
+        <button class="drawer-close-btn" id="drawer-close-btn" data-i18n="drawer.close">[ EXIT ]</button>
+        <div class="drawer-scroll-area" data-lenis-prevent>
+          <div class="drawer-header">
+            <span class="drawer-num mono" id="drawer-num">01</span>
+            <span class="drawer-category mono sm" id="drawer-category">ERP & SYSTEMS DEVELOPMENT</span>
+            <h2 class="drawer-title" id="drawer-title">Banco Sangre ERP</h2>
+          </div>
+          <div class="drawer-body">
+            <div class="drawer-section">
+              <span class="drawer-section-title mono sm" data-i18n="drawer.challenge_title">// THE ENGINEERING CHALLENGE</span>
+              <p class="drawer-text" id="drawer-challenge">Challenge description...</p>
+            </div>
+            <div class="drawer-section">
+              <span class="drawer-section-title mono sm" data-i18n="drawer.blueprint_title">// SYSTEM ARCHITECTURE & CODE BLUEPRINT</span>
+              <p class="drawer-text" id="drawer-solution">Solution description...</p>
+            </div>
+            <div class="drawer-section">
+              <span class="drawer-section-title mono sm" data-i18n="drawer.map_title">// SYSTEM MAPPING (DATAFLOW)</span>
+              <div class="drawer-tab-container">
+                <button class="drawer-tab-btn active" data-tab-group="arch" data-tab-id="map" data-i18n="drawer.map_tab">// INFRASTRUCTURE MAP</button>
+                <button class="drawer-tab-btn" data-tab-group="arch" data-tab-id="seq" data-i18n="drawer.seq_tab">// SEQUENTIAL FLOW</button>
+              </div>
+              <div class="drawer-tab-content active" data-tab-group="arch" data-tab-content="map">
+                <div class="drawer-architecture-svg-container" id="drawer-architecture-svg"></div>
+                <pre class="drawer-architecture-ascii mono" id="drawer-architecture">ASCII Architecture Diagram...</pre>
+              </div>
+              <div class="drawer-tab-content" data-tab-group="arch" data-tab-content="seq" style="display:none;">
+                <div class="drawer-architecture-svg-container" id="drawer-seq-svg"></div>
+              </div>
+            </div>
+            <div class="drawer-section">
+              <span class="drawer-section-title mono sm" data-i18n="drawer.stats_title">// PERFORMANCE &amp; TELEMETRY CHART</span>
+              <div class="drawer-tab-container">
+                <button class="drawer-tab-btn active" data-tab-group="stats" data-tab-id="perf" data-i18n="drawer.perf_tab">// LATENCY TELEMETRY</button>
+                <button class="drawer-tab-btn" data-tab-group="stats" data-tab-id="resource" data-i18n="drawer.resource_tab">// RESOURCE EFFICIENCY</button>
+              </div>
+              <div class="drawer-tab-content active" data-tab-group="stats" data-tab-content="perf">
+                <div class="drawer-architecture-svg-container" id="drawer-stats-svg"></div>
+                <p class="drawer-text" id="drawer-stats-desc" style="margin-top: 10px; opacity: 0.8; font-size: 13px; line-height: 1.5;"></p>
+              </div>
+              <div class="drawer-tab-content" data-tab-group="stats" data-tab-content="resource" style="display:none;">
+                <div class="drawer-architecture-svg-container" id="drawer-resource-svg"></div>
+                <p class="drawer-text" id="drawer-resource-desc" style="margin-top: 10px; opacity: 0.8; font-size: 13px; line-height: 1.5;"></p>
+              </div>
+            </div>
+            <div class="drawer-section">
+              <span class="drawer-section-title mono sm" data-i18n="drawer.metrics_title">// TECHNICAL METRICS</span>
+              <div class="drawer-metrics" id="drawer-metrics">
+                <!-- dynamic metrics -->
+              </div>
+            </div>
+            <div class="drawer-section">
+              <span class="drawer-section-title mono sm" data-i18n="drawer.stack_title">// STACK ARSENAL</span>
+              <div class="drawer-techs" id="drawer-techs">
+                <!-- dynamic tech pills -->
+              </div>
+            </div>
+            <div class="drawer-section">
+              <span class="drawer-section-title mono sm" data-i18n="drawer.roi_title">// ENGINEERING IMPACT &amp; ROI</span>
+              <div class="drawer-roi-card" id="drawer-roi">
+                <!-- dynamic roi items -->
+              </div>
+            </div>
+            <div class="drawer-footer">
+              <a href="https://github.com/CANTARERO8" target="_blank" rel="noopener noreferrer" class="drawer-action-link" id="drawer-github-link" data-i18n="drawer.repo_link">
+                [ ACCESS REPOSITORY SOURCE ]
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Minimalist Command Palette -->
+    <div class="cmd-palette" id="cmd-palette" style="display: none;" data-lenis-prevent>
+      <div class="cmd-palette-backdrop" id="cmd-palette-backdrop"></div>
+      <div class="cmd-palette-panel">
+        <div class="cmd-palette-search-wrapper">
+          <span class="cmd-palette-prompt mono">></span>
+          <input type="text" class="cmd-palette-input mono" id="cmd-palette-input" placeholder="Type a command... (e.g. /goto works, /overclock, /lang)" autocomplete="off" spellcheck="false" />
+          <span class="cmd-palette-esc mono">ESC</span>
+        </div>
+        <div class="cmd-palette-results" id="cmd-palette-results" data-lenis-prevent>
+          <!-- command suggestions loaded dynamically -->
+        </div>
+      </div>
+    </div>
+
+
+
+    <script type="module" src="/src/main.js"></script>
+    <!-- Floating Cyber HUD Tooltip -->
+    <div class="cyber-tooltip-container" id="cyber-tooltip" style="display:none;">
+      <span class="cyber-tooltip-text" id="cyber-tooltip-text"></span>
+    </div>
+  </body>
+</html>

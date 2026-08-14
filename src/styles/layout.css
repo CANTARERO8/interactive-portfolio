@@ -1,0 +1,63 @@
+/* WebGL Canvas Background */
+#webgl-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: var(--z-canvas);
+  pointer-events: none; /* Dejar pasar los eventos al DOM */
+}
+
+/* Master Container */
+#app-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  z-index: var(--z-scenes);
+}
+
+/* Background Grid Lines (Cinematic Grid Overlay) */
+.grid-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: var(--z-bg-grid);
+  pointer-events: none;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4em;
+}
+
+.grid-line {
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.01) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.01) 100%
+  );
+}
+
+/* Standard Section Layout */
+.scene-section {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Cada escena UI tiene exactamente el alto del viewport */
+  display: flex;
+  align-items: center;
+  padding: 0 8em;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .scene-section {
+    padding: 0 2em;
+  }
+  .grid-overlay {
+    padding: 0 1em;
+  }
+}
