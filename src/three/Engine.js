@@ -14,6 +14,8 @@ export class Engine {
     this.scene.fog = new THREE.FogExp2('#080d28', 0.022);
 
     // Camera setup - 55 degrees FOV for a wide cinematic perspective
+    this.baseFov = 55;
+    this.targetFov = 55;
     this.camera = new THREE.PerspectiveCamera(55, this.width / this.height, 0.1, 150);
     this.camera.position.set(0, 0.5, 8); // Posicionamiento abisal inicial
 
@@ -70,8 +72,19 @@ export class Engine {
       callback(deltaTime, elapsedTime);
     }
     
+    // Smoothly interpolate Camera FOV (for Warp Speed and dynamic zooms)
+    if (Math.abs(this.camera.fov - this.targetFov) > 0.05) {
+      this.camera.fov += (this.targetFov - this.camera.fov) * 0.08;
+      this.camera.updateProjectionMatrix();
+    }
+
     // Standard rendering
     this.renderer.render(this.scene, this.camera);
+  }
+
+  // Set target FOV with smooth transition
+  setFov(fov) {
+    this.targetFov = fov;
   }
 
   // Window Resize handler

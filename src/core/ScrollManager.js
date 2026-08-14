@@ -51,15 +51,48 @@ export class ScrollManager {
     });
   }
 
-  // Animate scroll to a specific section index
+  // Animate scroll to a specific section index with Hyperspace Warp Jump
   scrollToSection(index) {
     if (index < 0 || index >= this.totalSections) return;
     
     const viewportHeight = window.innerHeight;
     const targetY = index * viewportHeight;
-    
+    const sectionDiff = Math.abs(index - this.currentSection);
+
+    // Trigger Hyperspace Warp Speed effect!
+    if (sectionDiff >= 1) {
+      this.triggerWarpJump(targetY, 1.5);
+    } else {
+      this.lenis.scrollTo(targetY, {
+        duration: 1.2,
+        immediate: false
+      });
+    }
+  }
+
+  triggerWarpJump(targetY, duration = 1.5) {
+    // 1. Play procedural warp sound
+    if (window.soundManager && window.soundManager.playWarpJump) {
+      window.soundManager.playWarpJump();
+    }
+
+    // 2. Expand camera FOV dynamically for warp tunnel vision
+    if (this.app.engine) {
+      this.app.engine.setFov(105);
+      setTimeout(() => {
+        this.app.engine.setFov(55);
+      }, duration * 480);
+    }
+
+    // 3. Accelerate particles into warp streak lines
+    if (this.app.particles && this.app.particles.triggerWarpSpeed) {
+      this.app.particles.triggerWarpSpeed(duration);
+    }
+
+    // 4. Smooth Lenis scroll to target
     this.lenis.scrollTo(targetY, {
-      duration: 1.5,
+      duration: duration,
+      easing: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
       immediate: false
     });
   }

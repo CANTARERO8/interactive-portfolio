@@ -17,6 +17,7 @@ export const staticTranslations = {
     "hero.title": "Interactive<br /><span>Portfolio</span>",
     "hero.desc": "An immersive showcase of robust fullstack systems, scalable database systems, and creative WebGL experiences. Engineering high-performance digital ecosystems with precision, speed, and fluid interactive design.",
     "hero.scroll": "// SCROLL DOWN TO CONTINUE",
+    "hero.artifact": "// 3D ARTIFACT: HOVER TO DECONSTRUCT • CLICK FOR QUANTUM SURGE",
 
     // About Me Section
     "about.tag": "01 / QUANTUM HARDWARE FORGE",
@@ -110,6 +111,7 @@ export const staticTranslations = {
     "hero.title": "Portafolio<br /><span>Interactivo</span>",
     "hero.desc": "Una exhibición inmersiva de sistemas fullstack robustos, sistemas de bases de datos escalables y experiencias creativas en WebGL. Diseñando ecosistemas digitales de alto rendimiento con precisión, velocidad y diseño interactivo fluido.",
     "hero.scroll": "// HAZ SCROLL PARA CONTINUAR",
+    "hero.artifact": "// 3D ARTIFACT: HOVER PARA DECONSTRUIR • CLIC PARA ONDA CUÁNTICA",
 
     // Sección About Me
     "about.tag": "01 / FORJA DE HARDWARE CUÁNTICO",

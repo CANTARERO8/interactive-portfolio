@@ -2,6 +2,7 @@ import { Engine } from '../three/Engine';
 import { Particles } from '../three/effects/Particles';
 import { GridFloor } from '../three/effects/GridFloor';
 import { ColumnRuins } from '../three/scenes/ColumnRuins';
+import { MorphingCoreEntity } from '../three/scenes/MorphingCoreEntity';
 import { ScrollManager } from './ScrollManager';
 import { Cursor } from './Cursor';
 import { TextAnimations } from '../animations/TextAnimations';
@@ -22,10 +23,11 @@ export class App {
     // 1. Initialize WebGL Engine
     this.engine = new Engine(this.canvas);
 
-    // 2. Initialize Environmental WebGL Elements
+    // 2. Initialize Environmental WebGL Elements & Interactive Morphing Core Entity
     this.particles = new Particles(this.engine.scene);
     this.gridFloor = new GridFloor(this.engine.scene);
     this.columns = new ColumnRuins(this);
+    this.morphingEntity = new MorphingCoreEntity(this);
 
     // 3. Register environmental updates in Engine loop
     this.scrollProgress = 0;
@@ -55,6 +57,7 @@ export class App {
       this.particles.update(deltaTime, elapsedTime);
       this.gridFloor.update(deltaTime, elapsedTime);
       this.columns.update(deltaTime, elapsedTime, this.scrollProgress);
+      this.morphingEntity.update(deltaTime, elapsedTime, this.scrollProgress);
       
       // Calculate scroll speed/velocity to boost particles
       const scrollDiff = Math.abs(this.scrollProgress - this.prevScroll);
@@ -445,6 +448,10 @@ export class App {
         // snaps back to cyan design color grid
         this.gridFloor.setColor('#00f2fe', '#060a16');
       }
+    }
+
+    if (this.morphingEntity) {
+      this.morphingEntity.setOverclock(nextState);
     }
     
     if (this.portfolio) {

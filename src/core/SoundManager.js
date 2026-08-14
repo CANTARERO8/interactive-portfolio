@@ -224,4 +224,70 @@ export class SoundManager {
     osc1.stop(now + 0.15);
     osc2.stop(now + 0.15);
   }
+
+  // 7. Hyperspace Warp Jump Acoustic Whoosh
+  playWarpJump() {
+    if (!this.isEnabled) return;
+    this.init();
+    if (!this.audioCtx || this.audioCtx.state === 'suspended') return;
+
+    const ctx = this.audioCtx;
+    const now = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = 'sawtooth';
+    filter.type = 'lowpass';
+    filter.Q.value = 4.0;
+
+    // Rising sweep then drop
+    osc.frequency.setValueAtTime(90, now);
+    osc.frequency.exponentialRampToValueAtTime(1450, now + 0.55);
+    osc.frequency.exponentialRampToValueAtTime(120, now + 1.2);
+
+    filter.frequency.setValueAtTime(120, now);
+    filter.frequency.exponentialRampToValueAtTime(3200, now + 0.55);
+    filter.frequency.exponentialRampToValueAtTime(200, now + 1.2);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.035, now + 0.35);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 1.25);
+  }
+
+  // 8. Holographic Core Deconstruction Harmonic Chime
+  playCoreDeconstruct() {
+    if (!this.isEnabled) return;
+    this.init();
+    if (!this.audioCtx || this.audioCtx.state === 'suspended') return;
+
+    const ctx = this.audioCtx;
+    const now = ctx.currentTime;
+
+    [440, 659.25, 880, 1318.51].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.03);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + i * 0.03 + 0.25);
+
+      gain.gain.setValueAtTime(0.008, now + i * 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.03 + 0.28);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now + i * 0.03);
+      osc.stop(now + i * 0.03 + 0.3);
+    });
+  }
 }
