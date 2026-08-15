@@ -6,7 +6,7 @@ export const TECHNOLOGY_ARCHITECTURES = Object.freeze([
     name: 'LARAVEL',
     code: 'LVL',
     role: 'BACKEND CORE',
-    projects: 4,
+    projects: 5,
     accent: '#ff4f45'
   },
   {
@@ -14,31 +14,39 @@ export const TECHNOLOGY_ARCHITECTURES = Object.freeze([
     name: 'VUE 3',
     code: 'VUE',
     role: 'REACTIVE FRONTEND',
-    projects: 4,
+    projects: 5,
     accent: '#42d392'
   },
   {
-    id: 'react',
-    name: 'REACT',
-    code: 'RCT',
-    role: 'INTERFACE SYSTEM',
-    projects: 3,
-    accent: '#61dafb'
+    id: 'gsap',
+    name: 'GSAP',
+    code: 'GSP',
+    role: 'MOTION ENGINE',
+    projects: 4,
+    accent: '#c084fc'
   },
   {
     id: 'tailwind',
     name: 'TAILWIND CSS',
     code: 'TWD',
     role: 'DESIGN LAYER',
-    projects: 3,
+    projects: 4,
     accent: '#38bdf8'
+  },
+  {
+    id: 'three',
+    name: 'THREE.JS',
+    code: '3JS',
+    role: 'WEBGL EXPERIENCE',
+    projects: 3,
+    accent: '#f8fafc'
   },
   {
     id: 'postgresql',
     name: 'POSTGRESQL',
     code: 'PGS',
     role: 'RELATIONAL DATA',
-    projects: 2,
+    projects: 3,
     accent: '#60a5fa'
   },
   {
@@ -46,24 +54,16 @@ export const TECHNOLOGY_ARCHITECTURES = Object.freeze([
     name: 'NODE.JS',
     code: 'NJS',
     role: 'RUNTIME ENGINE',
-    projects: 2,
+    projects: 3,
     accent: '#84cc16'
   },
   {
-    id: 'gsap',
-    name: 'GSAP',
-    code: 'GSP',
-    role: 'MOTION ENGINE',
+    id: 'react',
+    name: 'REACT',
+    code: 'RCT',
+    role: 'INTERFACE SYSTEM',
     projects: 2,
-    accent: '#c084fc'
-  },
-  {
-    id: 'three',
-    name: 'THREE.JS',
-    code: '3JS',
-    role: 'WEBGL EXPERIENCE',
-    projects: 1,
-    accent: '#f8fafc'
+    accent: '#61dafb'
   }
 ]);
 

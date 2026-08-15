@@ -232,14 +232,15 @@ export class MorphingCoreEntity {
     root.add(core);
     this.projectArchiveCore = core;
 
-    for (let i = 0; i < 6; i++) {
+    const totalCards = 10;
+    for (let i = 0; i < totalCards; i++) {
       const cardGroup = new THREE.Group();
-      const angle = (i / 6) * Math.PI * 2;
-      cardGroup.position.set(Math.cos(angle) * 1.35, Math.sin(i * 1.4) * 0.35, Math.sin(angle) * 1.35);
+      const angle = (i / totalCards) * Math.PI * 2;
+      cardGroup.position.set(Math.cos(angle) * 1.45, Math.sin(i * 1.2) * 0.35, Math.sin(angle) * 1.45);
       cardGroup.lookAt(0, cardGroup.position.y, 0);
 
       const card = new THREE.Mesh(
-        new THREE.BoxGeometry(0.72, 1.05, 0.08),
+        new THREE.BoxGeometry(0.62, 0.92, 0.07),
         i % 2 === 0 ? this.armorMaterial : this.auraMaterial
       );
       cardGroup.add(card);
