@@ -1,44 +1,113 @@
-/* Custom Interactive Cursor */
+/* ==========================================================================
+   CUSTOM DUAL INTERACTIVE CURSOR (Core Dot + Inertial Spring Ring)
+   ========================================================================== */
 .custom-cursor {
   position: fixed;
   top: 0;
   left: 0;
-  width: 8px;
-  height: 8px;
-  background-color: var(--color-accent-cyan);
+  width: 7px;
+  height: 7px;
+  background-color: #00f2fe;
   border-radius: 50%;
-  pointer-events: none;
+  pointer-events: none !important;
   z-index: var(--z-cursor);
   transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s, background-color 0.3s;
+  box-shadow: 0 0 10px #00f2fe, 0 0 20px rgba(0, 242, 254, 0.6);
+  transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.2s ease,
+              opacity 0.25s ease;
+  opacity: 0;
+  will-change: left, top, transform;
 }
 
 .custom-cursor-ring {
   position: fixed;
   top: 0;
   left: 0;
-  width: 32px;
-  height: 32px;
-  border: 1px solid rgba(0, 242, 254, 0.3);
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(0, 242, 254, 0.45);
+  background-color: rgba(0, 242, 254, 0.02);
   border-radius: 50%;
-  pointer-events: none;
+  pointer-events: none !important;
   z-index: var(--z-cursor);
   transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s, border-color 0.3s, transform 0.1s ease-out;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease,
+              background-color 0.25s ease,
+              opacity 0.25s ease;
+  opacity: 0;
+  will-change: left, top, transform;
 }
 
-/* Hover States for Cursor */
+/* Visibility triggers once the mouse moves */
+body.cursor-active .custom-cursor,
+body.cursor-active .custom-cursor-ring {
+  opacity: 1;
+}
+
+/* Hover States for Interactive Elements */
 body.hovering-link .custom-cursor {
-  width: 12px;
-  height: 12px;
-  background-color: var(--color-accent-amber);
+  width: 10px;
+  height: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 0 12px #ffffff, 0 0 24px rgba(0, 242, 254, 0.9);
 }
 
 body.hovering-link .custom-cursor-ring {
-  width: 48px;
-  height: 48px;
-  border-color: rgba(251, 191, 36, 0.6);
-  background-color: rgba(251, 191, 36, 0.05);
+  width: 52px;
+  height: 52px;
+  border-color: rgba(0, 242, 254, 0.9);
+  background-color: rgba(0, 242, 254, 0.08);
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+}
+
+/* Click / Mousedown state */
+body.cursor-clicking .custom-cursor {
+  width: 5px;
+  height: 5px;
+  background-color: #00f2fe;
+}
+
+body.cursor-clicking .custom-cursor-ring {
+  width: 26px;
+  height: 26px;
+  border-color: rgba(0, 242, 254, 1);
+  background-color: rgba(0, 242, 254, 0.25);
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.7);
+}
+
+/* Desktop cursor replacement */
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  .project-row,
+  .scroll-to,
+  .nav-link,
+  .cmd-trigger-btn,
+  .lang-btn,
+  .metric-card,
+  .contact-item,
+  .cli-suggest-btn {
+    cursor: none !important;
+  }
+}
+
+/* Hide on touch devices */
+@media (hover: none) or (pointer: coarse) {
+  .custom-cursor,
+  .custom-cursor-ring {
+    display: none !important;
+  }
 }
 
 /* Cinematic Fullscreen Loader Screen */

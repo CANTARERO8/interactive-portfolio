@@ -29,8 +29,8 @@
   --z-bg-grid: 2;
   --z-scenes: 10;
   --z-nav: 100;
-  --z-cursor: 999;
   --z-loader: 1000;
+  --z-cursor: 999999;
   
   /* Transitions */
   --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);

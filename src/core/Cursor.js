@@ -10,9 +10,12 @@ export class Cursor {
     // Position states
     this.mouse = { x: -100, y: -100 };
     this.pos = { x: -100, y: -100 }; // Lerp position for the ring
+    this.activated = false;
     
     // Bind mouse movements
     window.addEventListener('mousemove', this.onMouseMove.bind(this));
+    window.addEventListener('mousedown', () => document.body.classList.add('cursor-clicking'));
+    window.addEventListener('mouseup', () => document.body.classList.remove('cursor-clicking'));
     
     // Setup hover listeners
     this.setupHoverListeners();
@@ -24,6 +27,13 @@ export class Cursor {
   onMouseMove(e) {
     this.mouse.x = e.clientX;
     this.mouse.y = e.clientY;
+    
+    if (!this.activated) {
+      this.activated = true;
+      document.body.classList.add('cursor-active');
+      this.pos.x = this.mouse.x;
+      this.pos.y = this.mouse.y;
+    }
     
     // Instantly place the central core dot
     this.dot.style.left = `${this.mouse.x}px`;
@@ -105,62 +115,10 @@ export class Cursor {
     });
   }
 
-  // Synthesize dynamic high-frequency cybernetic click on active hover
+  // Synthesize dynamic subtle tactile click on active hover
   playGlitchClick() {
-    try {
-      if (!this.audioCtx) {
-        this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (this.audioCtx.state === 'suspended') {
-        this.audioCtx.resume();
-      }
-      const now = this.audioCtx.currentTime;
-
-      // 1. Synthesize sub-millisecond white noise static burst for texture
-      const bufferSize = this.audioCtx.sampleRate * 0.015; // 15ms duration
-      const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-      }
-      const noise = this.audioCtx.createBufferSource();
-      noise.buffer = buffer;
-
-      // 2. Synthesize high-pitch cybernetic chirp sine wave
-      const osc = this.audioCtx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(4500, now);
-      osc.frequency.exponentialRampToValueAtTime(120, now + 0.012);
-
-      // 3. Setup envelopes
-      const gainNoise = this.audioCtx.createGain();
-      gainNoise.gain.setValueAtTime(0.03, now);
-      gainNoise.gain.exponentialRampToValueAtTime(0.001, now + 0.008);
-
-      const gainOsc = this.audioCtx.createGain();
-      gainOsc.gain.setValueAtTime(0.06, now);
-      gainOsc.gain.exponentialRampToValueAtTime(0.001, now + 0.012);
-
-      // 4. Tight bandpass filter for a thin, metallic sound
-      const filter = this.audioCtx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 4800;
-      filter.Q.value = 2.0;
-
-      noise.connect(gainNoise);
-      gainNoise.connect(filter);
-
-      osc.connect(gainOsc);
-      gainOsc.connect(filter);
-
-      filter.connect(this.audioCtx.destination);
-
-      noise.start(now);
-      noise.stop(now + 0.015);
-      osc.start(now);
-      osc.stop(now + 0.015);
-    } catch (e) {
-      console.warn("AudioContext bypassed until user interactions occur.", e);
+    if (window.soundManager && window.soundManager.playClick) {
+      window.soundManager.playClick();
     }
   }
 
