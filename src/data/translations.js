@@ -470,7 +470,7 @@ export const projectsDataEN = [
   },
   {
     "id": "08",
-    "title": "Sistema Logístico",
+    "title": "Logística Carnes San Martín",
     "category": "REAL-TIME DISPATCH ENGINE",
     "challenge": "Compute optimal routes for national cargo logistics fleets, providing dispatchers with instantaneous telemetry updates on vehicle locations and storing tamper-proof transaction logs for auditing. Running route updates over long distances requires robust spatial coordinates calculations and real-time push protocols that maintain persistent connections without causing memory leaks or server crashes.",
     "solution": "Built a dispatch system integrating a Laravel API event dispatcher with a Node.js Socket.io server to push dynamic updates in 12ms. Relayed coordinates to a custom PostgreSQL database equipped with PostGIS extension for high-performance geospatial spatial calculations. Integrated secure JWT handshakes on WebSocket channels and decoupled event routing, ensuring seamless multi-fleet coordination.",
@@ -928,7 +928,7 @@ export const projectsDataES = [
   },
   {
     "id": "08",
-    "title": "Sistema Logístico",
+    "title": "Logística Carnes San Martín",
     "category": "MOTOR DE DESPACHO EN TIEMPO REAL",
     "challenge": "Calcular rutas de despacho óptimas para flotas logísticas de transporte pesado nacional, proporcionando a los despachadores actualizaciones inmediatas de telemetría de vehículos y almacenando registros de auditoría inmutables. Mantener flujos de coordenadas dinámicas para largas distancias requiere cálculos geoespaciales robustos y protocolos WebSocket confiables que sostengan conexiones persistentes sin fugas de memoria.",
     "solution": "Núcleo logístico impulsado por un despachador de eventos API en Laravel integrado con Socket.io en Node.js para notificaciones push en tiempo real bajo 12ms. Transmitió las coordenadas del vehículo a una base de datos PostgreSQL equipada con PostGIS para cálculos espaciales de alto rendimiento, aplicando cifrado asíncrono y canales WebSocket desacoplados para máxima seguridad.",

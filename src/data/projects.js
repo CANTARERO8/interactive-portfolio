@@ -64,7 +64,7 @@ export const projects = [
   },
   {
     id: 7,
-    title: "Sistema Logístico",
+    title: "Logística Carnes San Martín",
     category: "Real-Time Dispatch Engine",
     description: "Plataforma de despacho de transporte nacional terrestre con optimización de rutas dinámicas y geolocalización.",
     techs: ["Laravel", "Node.js", "MySQL", "Socket.io"],
