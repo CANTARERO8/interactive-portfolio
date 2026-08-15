@@ -2,187 +2,97 @@ import gsap from 'gsap';
 
 export class Cursor {
   constructor() {
+    // 1. Fetch or create cursor DOM nodes if needed
     this.dot = document.getElementById('js-cursor');
     this.ring = document.getElementById('js-cursor-ring');
-    
-    if (!this.dot || !this.ring) return;
-    
-    // Position states
-    this.mouse = { x: -100, y: -100 };
-    this.pos = { x: -100, y: -100 }; // Lerp position for the ring
-    this.activated = false;
-    
-    // Bind mouse movements
-    window.addEventListener('mousemove', this.onMouseMove.bind(this));
+
+    if (!this.dot) {
+      this.dot = document.createElement('div');
+      this.dot.id = 'js-cursor';
+      this.dot.className = 'custom-cursor';
+      document.body.appendChild(this.dot);
+    }
+    if (!this.ring) {
+      this.ring = document.createElement('div');
+      this.ring.id = 'js-cursor-ring';
+      this.ring.className = 'custom-cursor-ring';
+      document.body.appendChild(this.ring);
+    }
+
+    // 2. Position tracking (initialized offscreen)
+    this.mouse = { x: -200, y: -200 };
+    this.pos = { x: -200, y: -200 };
+    this.isInitialized = false;
+
+    // 3. Bind events
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.tick = this.tick.bind(this);
+
+    window.addEventListener('mousemove', this.onMouseMove, { passive: true });
     window.addEventListener('mousedown', () => document.body.classList.add('cursor-clicking'));
     window.addEventListener('mouseup', () => document.body.classList.remove('cursor-clicking'));
-    
-    // Setup hover listeners
+
+    // 4. Setup hover triggers
     this.setupHoverListeners();
-    
-    // Animation frame request loop
-    this.tick();
+
+    // 5. Start RAF loop
+    requestAnimationFrame(this.tick);
   }
 
   onMouseMove(e) {
     this.mouse.x = e.clientX;
     this.mouse.y = e.clientY;
-    
-    if (!this.activated) {
-      this.activated = true;
-      document.body.classList.add('cursor-active');
+
+    if (!this.isInitialized) {
+      this.isInitialized = true;
       this.pos.x = this.mouse.x;
       this.pos.y = this.mouse.y;
+      this.dot.style.opacity = '1';
+      this.ring.style.opacity = '1';
     }
-    
-    // Instantly place the central core dot
-    this.dot.style.left = `${this.mouse.x}px`;
-    this.dot.style.top = `${this.mouse.y}px`;
 
-    // Magnetic hover: track nearest magnetic element
-    this.updateMagnetic(e);
+    // Instant placement of inner dot via hardware-accelerated transform
+    this.dot.style.transform = `translate3d(${this.mouse.x}px, ${this.mouse.y}px, 0) translate(-50%, -50%)`;
   }
 
-  // Linear interpolation for trailing cursor ring
   tick() {
-    requestAnimationFrame(this.tick.bind(this));
-    
-    const ease = 0.12; // Ring trail smoothness
-    this.pos.x += (this.mouse.x - this.pos.x) * ease;
-    this.pos.y += (this.mouse.y - this.pos.y) * ease;
-    
-    this.ring.style.left = `${this.pos.x}px`;
-    this.ring.style.top = `${this.pos.y}px`;
+    if (this.isInitialized) {
+      // Elastic spring lag for the follower ring
+      const ease = 0.18;
+      this.pos.x += (this.mouse.x - this.pos.x) * ease;
+      this.pos.y += (this.mouse.y - this.pos.y) * ease;
+
+      this.ring.style.transform = `translate3d(${this.pos.x}px, ${this.pos.y}px, 0) translate(-50%, -50%)`;
+    }
+
+    requestAnimationFrame(this.tick);
   }
 
-  // ─── MAGNETIC HOVER ──────────────────────────────────────────────────────
-  // GSAP-only: magnetic elements subtly track the cursor within their bounds,
-  // creating an organic "pull" feeling — impossible with pure CSS
   setupHoverListeners() {
-    const hoverElements = 'a, button, .nav-logo, .project-row, .scroll-to, .metric-card, .contact-item';
+    const hoverSelectors = 'a, button, [role="button"], .nav-link, .nav-logo, .project-row, .scroll-to, .metric-card, .contact-item, .cmd-trigger-btn, .lang-btn, .cli-suggest-btn, .showcase-ctrl-btn';
 
     document.addEventListener('mouseover', (e) => {
-      const target = e.target.closest(hoverElements);
+      const target = e.target.closest(hoverSelectors);
       if (target) {
-        // If we moved into the target from one of its own children, ignore
-        if (e.relatedTarget && target.contains(e.relatedTarget)) {
-          return;
-        }
-
+        if (e.relatedTarget && target.contains(e.relatedTarget)) return;
         document.body.classList.add('hovering-link');
-        
-        // Prevent duplicate sound/flicker triggers when gliding inside the same container
-        if (this.activeMagnetic !== target) {
-          this.activeMagnetic = target;
-          
-          // Play high-frequency cybernetic synth click
-          this.playGlitchClick();
-          
-          // Trigger horizontal letter-level scramble and blur flicker
-          this.triggerHoverGlitch(target);
+        if (window.soundManager && window.soundManager.playClick) {
+          window.soundManager.playClick();
         }
       }
     });
 
     document.addEventListener('mouseout', (e) => {
-      const target = e.target.closest(hoverElements);
+      const target = e.target.closest(hoverSelectors);
       if (target) {
-        // If we are moving into a child element of the same target, ignore (do not trigger mouseout)
-        if (e.relatedTarget && target.contains(e.relatedTarget)) {
-          return;
-        }
-
+        if (e.relatedTarget && target.contains(e.relatedTarget)) return;
         document.body.classList.remove('hovering-link');
-        // Reset magnetic pull with a smooth snap-back
-        if (this.activeMagnetic === target) {
-          gsap.to(target, {
-            x: 0, y: 0,
-            duration: 0.4,
-            ease: 'power3.out',
-            overwrite: 'auto'
-          });
-          this.activeMagnetic = null;
-        }
       }
     });
 
-    // Also reset on window blur to prevent stuck states
     window.addEventListener('blur', () => {
-      if (this.activeMagnetic) {
-        gsap.to(this.activeMagnetic, { x: 0, y: 0, duration: 0.3 });
-        this.activeMagnetic = null;
-      }
-    });
-  }
-
-  // Synthesize dynamic subtle tactile click on active hover
-  playGlitchClick() {
-    if (window.soundManager && window.soundManager.playClick) {
-      window.soundManager.playClick();
-    }
-  }
-
-  // Trigger rapid letter-level visual opacity flicker and horizontal chromatic jitter
-  triggerHoverGlitch(target) {
-    const chars = target.querySelectorAll('.char-span, .word-span, .glitch-char');
-    
-    if (chars.length) {
-      const tl = gsap.timeline();
-      chars.forEach((char) => {
-        // 75% probability for each letter to participate in the glitch sequence
-        if (Math.random() > 0.25) {
-          const offset = (Math.random() - 0.5) * 5; // Horizontal shift
-          
-          tl.to(char, {
-            opacity: 0.1,
-            x: offset,
-            skewX: offset * 3,
-            duration: 0.03,
-            ease: 'power1.inOut'
-          }, Math.random() * 0.06);
-          
-          tl.to(char, {
-            opacity: 1,
-            x: 0,
-            skewX: 0,
-            duration: 0.04,
-            ease: 'power2.out'
-          }, 0.06 + Math.random() * 0.06);
-        }
-      });
-    } else {
-      // Fallback for flat buttons
-      const tl = gsap.timeline();
-      tl.to(target, { opacity: 0.2, duration: 0.03, ease: 'power1.inOut' })
-        .to(target, { opacity: 1, duration: 0.04 })
-        .to(target, { opacity: 0.3, duration: 0.02 })
-        .to(target, { opacity: 1, duration: 0.04 });
-    }
-  }
-
-  // Called on every mousemove — pulls the active element toward cursor
-  updateMagnetic(e) {
-    if (!this.activeMagnetic) return;
-
-    const rect = this.activeMagnetic.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    // Normalized offset from center (-1 to 1)
-    const offsetX = (e.clientX - centerX) / (rect.width / 2);
-    const offsetY = (e.clientY - centerY) / (rect.height / 2);
-
-    // Magnetic pull strength (max 8px displacement)
-    const strength = 8;
-    const pullX = offsetX * strength;
-    const pullY = offsetY * strength;
-
-    gsap.to(this.activeMagnetic, {
-      x: pullX,
-      y: pullY,
-      duration: 0.3,
-      ease: 'power2.out',
-      overwrite: 'auto'
+      document.body.classList.remove('hovering-link');
+      document.body.classList.remove('cursor-clicking');
     });
   }
 }

@@ -5,20 +5,19 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 7px;
-  height: 7px;
-  background-color: #00f2fe;
+  width: 8px;
+  height: 8px;
+  background-color: #00f3ff;
   border-radius: 50%;
   pointer-events: none !important;
-  z-index: var(--z-cursor);
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 10px #00f2fe, 0 0 20px rgba(0, 242, 254, 0.6);
-  transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-              height 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+  z-index: 999999;
+  box-shadow: 0 0 10px #00f3ff, 0 0 20px rgba(0, 243, 255, 0.8);
+  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.2s cubic-bezier(0.16, 1, 0.3, 1),
               background-color 0.2s ease,
-              opacity 0.25s ease;
+              box-shadow 0.2s ease;
   opacity: 0;
-  will-change: left, top, transform;
+  will-change: transform;
 }
 
 .custom-cursor-ring {
@@ -27,82 +26,62 @@
   left: 0;
   width: 36px;
   height: 36px;
-  border: 1.5px solid rgba(0, 242, 254, 0.45);
-  background-color: rgba(0, 242, 254, 0.02);
+  border: 1.5px solid rgba(0, 243, 255, 0.55);
+  background-color: rgba(0, 243, 255, 0.04);
   border-radius: 50%;
   pointer-events: none !important;
-  z-index: var(--z-cursor);
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+  z-index: 999998;
+  box-shadow: 0 0 14px rgba(0, 243, 255, 0.25);
+  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.25s ease,
               background-color 0.25s ease,
-              opacity 0.25s ease;
+              box-shadow 0.25s ease;
   opacity: 0;
-  will-change: left, top, transform;
-}
-
-/* Visibility triggers once the mouse moves */
-body.cursor-active .custom-cursor,
-body.cursor-active .custom-cursor-ring {
-  opacity: 1;
+  will-change: transform;
 }
 
 /* Hover States for Interactive Elements */
 body.hovering-link .custom-cursor {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background-color: #ffffff;
-  box-shadow: 0 0 12px #ffffff, 0 0 24px rgba(0, 242, 254, 0.9);
+  box-shadow: 0 0 12px #ffffff, 0 0 25px rgba(0, 243, 255, 0.9);
 }
 
 body.hovering-link .custom-cursor-ring {
   width: 52px;
   height: 52px;
-  border-color: rgba(0, 242, 254, 0.9);
-  background-color: rgba(0, 242, 254, 0.08);
-  box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+  border-color: rgba(0, 243, 255, 0.95);
+  background-color: rgba(0, 243, 255, 0.12);
+  box-shadow: 0 0 22px rgba(0, 243, 255, 0.45);
 }
 
 /* Click / Mousedown state */
 body.cursor-clicking .custom-cursor {
-  width: 5px;
-  height: 5px;
-  background-color: #00f2fe;
+  width: 6px;
+  height: 6px;
+  background-color: #00f3ff;
 }
 
 body.cursor-clicking .custom-cursor-ring {
-  width: 26px;
-  height: 26px;
-  border-color: rgba(0, 242, 254, 1);
-  background-color: rgba(0, 242, 254, 0.25);
-  box-shadow: 0 0 16px rgba(0, 242, 254, 0.7);
+  width: 24px;
+  height: 24px;
+  border-color: #00f3ff;
+  background-color: rgba(0, 243, 255, 0.35);
+  box-shadow: 0 0 18px rgba(0, 243, 255, 0.8);
 }
 
-/* Desktop cursor replacement */
+/* Desktop native cursor replacement */
 @media (hover: hover) and (pointer: fine) {
-  html,
-  body,
-  a,
-  button,
-  input,
-  select,
-  textarea,
-  [role="button"],
-  .project-row,
-  .scroll-to,
-  .nav-link,
-  .cmd-trigger-btn,
-  .lang-btn,
-  .metric-card,
-  .contact-item,
-  .cli-suggest-btn {
+  *,
+  *::before,
+  *::after {
     cursor: none !important;
   }
 }
 
-/* Hide on touch devices */
+/* Hide custom cursor on mobile / touch devices */
 @media (hover: none) or (pointer: coarse) {
   .custom-cursor,
   .custom-cursor-ring {
