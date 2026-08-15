@@ -245,7 +245,6 @@ npm install
 ```bash
 npm run dev
 ```
-> Accede en el navegador a través de `http://localhost:5188/`.
 
 ### 4. Generar paquete de producción
 ```bash
