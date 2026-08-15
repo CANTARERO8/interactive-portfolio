@@ -12,6 +12,7 @@ export class PortfolioOrchestrator {
     this.closeBackdrop = document.getElementById('drawer-close-backdrop');
     
     this.currentLang = localStorage.getItem('portfolio-lang') || 'es';
+    this.currentProjectIndex = null;
     
     this.intervals = {};
     
@@ -49,7 +50,12 @@ export class PortfolioOrchestrator {
         simBtn.classList.remove('active');
         codeView.style.display = 'block';
         simView.style.display = 'none';
-        this.stopSimulator(p);
+        this.soundManager.playClick();
+        
+        if (this.intervals[p]) {
+          clearInterval(this.intervals[p]);
+          delete this.intervals[p];
+        }
       });
       
       simBtn.addEventListener('click', () => {
@@ -57,47 +63,49 @@ export class PortfolioOrchestrator {
         codeBtn.classList.remove('active');
         codeView.style.display = 'none';
         simView.style.display = 'block';
+        this.soundManager.playChirp();
+        
         this.startSimulator(p);
       });
     });
   }
 
-  startSimulator(type) {
-    this.stopSimulator(type); 
+  startSimulator(panelKey) {
+    if (this.intervals[panelKey]) {
+      clearInterval(this.intervals[panelKey]);
+    }
     
-    if (type === 'vue') {
-      this.runVueTelemetry();
-    } else if (type === 'laravel') {
-      this.runLaravelRouter();
-    } else if (type === 'postgres') {
-      this.runPostgresQueryCompiler();
-    } else if (type === 'wordpress') {
-      this.runWordPressSimulator();
+    switch (panelKey) {
+      case 'vue':
+        this.runVueSimulator();
+        break;
+      case 'laravel':
+        this.runLaravelRouter();
+        break;
+      case 'postgres':
+        this.runPostgresQueryCompiler();
+        break;
+      case 'wordpress':
+        this.runWordPressSimulator();
+        break;
     }
   }
 
-  stopSimulator(type) {
-    if (this.intervals[type]) {
-      clearInterval(this.intervals[type]);
-      delete this.intervals[type];
-    }
-  }
-
-  runVueTelemetry() {
-    const loadText = document.getElementById('sim-vue-load');
-    const loadBar = document.getElementById('sim-vue-bar');
-    const logsContainer = document.getElementById('sim-vue-logs');
+  runVueSimulator() {
     const statusText = document.getElementById('sim-vue-status');
+    const loadText = document.getElementById('sim-vue-load');
+    const loadBar = document.getElementById('sim-vue-load-bar');
+    const logsContainer = document.getElementById('sim-vue-logs');
     
-    if (!loadText || !loadBar || !logsContainer || !statusText) return;
+    if (!statusText || !loadText || !loadBar || !logsContainer) return;
     
-    logsContainer.innerHTML = '<span class="log-info">[SYSTEM] Client-side state virtualized. Telemetry live.</span>';
+    logsContainer.innerHTML = '<span class="log-info">[VUE] Reactive DOM runtime connected. Observing Pinia root state.</span>';
     
     const messages = [
-      "[PINIA] State changed: useSystemStore -> instantiated",
-      "[STORE] Fetching live client diagnostics metrics...",
-      "[VUE] Reactive DOM wrapper updated successfully • 60 FPS",
-      "[STORE] Mutation processed: scaleTelemetry -> Factor computed: 1.25",
+      "[PINIA] Action dispatched: 'syncHardwareTelemetry' (payload: 64B)",
+      "[STORE] Active modules synchronized: 4 state nodes updated",
+      "[COMPUTED] Recalculating active telemetry aggregates in 0.04ms",
+      "[VUE] Reactive dependency tracked on system_telemetry_rate",
       "[PINIA] coreLoad value mutated in reactive chain",
       "[VUE] Virtual DOM tree reconciliation finished • Diff checked",
       "[STORE] Computed state: isHealthy -> resolved: true",
@@ -106,7 +114,6 @@ export class PortfolioOrchestrator {
     
     let counter = 0;
     this.intervals['vue'] = setInterval(() => {
-      
       const coreLoad = 35 + Math.floor(Math.random() * 42);
       loadText.innerText = `${coreLoad}%`;
       loadBar.style.width = `${coreLoad}%`;
@@ -153,7 +160,6 @@ export class PortfolioOrchestrator {
     
     let counter = 0;
     this.intervals['laravel'] = setInterval(() => {
-      
       const latency = 10 + Math.floor(Math.random() * 6);
       latencyText.innerText = `${latency}ms • VERIFIED`;
       
@@ -204,7 +210,6 @@ export class PortfolioOrchestrator {
     
     let counter = 0;
     this.intervals['postgres'] = setInterval(() => {
-      
       const speed = (0.05 + Math.random() * 0.06).toFixed(2);
       speedText.innerText = `${speed}ms`;
       
@@ -213,7 +218,7 @@ export class PortfolioOrchestrator {
       
       const newTable = `+-------+------------+------------+
 | depth | node_count | avg_load % |
-+-------+------------+------------+
+++------+------------+------------+
 |     1 |          1 |       ${depth1Load} |
 |     2 |          4 |       ${depth2Load} |
 +-------+------------+------------+`;
@@ -268,7 +273,6 @@ export class PortfolioOrchestrator {
     
     const rows = document.querySelectorAll('.project-row');
     rows.forEach(row => {
-      
       row.addEventListener('mouseenter', () => {
         document.body.classList.add('hovering-link');
         this.soundManager.playClick();
@@ -298,11 +302,14 @@ export class PortfolioOrchestrator {
     });
   }
 
-  openDrawer(index) {
+  openDrawer(index, isLangSwitch = false) {
+    this.currentProjectIndex = index;
     const data = this.projectsData[index];
     if (!data) return;
 
-    this.soundManager.playDrawerSweep(true);
+    if (!isLangSwitch) {
+      this.soundManager.playDrawerSweep(true);
+    }
     
     document.getElementById('drawer-num').innerText = data.id;
     document.getElementById('drawer-category').innerText = data.category;
@@ -391,13 +398,16 @@ export class PortfolioOrchestrator {
       window.APP_INSTANCE.scrollManager.lenis.stop();
     }
     
-    gsap.fromTo(this.drawer.querySelector('.drawer-panel'), 
-      { x: '100%' }, 
-      { x: '0%', duration: 0.6, ease: 'power3.out' }
-    );
+    if (!isLangSwitch) {
+      gsap.fromTo(this.drawer.querySelector('.drawer-panel'), 
+        { x: '100%' }, 
+        { x: '0%', duration: 0.6, ease: 'power3.out' }
+      );
+    }
   }
 
   closeDrawer() {
+    this.currentProjectIndex = null;
     if (!this.drawer.classList.contains('active')) return;
 
     this.soundManager.playDrawerSweep(false);
@@ -496,7 +506,6 @@ export class PortfolioOrchestrator {
     
     this.drawer.addEventListener('mousemove', (e) => {
       if (tooltip.classList.contains('visible')) {
-        
         tooltip.style.left = `${e.clientX}px`;
         tooltip.style.top = `${e.clientY}px`;
       }
@@ -587,15 +596,18 @@ export class PortfolioOrchestrator {
     }
     
     this.projectsData = lang === 'es' ? projectsDataES : projectsDataEN;
+    this.updateProjectsList(lang);
+    
+    if (this.currentProjectIndex !== null && this.currentProjectIndex !== undefined && this.drawer && this.drawer.classList.contains('active')) {
+      this.openDrawer(this.currentProjectIndex, true);
+    }
     
     const dictionary = staticTranslations[lang] || staticTranslations['en'];
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       const translation = dictionary[key];
       if (translation) {
-        
         el.innerHTML = translation;
-        
         el.classList.remove('split-done');
       }
     });
@@ -605,7 +617,6 @@ export class PortfolioOrchestrator {
 
     if (window.APP_INSTANCE) {
       if (window.APP_INSTANCE.animator) {
-        
         if (window.APP_INSTANCE.animator.animatedSections) {
           window.APP_INSTANCE.animator.animatedSections.clear();
         }
@@ -626,11 +637,26 @@ export class PortfolioOrchestrator {
     }
   }
 
+  updateProjectsList(lang) {
+    const data = lang === 'es' ? projectsDataES : projectsDataEN;
+    const rows = document.querySelectorAll('.project-row');
+    rows.forEach((row) => {
+      const idx = parseInt(row.getAttribute('data-project'), 10);
+      const p = data[idx];
+      if (!p) return;
+      const nameEl = row.querySelector('.project-name');
+      const badgeEl = row.querySelector('.project-badge');
+      const subEl = row.querySelector('.project-category-sub');
+      if (nameEl && p.title) nameEl.textContent = p.title;
+      if (badgeEl && p.badge) badgeEl.textContent = p.badge;
+      if (subEl && p.sub) subEl.textContent = p.sub;
+    });
+  }
+
   initCliTerminals() {
     const inputs = document.querySelectorAll('.cli-input-field');
     inputs.forEach(input => {
       input.addEventListener('keydown', (e) => {
-        
         if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
           this.soundManager.playKeyboardClick();
         }
@@ -665,7 +691,6 @@ export class PortfolioOrchestrator {
         const target = input.getAttribute('data-target');
         if (cmd && target) {
           this.executeCliCommand(cmd, target);
-          
           input.focus();
         }
       });
@@ -737,236 +762,79 @@ export class PortfolioOrchestrator {
       
       setTimeout(() => {
         this.appendLogLine(container, isEs ? `[DB] Coincidencia con índice en parent_id...` : `[DB] Custom Index Scan: parent_id_idx on system_nodes (cost=0.00..8.25)`, 'log-info');
-      }, 300);
- 
-      setTimeout(() => {
-        const table = `+-------+------------+------------+<br>` +
-                      `| depth | node_count | avg_load % |<br>` +
-                      `+-------+------------+------------+<br>` +
-                      `| &nbsp;&nbsp;&nbsp;&nbsp;1 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;34.5 |<br>` +
-                      `| &nbsp;&nbsp;&nbsp;&nbsp;2 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;56.2 |<br>` +
-                      `+-------+------------+------------+`;
-        this.appendLogLine(container, `<pre class="sim-table-dump">${table}</pre>`, 'log-success');
-        this.appendLogLine(container, isEs ? `(2 filas analizadas, tiempo ejecución: 0.08ms)` : `(2 rows retrieved, execution time: 0.08ms)`, 'log-success');
-      }, 700);
+        this.appendLogLine(container, isEs ? `[DB] 2 niveles de jerarquía analizados en 0.07ms (ACID OK)` : `[DB] 2 recursive hierarchy levels processed in 0.07ms (ACID OK)`, 'log-success');
+      }, 350);
     } 
     else if (command === 'overclock') {
       this.soundManager.playSuccess();
-      if (isEs) {
-        this.appendLogLine(container, `[WARNING] ¡INICIANDO PETICIÓN GLOBAL DE OVERCLOCK DE NÚCLEOS!`, 'log-warn');
-      } else {
-        this.appendLogLine(container, `[WARNING] SENT GLOBAL CORES OVERCLOCK REQUEST TRIGGER!`, 'log-warn');
+      this.appendLogLine(container, isEs ? `[HARDWARE] Modulando frecuencia de reactor...` : `[HARDWARE] Modulating core overclock frequency...`, 'log-warn');
+      if (window.APP_INSTANCE) {
+        window.APP_INSTANCE.toggleOverclock();
       }
-      setTimeout(() => {
-        if (window.APP_INSTANCE) {
-          window.APP_INSTANCE.toggleOverclock();
-        }
-      }, 300);
     } 
     else {
       this.soundManager.playError();
-      if (isEs) {
-        this.appendLogLine(container, `[ERROR] Comando no reconocido: '${command}'. Escribe 'help' para comandos.`, 'log-error');
-      } else {
-        this.appendLogLine(container, `[ERROR] Unrecognized directive: '${command}'. Type 'help' for support.`, 'log-error');
-      }
+      this.appendLogLine(container, isEs 
+        ? `[ERROR] Comando no reconocido: '${commandText}'. Escribe <strong>help</strong> para la lista de comandos.` 
+        : `[ERROR] Command unrecognized: '${commandText}'. Type <strong>help</strong> for available console commands.`, 'log-error');
     }
   }
 
-  appendLogLine(container, htmlText, className = 'log-info') {
+  getLogsContainer(target) {
+    switch (target) {
+      case 'vue':
+        return document.getElementById('sim-vue-logs');
+      case 'laravel':
+        return document.getElementById('sim-laravel-logs');
+      case 'postgres':
+        return document.getElementById('sim-sql-logs');
+      case 'wordpress':
+        return document.getElementById('sim-wp-logs');
+      default:
+        return null;
+    }
+  }
+
+  appendLogLine(container, htmlContent, className = '') {
     const line = document.createElement('div');
     line.className = `log-line-item ${className}`;
-    line.style.fontSize = '0.75em';
-    line.style.lineHeight = '1.5';
-    line.style.marginBottom = '0.3em';
-    
-    if (className === 'log-echo') {
-      line.style.color = '#ffffff';
-    } else if (className === 'log-error') {
-      line.style.color = '#ff3300';
-    } else if (className === 'log-success') {
-      line.style.color = '#00f2fe';
-    } else if (className === 'log-warn') {
-      line.style.color = '#fbbf24';
-    } else {
-      line.style.color = 'var(--color-text-sub)';
-    }
-
-    line.innerHTML = htmlText;
+    line.innerHTML = htmlContent;
     container.appendChild(line);
     container.scrollTop = container.scrollHeight;
   }
 
-  getLogsContainer(target) {
-    if (target === 'vue') return document.getElementById('sim-vue-logs');
-    if (target === 'laravel') return document.getElementById('sim-laravel-logs');
-    if (target === 'postgres') return document.getElementById('sim-sql-logs');
-    if (target === 'wordpress') return document.getElementById('sim-wp-logs');
-    return null;
-  }
-
   initOverclockConsole() {
-    const overclockBtn = document.getElementById('overclock-btn');
-    if (overclockBtn) {
-      overclockBtn.addEventListener('click', () => {
-        if (this.audioCtx && this.audioCtx.state === 'suspended') {
-          this.audioCtx.resume();
-        }
-        if (window.APP_INSTANCE) {
-          window.APP_INSTANCE.toggleOverclock();
-        }
-      });
-    }
-  }
-
-  syncOverclockUI(isOverclocked) {
-    const hud = document.getElementById('cyber-hud');
-    const overclockBtn = document.getElementById('overclock-btn');
-    const headerLogo = document.getElementById('header-logo');
+    const btn = document.getElementById('overclock-btn');
+    if (!btn) return;
     
-    if (hud) {
-      if (isOverclocked) {
-        hud.classList.add('overclocked');
-      } else {
-        hud.classList.remove('overclocked');
+    btn.addEventListener('click', () => {
+      if (window.APP_INSTANCE) {
+        window.APP_INSTANCE.toggleOverclock();
       }
-    }
-    
-    if (headerLogo) {
-      if (isOverclocked) {
-        headerLogo.classList.add('overclocked');
-      } else {
-        headerLogo.classList.remove('overclocked');
-      }
-    }
-    
-    if (window.APP_INSTANCE && window.APP_INSTANCE.textInteractions) {
-      window.APP_INSTANCE.textInteractions.syncOverclockState(isOverclocked);
-    }
-    
-    if (overclockBtn) {
-      const dictionary = staticTranslations[this.currentLang] || staticTranslations['en'];
-      const key = isOverclocked ? 'hud.overclock_btn_active' : 'hud.overclock_btn';
-      overclockBtn.innerHTML = dictionary[key] || (isOverclocked ? '[ DAMPEN CORES ]' : '[ IGNITE OVERCLOCK ]');
-    }
-    
-    if (isOverclocked) {
-      
-    } else {
-      this.stopSirenSound();
-    }
-  }
-
-  startSirenSound() {
-    if (this.sirenActive) return;
-    
-    if (!this.audioCtx) {
-      this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    
-    if (this.audioCtx.state === 'suspended') {
-      this.audioCtx.resume();
-    }
-    
-    this.sirenActive = true;
-    
-    this.sirenOsc = this.audioCtx.createOscillator();
-    this.sirenGain = this.audioCtx.createGain();
-    
-    this.sirenOsc.type = 'sawtooth';
-    this.sirenOsc.frequency.setValueAtTime(250, this.audioCtx.currentTime);
-    
-    this.sirenFilter = this.audioCtx.createBiquadFilter();
-    this.sirenFilter.type = 'bandpass';
-    this.sirenFilter.frequency.value = 600;
-    this.sirenFilter.Q.value = 1.0;
-    
-    this.sirenOsc.connect(this.sirenFilter);
-    this.sirenFilter.connect(this.sirenGain);
-    this.sirenGain.connect(this.audioCtx.destination);
-    
-    this.sirenGain.gain.value = 0;
-    this.sirenOsc.start();
-    
-    let high = false;
-    this.sirenPulseInterval = setInterval(() => {
-      if (!this.audioCtx || this.audioCtx.state === 'suspended') return;
-      const now = this.audioCtx.currentTime;
-      const targetFreq = high ? 320 : 250;
-      
-      this.sirenOsc.frequency.setValueAtTime(this.sirenOsc.frequency.value, now);
-      this.sirenOsc.frequency.linearRampToValueAtTime(targetFreq, now + 0.15);
-      
-      this.sirenGain.gain.cancelScheduledValues(now);
-      this.sirenGain.gain.setValueAtTime(0, now);
-      this.sirenGain.gain.linearRampToValueAtTime(0.04, now + 0.08); 
-      this.sirenGain.gain.linearRampToValueAtTime(0.002, now + 0.55);
-      
-      high = !high;
-    }, 600);
-  }
-
-  stopSirenSound() {
-    this.sirenActive = false;
-    if (this.sirenPulseInterval) {
-      clearInterval(this.sirenPulseInterval);
-      this.sirenPulseInterval = null;
-    }
-    
-    try {
-      if (this.sirenOsc) {
-        this.sirenOsc.stop();
-        this.sirenOsc.disconnect();
-        this.sirenOsc = null;
-      }
-      if (this.sirenGain) {
-        this.sirenGain.disconnect();
-        this.sirenGain = null;
-      }
-    } catch (e) {
-      
-    }
+    });
   }
 
   initCommandRegistry() {
-    this.commands = [
-      { id: 'help', name: '/help', desc: 'Show all available commands', action: () => this.showHelpCommand() },
-      { id: 'ayuda', name: '/ayuda', desc: 'Mostrar todos los comandos disponibles', action: () => this.showHelpCommand() },
-      { id: 'goto-home', name: '/goto home', desc: 'Scroll to Home section', action: () => this.scrollTo(0) },
-      { id: 'ir-inicio', name: '/ir inicio', desc: 'Desplazarse a la sección Inicio', action: () => this.scrollTo(0) },
-      { id: 'goto-dev', name: '/goto dev', desc: 'Scroll to Developer section', action: () => this.scrollTo(1) },
-      { id: 'ir-desarrollador', name: '/ir desarrollador', desc: 'Desplazarse a la sección Desarrollador', action: () => this.scrollTo(1) },
-      { id: 'goto-works', name: '/goto works', desc: 'Scroll to Featured Works section', action: () => this.scrollTo(2) },
-      { id: 'ir-proyectos', name: '/ir proyectos', desc: 'Desplazarse a la sección Proyectos', action: () => this.scrollTo(2) },
-      { id: 'goto-vue', name: '/goto vue', desc: 'Scroll to Vue Core section', action: () => this.scrollTo(3) },
-      { id: 'ir-vue', name: '/ir vue', desc: 'Desplazarse a la sección Núcleo Vue', action: () => this.scrollTo(3) },
-      { id: 'goto-laravel', name: '/goto laravel', desc: 'Scroll to Laravel Core section', action: () => this.scrollTo(4) },
-      { id: 'ir-laravel', name: '/ir laravel', desc: 'Desplazarse a la sección Núcleo Laravel', action: () => this.scrollTo(4) },
-      { id: 'goto-database', name: '/goto database', desc: 'Scroll to Database section', action: () => this.scrollTo(5) },
-      { id: 'ir-base-datos', name: '/ir base-datos', desc: 'Desplazarse a la sección Base Datos', action: () => this.scrollTo(5) },
-      { id: 'goto-cms', name: '/goto cms', desc: 'Scroll to WordPress section', action: () => this.scrollTo(6) },
-      { id: 'ir-cms', name: '/ir wordpress', desc: 'Desplazarse a la sección WordPress', action: () => this.scrollTo(6) },
-      { id: 'goto-portal', name: '/goto portal', desc: 'Scroll to Portal contact section', action: () => this.scrollTo(7) },
-      { id: 'ir-contacto', name: '/ir contacto', desc: 'Desplazarse a la sección Contacto', action: () => this.scrollTo(7) },
-      { id: 'overclock', name: '/overclock', desc: 'Toggle hardware overclock cores & alarm', action: () => this.toggleOverclockCommand() },
-      { id: 'explorer', name: '/explorer', desc: 'Enter the free-roam 6DoF drone explorer', action: () => this.toggleExplorerCommand() },
-      { id: 'explorador', name: '/explorador', desc: 'Entrar al explorador libre de dron 6DoF', action: () => this.toggleExplorerCommand() },
-      { id: 'lang', name: '/lang', desc: 'Toggle site language (EN / ES)', action: () => this.toggleLanguageCommand() },
-      { id: 'idioma', name: '/idioma', desc: 'Cambiar el idioma del sitio (EN / ES)', action: () => this.toggleLanguageCommand() },
-      { id: 'clear', name: '/clear', desc: 'Clear search input field', action: () => this.clearCommandInput() },
-      { id: 'limpiar', name: '/limpiar', desc: 'Limpiar el campo de entrada de búsqueda', action: () => this.clearCommandInput() }
-    ];
+    this.commands = this.getCommandsForLanguage();
   }
 
   getCommandsForLanguage() {
     const isEs = this.currentLang === 'es';
-    return this.commands.filter(cmd => {
-      if (isEs) {
-        return cmd.id.includes('ir') || cmd.id === 'ayuda' || cmd.id === 'idioma' || cmd.id === 'limpiar' || cmd.id === 'overclock' || cmd.id === 'explorador';
-      } else {
-        return cmd.id.includes('goto') || cmd.id === 'help' || cmd.id === 'lang' || cmd.id === 'clear' || cmd.id === 'overclock' || cmd.id === 'explorer';
-      }
-    });
+    return [
+      { name: '/goto home', desc: isEs ? 'Navegar al inicio del portafolio' : 'Navigate to the Hero entrance section', action: () => window.APP_INSTANCE?.scrollManager?.scrollToSection(0) },
+      { name: '/goto developer', desc: isEs ? 'Navegar a la sección de Desarrollador' : 'Jump to Developer profile & engineering bio', action: () => window.APP_INSTANCE?.scrollManager?.scrollToSection(1) },
+      { name: '/goto works', desc: isEs ? 'Navegar al catálogo de Proyectos' : 'Open Constructed Systems showroom', action: () => window.APP_INSTANCE?.scrollManager?.scrollToSection(2) },
+      { name: '/goto vue', desc: isEs ? 'Explorar el núcleo de Frontend Vue 3' : 'Jump to Vue.js reactive frontend core', action: () => window.APP_INSTANCE?.scrollManager?.scrollToSection(3) },
+      { name: '/goto laravel', desc: isEs ? 'Explorar la arquitectura Backend Laravel' : 'Jump to Laravel backend enterprise architecture', action: () => window.APP_INSTANCE?.scrollManager?.scrollToSection(4) },
+      { name: '/goto postgresql', desc: isEs ? 'Inspeccionar el motor de base de datos SQL' : 'Jump to PostgreSQL high-performance CTE engine', action: () => window.APP_INSTANCE?.scrollManager?.scrollToSection(5) },
+      { name: '/goto wordpress', desc: isEs ? 'Inspeccionar el CMS interactivo WordPress' : 'Jump to WordPress & Elementor creative suite', action: () => window.APP_INSTANCE?.scrollManager?.scrollToSection(6) },
+      { name: '/goto portal', desc: isEs ? 'Ir al portal orbital de contacto' : 'Navigate to Orbital Contact Portal & Footer', action: () => window.APP_INSTANCE?.scrollManager?.scrollToSection(7) },
+      { name: '/overclock', desc: isEs ? 'Alternar modo de overclocking del sistema' : 'Toggle 3D visual overclocking state', action: () => this.toggleOverclockCommand() },
+      { name: '/explorer', desc: isEs ? 'Alternar vuelo libre con dron en 3D' : 'Toggle free-roam drone 3D exploration', action: () => this.toggleExplorerCommand() },
+      { name: '/lang', desc: isEs ? 'Cambiar idioma (Español / English)' : 'Switch language (English / Spanish)', action: () => this.toggleLanguageCommand() },
+      { name: '/clear', desc: isEs ? 'Limpiar entrada de comandos' : 'Clear command input field', action: () => this.clearCommandInput() },
+      { name: '/help', desc: isEs ? 'Ver todos los comandos disponibles' : 'Display interactive command dictionary', action: () => this.showHelpCommand() }
+    ];
   }
 
   initCommandPalette() {
@@ -1022,7 +890,6 @@ export class PortfolioOrchestrator {
         this.soundManager.playChirp();
         this.closeCommandPalette();
       } else {
-        
         if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
           this.soundManager.playKeyboardClick();
         }
@@ -1037,7 +904,7 @@ export class PortfolioOrchestrator {
     if (!query) {
       this.filteredCommands = defaultCommands;
     } else {
-      this.filteredCommands = this.commands.filter(cmd => 
+      this.filteredCommands = defaultCommands.filter(cmd => 
         cmd.name.toLowerCase().includes(query) || 
         cmd.desc.toLowerCase().includes(query)
       );
@@ -1051,12 +918,9 @@ export class PortfolioOrchestrator {
     this.paletteResults.innerHTML = '';
     
     if (this.filteredCommands.length === 0) {
-      const isEs = this.currentLang === 'es';
       const noResult = document.createElement('div');
       noResult.className = 'cmd-palette-item mono';
-      noResult.style.pointerEvents = 'none';
-      noResult.style.justifyContent = 'center';
-      noResult.innerText = isEs ? 'No se encontraron comandos.' : 'No commands matched.';
+      noResult.innerHTML = `<span style="opacity: 0.5;">${this.currentLang === 'es' ? 'No se encontraron comandos coincidentes' : 'No matching commands found'}</span>`;
       this.paletteResults.appendChild(noResult);
       return;
     }
@@ -1064,11 +928,12 @@ export class PortfolioOrchestrator {
     this.filteredCommands.forEach((cmd, idx) => {
       const item = document.createElement('div');
       item.className = `cmd-palette-item ${idx === this.activeCmdIndex ? 'active' : ''}`;
+      item.setAttribute('data-idx', idx);
       
       item.innerHTML = `
         <div class="cmd-palette-item-content">
           <span class="cmd-palette-item-icon">></span>
-          <div style="display: flex; flex-direction: column; gap: 2px;">
+          <div class="cmd-palette-item-text">
             <span class="cmd-palette-item-name">${cmd.name}</span>
             <span class="cmd-palette-item-desc">${cmd.desc}</span>
           </div>
@@ -1076,8 +941,14 @@ export class PortfolioOrchestrator {
         <span class="cmd-palette-item-badge">ENTER</span>
       `;
       
-      item.addEventListener('click', () => {
+      item.addEventListener('mouseenter', () => {
         this.activeCmdIndex = idx;
+        this.updateActivePaletteItem();
+        this.soundManager.playClick();
+      });
+      
+      item.addEventListener('click', () => {
+        this.soundManager.playChirp();
         this.executeActiveCommand();
       });
       
@@ -1085,34 +956,31 @@ export class PortfolioOrchestrator {
     });
   }
 
-  navigatePaletteItems(dir) {
-    const total = this.filteredCommands.length;
-    if (total === 0) return;
-    
-    this.activeCmdIndex = (this.activeCmdIndex + dir + total) % total;
-    
+  updateActivePaletteItem() {
     const items = this.paletteResults.querySelectorAll('.cmd-palette-item');
-    items.forEach((item, idx) => {
+    items.forEach((it, idx) => {
       if (idx === this.activeCmdIndex) {
-        item.classList.add('active');
-        item.scrollIntoView({ block: 'nearest' });
+        it.classList.add('active');
+        it.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       } else {
-        item.classList.remove('active');
+        it.classList.remove('active');
       }
     });
   }
 
-  executeActiveCommand() {
-    const cmd = this.filteredCommands[this.activeCmdIndex];
-    if (cmd && cmd.action) {
-      this.closeCommandPalette();
-      cmd.action();
-    }
+  navigatePaletteItems(delta) {
+    if (this.filteredCommands.length === 0) return;
+    this.activeCmdIndex = (this.activeCmdIndex + delta + this.filteredCommands.length) % this.filteredCommands.length;
+    this.updateActivePaletteItem();
   }
 
-  scrollTo(index) {
-    if (window.APP_INSTANCE && window.APP_INSTANCE.scrollManager) {
-      window.APP_INSTANCE.scrollManager.scrollToSection(index);
+  executeActiveCommand() {
+    if (this.filteredCommands.length > 0 && this.filteredCommands[this.activeCmdIndex]) {
+      const cmd = this.filteredCommands[this.activeCmdIndex];
+      this.closeCommandPalette();
+      if (cmd.action) {
+        cmd.action();
+      }
     }
   }
 

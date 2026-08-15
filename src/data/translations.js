@@ -151,6 +151,8 @@ export const projectsDataEN = [
   {
     "id": "01",
     "title": "Elite Performance",
+    "badge": "BIO-TELEMETRY",
+    "sub": "Sports Conditioning & Wearables",
     "category": "PREMIUM SPORTS CONDITIONING & BIO-ANALYTICS",
     "challenge": "Design and implement a premium sports conditioning ecosystem and biometric dashboard. The platform must synchronize wearable telemetry (heart rate variability, steps, and energy expenditure) from sources like Whoop, Garmin, and Apple Health, while strictly securing personal clinical metrics using database-level Row Level Security (RLS) policies. Additionally, the system must process real-time workout session tracking, RPE logs, and secure instant coach-athlete communication channels without compromising rendering performance or latency.",
     "solution": "Engineered a modern web platform using React 19 and Tailwind CSS v4, powered by Motion for smooth, hardware-accelerated user dashboard interactions. Structured a secure PostgreSQL backend using Supabase Auth and RLS-protected tables for user biometrics, and utilized Supabase Realtime to handle instant chat and client status updates. Deployed the application via a compiled Express/TS server managing session payments, routing, and environment parameters.",
@@ -196,6 +198,8 @@ export const projectsDataEN = [
   {
     "id": "02",
     "title": "Banco de Sangre",
+    "badge": "CLINICAL ERP",
+    "sub": "Blood Bank Logistics & ACID SQL",
     "category": "CLINICAL ERP & SYSTEMS DEVELOPMENT",
     "challenge": "Design and implement an enterprise-grade clinical ERP system capable of coordinating blood bank reserves, donor scheduling, and critical temperature-controlled inventories. The system must guarantee absolute real-time ACID transaction safety under high concurrency to prevent any medical record inconsistencies or double-allocation of critical blood components during emergency situations. Managing dynamic stocks requires a system that is immune to race conditions, ensuring that if multiple clinics request the same rare O-negative unit simultaneously, only one transaction succeeds while others are gracefully queued or redirected.",
     "solution": "Engineered a high-performance decoupled architecture using Vue 3 with Pinia for modular client workflows and real-time telemetry displays, backed by a robust Laravel API. A clustered PostgreSQL database secures atomic transitions using strict isolation levels (SERIALIZABLE), custom index-only scans, and database triggers that validate component expiration dates. We offloaded background processes (like donor email alerts and component report generation) to a Redis-backed queue worker, freeing up Laravel's main threads. Deployed in isolated Docker environments with automated health-check alerts.",
@@ -242,6 +246,8 @@ export const projectsDataEN = [
   {
     "id": "03",
     "title": "AD2N Cloud",
+    "badge": "CLOUD SECURE",
+    "sub": "Corporate Cloud & NGFW Perimeter",
     "category": "CORPORATE CLOUD PLATFORM & CYBERSECURITY",
     "challenge": "Develop an ultra-fast corporate digital platform that integrates complex technological service catalogs (VMware/Hyper-V cloud virtualization, perimeter firewalls, and 3-2-1 backup strategies) while maintaining sub-second page transitions, dynamic SVG network tracing animations, and full responsiveness across 4K displays without performance degradation.",
     "solution": "Engineered a modular PHP 8.2 architecture paired with GSAP 3 and ScrollTrigger for real-time neon circuit drawing. Integrated the Lenis inertial engine for silky-smooth navigation, optimized high-density WebP media delivery with asynchronous decoding, and implemented a clean cyber-glassmorphism token system achieving flawless visual hierarchy and top SEO scores.",
@@ -287,6 +293,8 @@ export const projectsDataEN = [
   {
     "id": "04",
     "title": "Capital Marketing",
+    "badge": "3D SHOWROOM",
+    "sub": "Digital Agency SPA & Kinetic Motion",
     "category": "DIGITAL AGENCY SPA & 3D SHOWROOM",
     "challenge": "Architect an immersive, high-end agency website featuring an on-demand 3D showroom, seamless view transitions, kinetic hero typography, and an interactive virtual assistant, all while eliminating layout flashes (FOUC) and maintaining smooth 60 FPS performance across desktop and mobile devices.",
     "solution": "Constructed a native JavaScript SPA compiled with Vite 8, featuring modular view routers, dynamic GSAP timelines for parallax effects, lazy-loaded WebGL canvas scenes in Three.js, persistent i18n state management (ES/EN), and an asynchronous PHP backend endpoint for lead handling.",
@@ -333,6 +341,8 @@ export const projectsDataEN = [
   {
     "id": "05",
     "title": "Julie",
+    "badge": "PASTEL 3D",
+    "sub": "Kinetic Typography & GSAP Realm",
     "category": "PASTEL 3D REALM & KINETIC GSAP EXPERIENCE",
     "challenge": "Create an emotionally engaging, playful pastel web experience with soft 3D particle lighting, multi-panel preloader sequences, and physics-driven cursor trails without incurring rendering bottlenecks or frame drops on high-refresh-rate displays.",
     "solution": "Engineered with Three.js custom shader particles and GSAP timelines synchronized with Lenis smooth scroll. Developed split-text kinetic animations, responsive audio-visual feedback triggers, and optimized Vite bundling achieving zero visual latency and 100/100 Core Web Vitals.",
@@ -378,6 +388,8 @@ export const projectsDataEN = [
   {
     "id": "06",
     "title": "CEMED Hub",
+    "badge": "MEDICAL CORE",
+    "sub": "Clinical Scheduling & Cache Tags",
     "category": "MEDICAL INFRASTRUCTURE & DASHBOARDS",
     "challenge": "Establish an integrated clinic hub to manage scheduling, digital medical consultation records, and complex patient billing analytics under sub-second latency constraints while ensuring maximum accessibility across all mobile and desktop devices. The challenge lay in query compilation of heavy relational patient records where historical clinic records must be compiled on-the-fly and aggregated into billing logs without blocking the event loop or causing visual layout shifts (CLS) on client dashboards.",
     "solution": "Implemented an administrative dashboard using Vue 3 and Vuetify 3 with modular layouts and customized grid spacing. Designed a service-oriented Laravel REST backend utilizing repository decoupling, cache tags to store static medical parameters, and secure JWT-based sessions, minimizing response latency. By caching metadata endpoints and using eager loading on relational databases, we reduced query times by 84% and guaranteed seamless 60 FPS scrolling on mobile web interfaces.",
@@ -424,6 +436,8 @@ export const projectsDataEN = [
   {
     "id": "07",
     "title": "LetsGo App",
+    "badge": "MOBILITY LOGISTICS",
+    "sub": "Urban Passenger & Freight Dispatch",
     "category": "MOBILITY & LOGISTICS PORTAL",
     "challenge": "Coordinate dynamic client trip booking requests, provider availability mapping, and automated ride matching processes without blocking server thread pools or compromising coordinate location privacy. The matching algorithm must run spatial calculations within microsecond windows, evaluating hundreds of active drivers in proximity while resisting concurrent locks when two users attempt to book the same nearest vehicle.",
     "solution": "Developed a decoupled responsive portal using a Laravel REST API secured via Sanctum tokens and an active Vue client. Leveraged indexed spatial coordinates and geofencing formulas in the database, allowing highly efficient matching queries. Integrated automated background retry mechanisms and atomic coordinate tracking, optimizing server execution threads and reducing server load by 45%.",
@@ -469,6 +483,8 @@ export const projectsDataEN = [
   {
     "id": "08",
     "title": "Logística Carnes San Martín",
+    "badge": "DISPATCH ENGINE",
+    "sub": "Real-Time GPS Route Optimization",
     "category": "REAL-TIME DISPATCH ENGINE",
     "challenge": "Compute optimal routes for national cargo logistics fleets, providing dispatchers with instantaneous telemetry updates on vehicle locations and storing tamper-proof transaction logs for auditing. Running route updates over long distances requires robust spatial coordinates calculations and real-time push protocols that maintain persistent connections without causing memory leaks or server crashes.",
     "solution": "Built a dispatch system integrating a Laravel API event dispatcher with a Node.js Socket.io server to push dynamic updates in 12ms. Relayed coordinates to a custom PostgreSQL database equipped with PostGIS extension for high-performance geospatial spatial calculations. Integrated secure JWT handshakes on WebSocket channels and decoupled event routing, ensuring seamless multi-fleet coordination.",
@@ -514,6 +530,8 @@ export const projectsDataEN = [
   {
     "id": "09",
     "title": "Sistema Pyme",
+    "badge": "ENTERPRISE ERP",
+    "sub": "Modular Electronic Invoicing & POS",
     "category": "ENTERPRISE ADMINISTRATIVE ERP",
     "challenge": "Architect a secure, all-in-one commercial ERP to manage provider purchasing, dynamic inventory tracking, granular roles and permissions, cash register drawers, and sales auditing logs within a secure unified panel. The main challenge was to enforce strict security policies across dozens of administrative sub-sections while keeping the interface responsive and preserving absolute referential integrity across complex database transactions.",
     "solution": "Engineered a robust Laravel backend implementing strict Service-Repository patterns, transaction security, and composite indexes in PostgreSQL. Structured the frontend with Vue 3, Pinia, and Vuetify 3, securing routes via Sanctum token validation and role-based policy gates. Enforced DB transactions rollback on failures, ensuring zero discrepancies in financial ledgers.",
@@ -560,6 +578,8 @@ export const projectsDataEN = [
   {
     "id": "10",
     "title": "Sistema Fotos",
+    "badge": "R2 VAULT",
+    "sub": "Media Streaming & Stripe Webhook",
     "category": "MEDIA STREAMING & CLOUD STORAGE",
     "challenge": "Securely store, process, and monetize high-resolution professional photos while preventing unauthorized downloads. Heavy image uploads had to be automatically watermarked and resized into multiple delivery-ready resolutions without overloading server CPU resources. Furthermore, the client frontend had to maintain fluid 60 FPS gallery interactions and handle secure purchase redirects and webhook-based digital download fulfillment with transient, custom-expiry access links.",
     "solution": "Developed a robust dual-bucket Cloudflare R2 architecture integrated with a Laravel 12 API backend and Vue 3 frontend. Configured Intervention Image v3 to process uploads into four variants: private original, secure 1920px previews (Sanctum protected), public 900px watermarked WebP grid mesh versions, and 400x400 cover thumbnails. Integrated Stripe webhooks to confirm checkout success and generate temporary download tokens (expiring in 24 hours, limited to 3 downloads) that resolve into dynamic, 5-minute signed S3/R2 URLs, using Pinia and Lenis/GSAP on the frontend for smooth, high-fidelity gallery navigation.",
@@ -609,6 +629,8 @@ export const projectsDataES = [
   {
     "id": "01",
     "title": "Elite Performance",
+    "badge": "BIO-TELEMETRÍA",
+    "sub": "Acondicionamiento Físico & Wearables",
     "category": "TELEMETRÍA DEPORTIVA & BIO-ANALÍTICA",
     "challenge": "Diseñar e implementar un ecosistema premium de acondicionamiento físico y panel de control biométrico. La plataforma debe sincronizar la telemetría de wearables (variabilidad del ritmo cardíaco, pasos diarios y calorías quemadas) proveniente de Garmin o Whoop, al mismo tiempo que protege estrictamente los datos clínicos personales mediante políticas de Row Level Security (RLS) en la base de datos. De igual forma, el sistema debe permitir el seguimiento interactivo de entrenamientos con registro de RPE, marketplace y un canal de comunicación instantáneo en tiempo real entre deportistas y entrenadores.",
     "solution": "Desarrolló una plataforma web moderna utilizando React 19 y Tailwind CSS v4, potenciada con Motion para interacciones y animaciones dinámicas fluidas en el panel del deportista. Estructuró un backend seguro con Supabase utilizando políticas RLS para telemetría y Supabase Realtime para mensajería y sincronización en tiempo real. Desplegó el backend como un servidor Express en TypeScript para gestionar sesiones de pago y variables del sistema.",
@@ -654,6 +676,8 @@ export const projectsDataES = [
   {
     "id": "02",
     "title": "Banco de Sangre",
+    "badge": "ERP CLÍNICO",
+    "sub": "Logística Banco de Sangre & SQL ACID",
     "category": "ERP CLÍNICO & DESARROLLO DE SISTEMAS",
     "challenge": "Diseñar e implementar un sistema ERP clínico de nivel empresarial capaz de coordinar de manera eficiente las reservas críticas de bancos de sangre, agendas de donantes e inventarios controlados por temperatura. El sistema debe garantizar seguridad transaccional ACID absoluta en tiempo real bajo alta concurrencia para evitar cualquier tipo de inconsistencia en los expedientes médicos o doble asignación de componentes sanguíneos durante emergencias. La gestión de inventarios dinámicos requiere inmunidad total contra condiciones de carrera (race conditions), asegurando que si múltiples centros clínicos solicitan la misma unidad de tipo O-negativo simultáneamente, solo una transacción proceda con éxito y las demás sean rechazadas o redirigidas de forma segura.",
     "solution": "Desarrolló una arquitectura desacoplada de alto rendimiento utilizando Vue 3 con Pinia para flujos de trabajo modulares y paneles de telemetría, respaldada por una API robusta en Laravel. Una base de datos PostgreSQL en clúster asegura transacciones atómicas mediante niveles estrictos de aislamiento (SERIALIZABLE), escaneos exclusivos de índices y triggers de base de datos que validan la caducidad de los componentes. Los procesos secundarios (como alertas de correo a donantes y reportes de inventario) fueron delegados a colas de Redis administradas por workers independientes, liberando los hilos de Laravel. Desplegado en contenedores Docker aislados con alertas automáticas de salud de contenedores.",
@@ -700,6 +724,8 @@ export const projectsDataES = [
   {
     "id": "03",
     "title": "AD2N Cloud",
+    "badge": "NUBE SEGURA",
+    "sub": "Nube Corporativa & Perímetro NGFW",
     "category": "PLATAFORMA CLOUD CORPORATIVA & CIBERSEGURIDAD",
     "challenge": "Desarrollar una plataforma digital corporativa de ultra alta velocidad que integre complejos catálogos de servicios tecnológicos (virtualización cloud VMware/Hyper-V, firewalls perimetrales y respaldo 3-2-1) manteniendo transiciones de página fluidas, trazado vectorial SVG en tiempo real con GSAP y adaptabilidad total en pantallas 4K sin pérdida de rendimiento.",
     "solution": "Construcción de una arquitectura modular en PHP 8.2 combinada con GSAP 3 y ScrollTrigger para el dibujado de circuitos neón interactivos. Integración del motor inercial Lenis para un desplazamiento suave, optimización de medios WebP de alta densidad con decodificación asíncrona y diseño de un sistema de tokens cyber-glassmorphism con rendimiento óptimo y máxima puntuación SEO.",
@@ -745,6 +771,8 @@ export const projectsDataES = [
   {
     "id": "04",
     "title": "Capital Marketing",
+    "badge": "SHOWROOM 3D",
+    "sub": "SPA Agencia Digital & Movimiento Cinético",
     "category": "EXPERIENCIA DIGITAL SPA & SHOWROOM 3D",
     "challenge": "Diseñar y programar una plataforma web inmersiva para agencia con showroom 3D bajo demanda, transiciones de vista fluidas sin recarga, tipografía cinética en el Hero y un asistente virtual interactivo, eliminando cualquier salto de interfaz (FOUC) y garantizando 60 FPS constantes en móvil y escritorio.",
     "solution": "Construcción de una SPA nativa en JavaScript empaquetada con Vite 8, con enrutamiento modular sin recargas, timelines de GSAP para efectos parallax, escenas WebGL en Three.js con carga diferida (lazy-loading), internacionalización dinámica bilingüe y endpoint asíncrono en PHP.",
@@ -791,6 +819,8 @@ export const projectsDataES = [
   {
     "id": "05",
     "title": "Julie",
+    "badge": "3D PASTEL",
+    "sub": "Tipografía Cinética & Entorno GSAP",
     "category": "UNIVERSO 3D PASTEL & EXPERIENCIA GSAP CINÉTICA",
     "challenge": "Crear una experiencia web pastel lúdica y emocional con iluminación suave de partículas 3D, secuencias de preloader multipanel con contador numérico rodante y estelas de cursor interactivas, manteniendo una tasa de refresco constante sin caídas de cuadros en pantallas de alta frecuencia.",
     "solution": "Desarrollado con partículas y shaders personalizados en Three.js y líneas de tiempo en GSAP 3 sincronizadas con el motor de scroll Lenis. Implementación de animaciones cinéticas de texto, retroalimentación audiovisual y empaquetado optimizado en Vite con latencia visual nula y 100/100 en Core Web Vitals.",
@@ -836,6 +866,8 @@ export const projectsDataES = [
   {
     "id": "06",
     "title": "CEMED Hub",
+    "badge": "NÚCLEO MÉDICO",
+    "sub": "Agenda Clínica & Etiquetas de Caché",
     "category": "INFRAESTRUCTURA MÉDICA & PANELES",
     "challenge": "Construir un panel clínico integrado y responsivo para coordinar agendas médicas, expedientes de consultas digitales de pacientes y analíticas de facturación médica compleja, garantizando tiempos de carga inferiores a un segundo. El desafío técnico principal radicaba en compilar registros clínicos pesados del historial médico del paciente e integrarlos dinámicamente con las facturas en tiempo real sin bloquear el servidor backend o causar cambios de diseño (CLS) en la interfaz de los administradores.",
     "solution": "Panel administrativo desarrollado con un frontend Vue 3 y Vuetify 3 altamente responsivo. Diseñó un backend REST en Laravel orientado a servicios utilizando desacoplamiento de repositorios, etiquetas de caché para almacenar parámetros médicos estáticos y sesiones seguras basadas en JWT, minimizando la latencia de respuesta. Mediante la precarga de relaciones de base de datos (eager loading) y la optimización de caché distribuida, se redujeron los tiempos de respuesta en un 84% con renderizado a 60 FPS fluidos.",
@@ -882,6 +914,8 @@ export const projectsDataES = [
   {
     "id": "07",
     "title": "LetsGo App",
+    "badge": "LOGÍSTICA MÓVIL",
+    "sub": "Despacho Urbano de Pasajeros & Carga",
     "category": "PORTAL DE MOVILIDAD & LOGÍSTICA",
     "challenge": "Coordinar solicitudes dinámicas de viajes de clientes en tiempo real, mapeo interactivo de disponibilidad de conductores y procesos automatizados de emparejamiento rápido sin bloquear los hilos del servidor ni comprometer la privacidad de las coordenadas de los usuarios. El algoritmo de búsqueda espacial debe evaluar la proximidad de cientos de conductores en microsegundos, gestionando bloqueos simultáneos cuando múltiples usuarios intentan reservar la misma unidad.",
     "solution": "Desarrolló una plataforma responsiva desacoplada utilizando una API REST de Laravel asegurada con tokens Sanctum y un cliente reactivo en Vue. Aprovechó coordenadas espaciales indexadas y fórmulas de geovallas en la base de datos, logrando consultas de emparejamiento de alta velocidad. Implementó colas de reintento atómicas y optimizaciones de hilos en la base de datos, reduciendo el consumo de recursos en un 45%.",
@@ -927,6 +961,8 @@ export const projectsDataES = [
   {
     "id": "08",
     "title": "Logística Carnes San Martín",
+    "badge": "MOTOR DESPACHO",
+    "sub": "Optimización de Rutas GPS en Tiempo Real",
     "category": "MOTOR DE DESPACHO EN TIEMPO REAL",
     "challenge": "Calcular rutas de despacho óptimas para flotas logísticas de transporte pesado nacional, proporcionando a los despachadores actualizaciones inmediatas de telemetría de vehículos y almacenando registros de auditoría inmutables. Mantener flujos de coordenadas dinámicas para largas distancias requiere cálculos geoespaciales robustos y protocolos WebSocket confiables que sostengan conexiones persistentes sin fugas de memoria.",
     "solution": "Núcleo logístico impulsado por un despachador de eventos API en Laravel integrado con Socket.io en Node.js para notificaciones push en tiempo real bajo 12ms. Transmitió las coordenadas del vehículo a una base de datos PostgreSQL equipada con PostGIS para cálculos espaciales de alto rendimiento, aplicando cifrado asíncrono y canales WebSocket desacoplados para máxima seguridad.",
@@ -972,6 +1008,8 @@ export const projectsDataES = [
   {
     "id": "09",
     "title": "Sistema Pyme",
+    "badge": "ERP EMPRESARIAL",
+    "sub": "Facturación Electrónica Modular & POS",
     "category": "ERP ADMINISTRATIVO EMPRESARIAL",
     "challenge": "Diseñar un ERP comercial unificado y altamente seguro para administrar compras a múltiples proveedores, control dinámico de niveles de stock e inventario, cajones de cajas registradoras de efectivo físicos y bitácoras de auditoría de ventas con control estricto de roles. El reto consistía en aplicar políticas de seguridad granular en docenas de módulos manteniéndose dentro de una única interfaz fluida sin riesgo de desincronización de caja.",
     "solution": "ERP administrativo desarrollado en Laravel 12 implementando el patrón estricto Repository + Service, transacciones ACID seguras e índices compuestos en PostgreSQL. El frontend se estructuró con Vue 3, Pinia y Vuetify 3, asegurando todas las llamadas mediante tokens de autenticación de Sanctum y aplicando rollbacks automáticos en fallos transaccionales para garantizar consistencia absoluta en caja.",
@@ -1018,6 +1056,8 @@ export const projectsDataES = [
   {
     "id": "10",
     "title": "Sistema Fotos",
+    "badge": "BÓVEDA R2",
+    "sub": "Streaming Multimedia & Webhooks Stripe",
     "category": "GALERÍA MULTIMEDIA & CLOUD STORAGE",
     "challenge": "Almacenar, procesar y monetizar fotografías profesionales de alta resolución de manera segura, evitando descargas no autorizadas. Las imágenes originales debían ser redimensionadas y marcadas con agua de forma automática en múltiples resoluciones optimizadas sin sobrecargar la CPU del servidor. Asimismo, el cliente debía ofrecer una interfaz interactiva a 60 FPS estables y procesar pasarelas de pago y webhooks de Stripe para entregar descargas digitales seguras con tokens efímeros.",
     "solution": "Desarrolló una arquitectura robusta de doble bucket en Cloudflare R2 integrada con un backend Laravel 12 API y un frontend Vue 3. Configuró la librería Intervention Image v3 para procesar las subidas en cuatro variantes: original privado, vista previa protegida de 1920px (vía Sanctum), versión pública WebP de 900px con marca de agua en malla y miniaturas de 400x400. Vinculó webhooks de Stripe para confirmar pagos y generar tokens de descarga efímeros (expiración de 24 horas y 3 descargas máximas) que se resuelven en URLs firmadas de R2 por 5 minutos, usando Pinia y GSAP/Lenis en el cliente para interacciones fluidas.",
