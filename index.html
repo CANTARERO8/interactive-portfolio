@@ -46,9 +46,37 @@
     <!-- Portal Transition Overlay for Smooth Wrap-around -->
     <div id="transition-overlay" style="position: fixed; inset: 0; background: #080d28; z-index: 1200; pointer-events: none; opacity: 0;"></div>
     
-    <!-- Custom Cursor -->
+    <!-- Custom Dual Interactive Cursor -->
     <div class="custom-cursor" id="js-cursor"></div>
     <div class="custom-cursor-ring" id="js-cursor-ring"></div>
+    <script>
+      (function() {
+        if (window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+        var dot = document.getElementById('js-cursor');
+        var ring = document.getElementById('js-cursor-ring');
+        if (!dot || !ring) return;
+        document.documentElement.classList.add('has-custom-cursor');
+        var mx = window.innerWidth / 2, my = window.innerHeight / 2;
+        var rx = mx, ry = my;
+        dot.style.transform = 'translate3d(' + mx + 'px,' + my + 'px,0) translate(-50%,-50%)';
+        ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0) translate(-50%,-50%)';
+        function onPointer(e) {
+          if (!e.clientX && !e.clientY) return;
+          mx = e.clientX;
+          my = e.clientY;
+          dot.style.transform = 'translate3d(' + mx + 'px,' + my + 'px,0) translate(-50%,-50%)';
+        }
+        window.addEventListener('mousemove', onPointer, { passive: true });
+        window.addEventListener('pointermove', onPointer, { passive: true });
+        function loop() {
+          rx += (mx - rx) * 0.22;
+          ry += (my - ry) * 0.22;
+          ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0) translate(-50%,-50%)';
+          requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+      })();
+    </script>
 
     <!-- Persistent graphics profile selector -->
     <div

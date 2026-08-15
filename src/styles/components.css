@@ -74,11 +74,13 @@ body.cursor-clicking .custom-cursor-ring {
   box-shadow: 0 0 20px rgba(0, 243, 255, 0.9);
 }
 
-/* Desktop native cursor replacement */
+/* Desktop native cursor replacement only when custom cursor is confirmed */
 @media (hover: hover) and (pointer: fine) {
-  *,
-  *::before,
-  *::after {
+  html.has-custom-cursor,
+  html.has-custom-cursor body,
+  html.has-custom-cursor *,
+  html.has-custom-cursor *::before,
+  html.has-custom-cursor *::after {
     cursor: none !important;
   }
 }
