@@ -1,9 +1,13 @@
 <div align="center">
 
-  # ⚡ Interactive Portfolio
+  <img src="./public/hero-preview.png" alt="Eduardo Córdova • Portafolio Interactivo" width="100%" />
+
+  <br /><br />
+
+  # ⚡ Eduardo Córdova • Interactive Portfolio
 
   <p align="center">
-    <strong>Experiencia Web 3D Inmersiva de Alto Rendimiento // WebGL, Shaders & Motion Design</strong>
+    <strong>Experiencia Web 3D Inmersiva de Alto Rendimiento • WebGL, Shaders & Motion Design</strong>
   </p>
 
   <p align="center">
