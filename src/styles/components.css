@@ -5,48 +5,50 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   background-color: #00f3ff !important;
   border-radius: 50%;
   pointer-events: none !important;
   z-index: 2147483647 !important;
-  box-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 35px rgba(0, 243, 255, 0.9);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 35px #00f3ff;
   opacity: 1 !important;
   visibility: visible !important;
+  display: block !important;
   transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
               height 0.2s cubic-bezier(0.16, 1, 0.3, 1),
               background-color 0.2s ease,
               box-shadow 0.2s ease;
-  will-change: transform;
 }
 
 .custom-cursor-ring {
   position: fixed;
   top: 0;
   left: 0;
-  width: 36px;
-  height: 36px;
-  border: 1.8px solid #00f3ff !important;
+  width: 38px;
+  height: 38px;
+  border: 2px solid #00f3ff !important;
   background-color: rgba(0, 243, 255, 0.08) !important;
   border-radius: 50%;
   pointer-events: none !important;
   z-index: 2147483646 !important;
-  box-shadow: 0 0 16px rgba(0, 243, 255, 0.35);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 16px rgba(0, 243, 255, 0.4);
   opacity: 1 !important;
   visibility: visible !important;
-  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-              height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+  display: block !important;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.25s ease,
               background-color 0.25s ease,
               box-shadow 0.25s ease;
-  will-change: transform;
 }
 
 /* Hover States for Interactive Elements */
 body.hovering-link .custom-cursor {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   background-color: #ffffff !important;
   box-shadow: 0 0 15px #ffffff, 0 0 30px rgba(0, 243, 255, 1);
 }
@@ -74,23 +76,25 @@ body.cursor-clicking .custom-cursor-ring {
   box-shadow: 0 0 20px rgba(0, 243, 255, 0.9);
 }
 
-/* Desktop native cursor replacement only when custom cursor is confirmed */
-@media (hover: hover) and (pointer: fine) {
-  html.has-custom-cursor,
-  html.has-custom-cursor body,
-  html.has-custom-cursor *,
-  html.has-custom-cursor *::before,
-  html.has-custom-cursor *::after {
-    cursor: none !important;
-  }
+/* Hide native cursor ONLY when custom cursor is confirmed active */
+html.has-custom-cursor,
+html.has-custom-cursor body,
+html.has-custom-cursor *,
+html.has-custom-cursor *::before,
+html.has-custom-cursor *::after {
+  cursor: none !important;
 }
 
-/* Hide custom cursor on mobile / touch devices */
-@media (hover: none) or (pointer: coarse) {
-  .custom-cursor,
-  .custom-cursor-ring {
-    display: none !important;
-  }
+/* Fallback for real mobile touch screens */
+html.is-touch-device .custom-cursor,
+html.is-touch-device .custom-cursor-ring {
+  display: none !important;
+}
+
+html.is-touch-device,
+html.is-touch-device body,
+html.is-touch-device * {
+  cursor: auto !important;
 }
 
 /* Cinematic Fullscreen Loader Screen */
