@@ -24,7 +24,6 @@ export class SoundManager {
       if (this.audioCtx && this.audioCtx.state === 'suspended') {
         this.audioCtx.resume();
       }
-      // Remove listeners once audio system is hot
       window.removeEventListener('click', unlock);
       window.removeEventListener('keydown', unlock);
       window.removeEventListener('touchstart', unlock);
@@ -35,7 +34,7 @@ export class SoundManager {
     window.addEventListener('touchstart', unlock, { once: true });
   }
 
-  // 1. High-tech Mechanical click (short high-frequency sine wave transient)
+  // 1. Ultra-soft tactile micro-pulse (for button / link hovers)
   playClick() {
     if (!this.isEnabled) return;
     this.init();
@@ -48,20 +47,20 @@ export class SoundManager {
     const gain = ctx.createGain();
 
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(1100, now);
-    osc.frequency.exponentialRampToValueAtTime(320, now + 0.035);
+    osc.frequency.setValueAtTime(360, now);
+    osc.frequency.exponentialRampToValueAtTime(180, now + 0.018);
 
-    gain.gain.setValueAtTime(0.015, now);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+    gain.gain.setValueAtTime(0.003, now);
+    gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.018);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
 
     osc.start(now);
-    osc.stop(now + 0.04);
+    osc.stop(now + 0.02);
   }
 
-  // 2. High-Tech diagnostic chirp (two quick frequency steps)
+  // 2. Soft, warm droplet / organic tap confirmation (for clicks & triggers)
   playChirp() {
     if (!this.isEnabled) return;
     this.init();
@@ -73,21 +72,21 @@ export class SoundManager {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(880, now);
-    osc.frequency.setValueAtTime(1480, now + 0.025);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(520, now);
+    osc.frequency.exponentialRampToValueAtTime(380, now + 0.045);
 
-    gain.gain.setValueAtTime(0.018, now);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
+    gain.gain.setValueAtTime(0.008, now);
+    gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.045);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
 
     osc.start(now);
-    osc.stop(now + 0.08);
+    osc.stop(now + 0.05);
   }
 
-  // 3. Wideband sweep for details drawer slide transitions
+  // 3. Smooth, low-frequency velvety breath for drawer slide transitions
   playDrawerSweep(isOpen = true) {
     if (!this.isEnabled) return;
     this.init();
@@ -100,40 +99,35 @@ export class SoundManager {
     const gain = ctx.createGain();
     const filter = ctx.createBiquadFilter();
 
-    osc.type = 'sawtooth';
-    filter.type = 'bandpass';
-    filter.Q.value = 2.5;
+    osc.type = 'sine';
+    filter.type = 'lowpass';
+    filter.Q.value = 1.0;
 
     if (isOpen) {
-      // Swiping upward from low frequency
-      osc.frequency.setValueAtTime(180, now);
-      osc.frequency.exponentialRampToValueAtTime(750, now + 0.48);
-      filter.frequency.setValueAtTime(220, now);
-      filter.frequency.exponentialRampToValueAtTime(1150, now + 0.48);
-      
-      gain.gain.setValueAtTime(0.001, now);
-      gain.gain.linearRampToValueAtTime(0.015, now + 0.12);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.48);
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(260, now + 0.25);
+      filter.frequency.setValueAtTime(280, now);
+      filter.frequency.exponentialRampToValueAtTime(450, now + 0.25);
     } else {
-      // Swiping downward from high frequency
-      osc.frequency.setValueAtTime(580, now);
-      osc.frequency.exponentialRampToValueAtTime(120, now + 0.38);
-      filter.frequency.setValueAtTime(880, now);
-      filter.frequency.exponentialRampToValueAtTime(180, now + 0.38);
-
-      gain.gain.setValueAtTime(0.012, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.38);
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.exponentialRampToValueAtTime(120, now + 0.2);
+      filter.frequency.setValueAtTime(380, now);
+      filter.frequency.exponentialRampToValueAtTime(180, now + 0.2);
     }
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(0.006, now + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.25);
 
     osc.connect(filter);
     filter.connect(gain);
     gain.connect(ctx.destination);
 
     osc.start(now);
-    osc.stop(now + 0.5);
+    osc.stop(now + 0.26);
   }
 
-  // 4. Subtle mechanical keyboard keystroke click
+  // 4. Subtle muted keystroke tick
   playKeyboardClick() {
     if (!this.isEnabled) return;
     this.init();
@@ -145,13 +139,12 @@ export class SoundManager {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(1450, now);
-    osc.frequency.exponentialRampToValueAtTime(550, now + 0.012);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(620, now);
+    osc.frequency.exponentialRampToValueAtTime(240, now + 0.012);
 
-    // Kept highly subtle for satisfying high-speed typing runs
-    gain.gain.setValueAtTime(0.008, now);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.012);
+    gain.gain.setValueAtTime(0.003, now);
+    gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.012);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
@@ -160,7 +153,7 @@ export class SoundManager {
     osc.stop(now + 0.015);
   }
 
-  // 5. Sound feedbacl for CLI invalid directives
+  // 5. Soft low-frequency damped error tone
   playError() {
     if (!this.isEnabled) return;
     this.init();
@@ -172,21 +165,21 @@ export class SoundManager {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(140, now);
-    osc.frequency.setValueAtTime(110, now + 0.07);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(160, now);
+    osc.frequency.setValueAtTime(120, now + 0.06);
 
-    gain.gain.setValueAtTime(0.02, now);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+    gain.gain.setValueAtTime(0.008, now);
+    gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.12);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
 
     osc.start(now);
-    osc.stop(now + 0.2);
+    osc.stop(now + 0.13);
   }
 
-  // 6. Sound feedback for CLI compilation success
+  // 6. Warm harmonic bell chime for completions
   playSuccess() {
     if (!this.isEnabled) return;
     this.init();
@@ -195,37 +188,25 @@ export class SoundManager {
     const ctx = this.audioCtx;
     const now = ctx.currentTime;
 
-    const osc1 = ctx.createOscillator();
-    const osc2 = ctx.createOscillator();
-    const gain1 = ctx.createGain();
-    const gain2 = ctx.createGain();
+    [523.25, 659.25].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
 
-    osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(587.33, now); // D5
-    osc1.frequency.exponentialRampToValueAtTime(1174.66, now + 0.14);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.02);
 
-    osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(880, now); // A5
-    osc2.frequency.exponentialRampToValueAtTime(1760, now + 0.14);
+      gain.gain.setValueAtTime(0.006, now + i * 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.00001, now + i * 0.02 + 0.18);
 
-    gain1.gain.setValueAtTime(0.012, now);
-    gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
 
-    gain2.gain.setValueAtTime(0.012, now);
-    gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
-
-    osc1.connect(gain1);
-    osc2.connect(gain2);
-    gain1.connect(ctx.destination);
-    gain2.connect(ctx.destination);
-
-    osc1.start(now);
-    osc2.start(now);
-    osc1.stop(now + 0.15);
-    osc2.stop(now + 0.15);
+      osc.start(now + i * 0.02);
+      osc.stop(now + i * 0.02 + 0.2);
+    });
   }
 
-  // 7. Hyperspace Warp Jump Acoustic Whoosh
+  // 7. Minimalist, warm velvety sub-bass glide (Navigation to section)
   playWarpJump() {
     if (!this.isEnabled) return;
     this.init();
@@ -234,36 +215,47 @@ export class SoundManager {
     const ctx = this.audioCtx;
     const now = ctx.currentTime;
 
-    const osc = ctx.createOscillator();
+    // Dual soft warm sine oscillators: Fundamental + Sub-harmonic
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
     const gain = ctx.createGain();
     const filter = ctx.createBiquadFilter();
 
-    osc.type = 'sawtooth';
+    osc1.type = 'sine';
+    osc2.type = 'sine';
+
+    // Warm, gentle glide: 160Hz -> 90Hz -> 65Hz (luxurious deep acoustic pulse)
+    osc1.frequency.setValueAtTime(160, now);
+    osc1.frequency.exponentialRampToValueAtTime(90, now + 0.18);
+    osc1.frequency.exponentialRampToValueAtTime(65, now + 0.38);
+
+    osc2.frequency.setValueAtTime(240, now);
+    osc2.frequency.exponentialRampToValueAtTime(130, now + 0.18);
+    osc2.frequency.exponentialRampToValueAtTime(80, now + 0.38);
+
+    // Warm acoustic low-pass filter eliminates any harshness
     filter.type = 'lowpass';
-    filter.Q.value = 4.0;
+    filter.frequency.setValueAtTime(450, now);
+    filter.frequency.exponentialRampToValueAtTime(180, now + 0.38);
+    filter.Q.value = 0.7; // Gentle butterworth-like slope
 
-    // Rising sweep then drop
-    osc.frequency.setValueAtTime(90, now);
-    osc.frequency.exponentialRampToValueAtTime(1450, now + 0.55);
-    osc.frequency.exponentialRampToValueAtTime(120, now + 1.2);
+    // Soft fade-in envelope and smooth decaying tail
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(0.010, now + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.40);
 
-    filter.frequency.setValueAtTime(120, now);
-    filter.frequency.exponentialRampToValueAtTime(3200, now + 0.55);
-    filter.frequency.exponentialRampToValueAtTime(200, now + 1.2);
-
-    gain.gain.setValueAtTime(0.001, now);
-    gain.gain.linearRampToValueAtTime(0.035, now + 0.35);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
-
-    osc.connect(filter);
+    osc1.connect(filter);
+    osc2.connect(filter);
     filter.connect(gain);
     gain.connect(ctx.destination);
 
-    osc.start(now);
-    osc.stop(now + 1.25);
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 0.42);
+    osc2.stop(now + 0.42);
   }
 
-  // 8. Holographic Core Deconstruction Harmonic Chime
+  // 8. Ethereal warm ambient chord
   playCoreDeconstruct() {
     if (!this.isEnabled) return;
     this.init();
@@ -272,22 +264,21 @@ export class SoundManager {
     const ctx = this.audioCtx;
     const now = ctx.currentTime;
 
-    [440, 659.25, 880, 1318.51].forEach((freq, i) => {
+    [330, 440, 550].forEach((freq, i) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now + i * 0.03);
-      osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + i * 0.03 + 0.25);
+      osc.frequency.setValueAtTime(freq, now + i * 0.02);
 
-      gain.gain.setValueAtTime(0.008, now + i * 0.03);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.03 + 0.28);
+      gain.gain.setValueAtTime(0.004, now + i * 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.00001, now + i * 0.02 + 0.25);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
-      osc.start(now + i * 0.03);
-      osc.stop(now + i * 0.03 + 0.3);
+      osc.start(now + i * 0.02);
+      osc.stop(now + i * 0.02 + 0.28);
     });
   }
 }
