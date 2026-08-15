@@ -27,18 +27,8 @@ export class PortfolioOrchestrator {
     this.initCommandRegistry();
     this.initCommandPalette();
     
-    // Initialize active language (natively Spanish by default in index.html)
-    if (this.currentLang !== 'es') {
-      this.setLanguage(this.currentLang);
-    } else {
-      const enCode = document.getElementById('lang-code-en');
-      const esCode = document.getElementById('lang-code-es');
-      if (enCode && esCode) {
-        esCode.classList.add('active');
-        enCode.classList.remove('active');
-      }
-      this.projectsData = projectsDataES;
-    }
+    // Initialize active language (ensures all data-i18n strings are translated)
+    this.setLanguage(this.currentLang);
     
     this.initCliTerminals();
     this.initOverclockConsole();
