@@ -377,6 +377,17 @@
   align-items: center;
 }
 
+@media (min-width: 993px) {
+  #laravel-backend .showcase-details,
+  #wordpress-cms .showcase-details {
+    order: 2;
+  }
+  #laravel-backend .showcase-code-panel,
+  #wordpress-cms .showcase-code-panel {
+    order: 1;
+  }
+}
+
 .showcase-details {
   display: flex;
   flex-direction: column;
@@ -1124,12 +1135,26 @@
     font-size: 2.2em;
   }
   .showcase-grid {
-    grid-template-columns: 1fr;
-    gap: 3em;
+    display: flex;
+    flex-direction: column;
+    gap: 2.2em;
+    width: 100%;
+  }
+  .showcase-details {
+    order: 1 !important;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+  }
+  .showcase-code-panel {
+    order: 2 !important;
+    width: 100%;
+    padding: 1.6em;
   }
   .tech-metrics {
-    grid-template-columns: 1fr;
-    gap: 1.5em;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2em;
   }
   .about-grid {
     grid-template-columns: 1fr;
@@ -1189,9 +1214,23 @@
   .about-specs {
     padding: 1.5em;
   }
+  .showcase-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+  }
+  .showcase-details {
+    order: 1 !important;
+    gap: 0.9em;
+  }
   .showcase-code-panel {
+    order: 2 !important;
     font-size: 0.58em;
-    padding: 1.2em;
+    padding: 1.1em;
+  }
+  .tech-metrics {
+    grid-template-columns: 1fr;
+    gap: 0.75em;
   }
   .simulator-terminal {
     padding: 1.0em;

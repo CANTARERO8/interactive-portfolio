@@ -53,11 +53,20 @@
   overflow: hidden;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .scene-section {
-    padding: 0 2em;
+    padding: 4.5em 2em 3em 2em;
+    height: 100vh;
+    overflow-y: auto;
+    align-items: flex-start;
   }
   .grid-overlay {
     padding: 0 1em;
+  }
+}
+
+@media (max-width: 576px) {
+  .scene-section {
+    padding: 4.0em 1.2em 2.5em 1.2em;
   }
 }
