@@ -603,14 +603,13 @@
                 <span class="mac-btn minimize"></span>
                 <span class="mac-btn maximize"></span>
               </div>
-              <span class="panel-filename mono sm">// StateOrchestrator.js</span>
+              <span class="panel-filename mono sm">StateOrchestrator.js</span>
               <div class="panel-controls">
                 <button class="panel-control-btn active" data-action="code" data-i18n="vue.ctrl.code">[ CODE ]</button>
                 <button class="panel-control-btn" data-action="sim" data-i18n="vue.ctrl.sim">[ SIMULATOR ]</button>
               </div>
             </div>
             <div class="panel-code-view">
-              <span class="code-comment">// Decoupled Central State management via Pinia Store</span><br />
               <span class="code-keyword">import</span> { defineStore } <span class="code-keyword">from</span> <span class="code-string">'pinia'</span>;<br />
               <span class="code-keyword">import</span> { ref, computed } <span class="code-keyword">from</span> <span class="code-string">'vue'</span>;<br /><br />
               <span class="code-keyword">export const</span> useSystemStore = defineStore(<span class="code-string">'system'</span>, <span class="code-function">() =></span> {<br />
@@ -629,7 +628,7 @@
                 <div class="simulator-body">
                   <div class="sim-metric-row">
                     <span>PINIA CORE STATE:</span>
-                    <span class="sim-accent-cyan" id="sim-vue-status">OK // DECOUPLED</span>
+                    <span class="sim-accent-cyan" id="sim-vue-status">OK • DECOUPLED</span>
                   </div>
                   <div class="sim-metric-row">
                     <span>CLIENT CORE LOAD:</span>
@@ -642,7 +641,7 @@
                     <span class="log-info">[SYSTEM] Initializing client-side state...</span>
                   </div>
                   <div class="cli-command-suggestions mono sm">
-                    <span class="suggestion-label">// SUGGESTIONS:</span>
+                    <span class="suggestion-label">SUGGESTIONS:</span>
                     <button class="cli-suggest-btn" data-cmd="help">help</button>
                     <button class="cli-suggest-btn" data-cmd="telemetry">telemetry</button>
                     <button class="cli-suggest-btn" data-cmd="database query">database query</button>
@@ -685,14 +684,13 @@
                 <span class="mac-btn minimize"></span>
                 <span class="mac-btn maximize"></span>
               </div>
-              <span class="panel-filename mono sm">// BackendDispatcher.php</span>
+              <span class="panel-filename mono sm">BackendDispatcher.php</span>
               <div class="panel-controls">
                 <button class="panel-control-btn active" data-action="code" data-i18n="laravel.ctrl.code">[ CODE ]</button>
                 <button class="panel-control-btn" data-action="sim" data-i18n="laravel.ctrl.sim">[ SIMULATOR ]</button>
               </div>
             </div>
             <div class="panel-code-view">
-              <span class="code-comment">// SOLID Service/Repository pattern controller</span><br />
               <span class="code-keyword">namespace</span> App\Core\Services;<br />
               <span class="code-keyword">use</span> App\Repositories\Contracts\EventRepo;<br /><br />
               <span class="code-keyword">class</span> BackendDispatcher <span class="code-keyword">extends</span> Controller {<br />
@@ -717,7 +715,7 @@
                   </div>
                   <div class="sim-metric-row">
                     <span>DISPATCH SPEED:</span>
-                    <span id="sim-laravel-latency">12ms // VERIFIED</span>
+                    <span id="sim-laravel-latency">12ms • VERIFIED</span>
                   </div>
                   <div class="sim-metric-row">
                     <span>JSON RESPONSE DUMP:</span>
@@ -727,7 +725,7 @@
                     <span class="log-info">[API] Dispatcher booting routing pipeline...</span>
                   </div>
                   <div class="cli-command-suggestions mono sm">
-                    <span class="suggestion-label">// SUGGESTIONS:</span>
+                    <span class="suggestion-label">SUGGESTIONS:</span>
                     <button class="cli-suggest-btn" data-cmd="help">help</button>
                     <button class="cli-suggest-btn" data-cmd="telemetry">telemetry</button>
                     <button class="cli-suggest-btn" data-cmd="database query">database query</button>
@@ -770,14 +768,13 @@
                 <span class="mac-btn minimize"></span>
                 <span class="mac-btn maximize"></span>
               </div>
-              <span class="panel-filename mono sm">// DatabaseIndexCTEs.sql</span>
+              <span class="panel-filename mono sm">DatabaseIndexCTEs.sql</span>
               <div class="panel-controls">
                 <button class="panel-control-btn active" data-action="code" data-i18n="postgres.ctrl.code">[ CODE ]</button>
                 <button class="panel-control-btn" data-action="sim" data-i18n="postgres.ctrl.sim">[ SIMULATOR ]</button>
               </div>
             </div>
             <div class="panel-code-view">
-              <span class="code-comment">// Normalized query analyzing node hierarchy</span><br />
               <span class="code-keyword">WITH RECURSIVE</span> telemetry_hierarchy <span class="code-keyword">AS</span> (<br />
               &nbsp;&nbsp;<span class="code-keyword">SELECT</span> id, parent_id, node_name, <span class="code-tag">1</span> <span class="code-keyword">AS</span> depth<br />
               &nbsp;&nbsp;<span class="code-keyword">FROM</span> system_nodes <span class="code-keyword">WHERE</span> parent_id <span class="code-keyword">IS NULL</span><br />
@@ -796,7 +793,7 @@
                 <div class="simulator-body">
                   <div class="sim-metric-row">
                     <span>PLANNER EXPLAIN:</span>
-                    <span class="sim-accent-cyan" id="sim-sql-scan">INDEX SCAN // OK</span>
+                    <span class="sim-accent-cyan" id="sim-sql-scan">INDEX SCAN • OK</span>
                   </div>
                   <div class="sim-metric-row">
                     <span>EXECUTION TIME:</span>
@@ -816,7 +813,7 @@
                     <span class="log-info">[DB] Checking relational database structure indices...</span>
                   </div>
                   <div class="cli-command-suggestions mono sm">
-                    <span class="suggestion-label">// SUGGESTIONS:</span>
+                    <span class="suggestion-label">SUGGESTIONS:</span>
                     <button class="cli-suggest-btn" data-cmd="help">help</button>
                     <button class="cli-suggest-btn" data-cmd="telemetry">telemetry</button>
                     <button class="cli-suggest-btn" data-cmd="database query">database query</button>
@@ -859,14 +856,13 @@
                 <span class="mac-btn minimize"></span>
                 <span class="mac-btn maximize"></span>
               </div>
-              <span class="panel-filename mono sm">// CustomThemeCustomizer.css</span>
+              <span class="panel-filename mono sm">CustomThemeCustomizer.css</span>
               <div class="panel-controls">
                 <button class="panel-control-btn active" data-action="code" data-i18n="wordpress.ctrl.code">[ CODE ]</button>
                 <button class="panel-control-btn" data-action="sim" data-i18n="wordpress.ctrl.sim">[ SIMULATOR ]</button>
               </div>
             </div>
             <div class="panel-code-view">
-              <span class="code-comment">/* Custom Responsive Child Theme Stylesheet */</span><br />
               <span class="code-keyword">@media</span> (max-width: <span class="code-tag">1024px</span>) {<br />
               &nbsp;&nbsp;<span class="code-keyword">.custom-elementor-container</span> {<br />
               &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">display</span>: grid;<br />
@@ -875,7 +871,6 @@
               &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">padding</span>: <span class="code-tag">2rem</span>;<br />
               &nbsp;&nbsp;}<br />
               }<br />
-              <span class="code-comment">/* Custom query loop builder overrides */</span><br />
               <span class="code-keyword">.elementor-loop-item</span> {<br />
               &nbsp;&nbsp;<span class="code-keyword">transition</span>: var(--transition-smooth);<br />
               &nbsp;&nbsp;<span class="code-keyword">box-shadow</span>: <span class="code-tag">0 10px 30px rgba(0,0,0,0.15)</span>;<br />
@@ -888,7 +883,7 @@
                 <div class="simulator-body">
                   <div class="sim-metric-row">
                     <span>ELEMENTOR ENGINE:</span>
-                    <span class="sim-accent-cyan" id="sim-wp-status">RUNNING // ACTIVE</span>
+                    <span class="sim-accent-cyan" id="sim-wp-status">RUNNING • ACTIVE</span>
                   </div>
                   <div class="sim-metric-row">
                     <span>PAGE BUILDER:</span>
@@ -898,7 +893,7 @@
                     <span class="log-info">[CMS] Loading custom page builder metadata...</span>
                   </div>
                   <div class="cli-command-suggestions mono sm">
-                    <span class="suggestion-label">// SUGGESTIONS:</span>
+                    <span class="suggestion-label">SUGGESTIONS:</span>
                     <button class="cli-suggest-btn" data-cmd="help">help</button>
                     <button class="cli-suggest-btn" data-cmd="telemetry">telemetry</button>
                     <button class="cli-suggest-btn" data-cmd="database query">database query</button>
@@ -922,8 +917,8 @@
         <div class="footer-grid">
           <div class="footer-left">
             <div class="footer-credits" id="footer-text-credits" data-i18n="footer.credits">
-              // 2026 © EDUARDO CORDOVA. ALL RIGHTS RESERVED.<br />
-              // FULLSTACK & WEB DEVELOPER FROM MANAGUA, NICARAGUA TO THE WORLD.
+              2026 © EDUARDO CORDOVA. ALL RIGHTS RESERVED.<br />
+              FULLSTACK & WEB DEVELOPER FROM MANAGUA, NICARAGUA TO THE WORLD.
             </div>
           </div>
           <div class="footer-right">
