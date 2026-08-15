@@ -10,13 +10,12 @@ export class MagneticManager {
 
   initMagnetics() {
     this.magneticElements.forEach(el => {
-      // 1. Create highly optimized GSAP quickTo animations for smooth sub-millisecond translates
+      
       const xTo = gsap.quickTo(el, 'x', { duration: 0.35, ease: 'power3.out' });
       const yTo = gsap.quickTo(el, 'y', { duration: 0.35, ease: 'power3.out' });
       
       let rect = el.getBoundingClientRect();
       
-      // Update element bounding coordinates dynamically on viewport changes
       const updateRect = () => {
         rect = el.getBoundingClientRect();
       };
@@ -24,24 +23,21 @@ export class MagneticManager {
       window.addEventListener('resize', updateRect);
       window.addEventListener('scroll', updateRect, { passive: true });
 
-      // Track cursor position inside window
       window.addEventListener('mousemove', (e) => {
         const mouseX = e.clientX;
         const mouseY = e.clientY;
         
-        // Calculate coordinate center of target element
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         
-        // Calculate vector distance from cursor to center
         const dx = mouseX - centerX;
         const dy = mouseY - centerY;
         const dist = Math.sqrt(dx * dx + dy * dy);
         
-        const limit = 55; // magnet pull range in pixels
+        const limit = 55; 
         
         if (dist < limit) {
-          // Inside magnetic field: pull suttly towards cursor (weighted max 14px translate)
+          
           const force = 0.26;
           xTo(dx * force);
           yTo(dy * force);
@@ -53,7 +49,7 @@ export class MagneticManager {
             el.style.textShadow = '0 0 10px rgba(0, 243, 255, 0.4)';
           }
         } else {
-          // Outside magnetic field: snap suttly back to rest coordinates
+          
           xTo(0);
           yTo(0);
           el.style.textShadow = '';

@@ -3,11 +3,9 @@ export class SoundManager {
     this.audioCtx = null;
     this.isEnabled = true;
 
-    // Hook basic user gestures to initialize AudioContext seamlessly
     this.initOnInteraction();
   }
 
-  // Initialize browser AudioContext
   init() {
     if (this.audioCtx) return;
     try {
@@ -17,7 +15,6 @@ export class SoundManager {
     }
   }
 
-  // Interactive unlock hook for standard browser autoplay security policies
   initOnInteraction() {
     const unlock = () => {
       this.init();
@@ -34,7 +31,6 @@ export class SoundManager {
     window.addEventListener('touchstart', unlock, { once: true });
   }
 
-  // 1. Ultra-soft tactile micro-pulse (for button / link hovers)
   playClick() {
     if (!this.isEnabled) return;
     this.init();
@@ -60,7 +56,6 @@ export class SoundManager {
     osc.stop(now + 0.02);
   }
 
-  // 2. Soft, warm droplet / organic tap confirmation (for clicks & triggers)
   playChirp() {
     if (!this.isEnabled) return;
     this.init();
@@ -86,7 +81,6 @@ export class SoundManager {
     osc.stop(now + 0.05);
   }
 
-  // 3. Smooth, low-frequency velvety breath for drawer slide transitions
   playDrawerSweep(isOpen = true) {
     if (!this.isEnabled) return;
     this.init();
@@ -127,7 +121,6 @@ export class SoundManager {
     osc.stop(now + 0.26);
   }
 
-  // 4. Subtle muted keystroke tick
   playKeyboardClick() {
     if (!this.isEnabled) return;
     this.init();
@@ -153,7 +146,6 @@ export class SoundManager {
     osc.stop(now + 0.015);
   }
 
-  // 5. Soft low-frequency damped error tone
   playError() {
     if (!this.isEnabled) return;
     this.init();
@@ -179,7 +171,6 @@ export class SoundManager {
     osc.stop(now + 0.13);
   }
 
-  // 6. Warm harmonic bell chime for completions
   playSuccess() {
     if (!this.isEnabled) return;
     this.init();
@@ -206,7 +197,6 @@ export class SoundManager {
     });
   }
 
-  // 7. Minimalist, warm velvety sub-bass glide (Navigation to section)
   playWarpJump() {
     if (!this.isEnabled) return;
     this.init();
@@ -215,7 +205,6 @@ export class SoundManager {
     const ctx = this.audioCtx;
     const now = ctx.currentTime;
 
-    // Dual soft warm sine oscillators: Fundamental + Sub-harmonic
     const osc1 = ctx.createOscillator();
     const osc2 = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -224,7 +213,6 @@ export class SoundManager {
     osc1.type = 'sine';
     osc2.type = 'sine';
 
-    // Warm, gentle glide: 160Hz -> 90Hz -> 65Hz (luxurious deep acoustic pulse)
     osc1.frequency.setValueAtTime(160, now);
     osc1.frequency.exponentialRampToValueAtTime(90, now + 0.18);
     osc1.frequency.exponentialRampToValueAtTime(65, now + 0.38);
@@ -233,13 +221,11 @@ export class SoundManager {
     osc2.frequency.exponentialRampToValueAtTime(130, now + 0.18);
     osc2.frequency.exponentialRampToValueAtTime(80, now + 0.38);
 
-    // Warm acoustic low-pass filter eliminates any harshness
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(450, now);
     filter.frequency.exponentialRampToValueAtTime(180, now + 0.38);
-    filter.Q.value = 0.7; // Gentle butterworth-like slope
+    filter.Q.value = 0.7; 
 
-    // Soft fade-in envelope and smooth decaying tail
     gain.gain.setValueAtTime(0.0001, now);
     gain.gain.linearRampToValueAtTime(0.010, now + 0.025);
     gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.40);
@@ -255,7 +241,6 @@ export class SoundManager {
     osc2.stop(now + 0.42);
   }
 
-  // 8. Ethereal warm ambient chord
   playCoreDeconstruct() {
     if (!this.isEnabled) return;
     this.init();

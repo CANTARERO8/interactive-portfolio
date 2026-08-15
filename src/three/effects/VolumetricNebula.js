@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-const nebulaVertexShader = /* glsl */ `
+const nebulaVertexShader =  `
   varying vec2 vUv;
 
   void main() {
@@ -9,7 +9,7 @@ const nebulaVertexShader = /* glsl */ `
   }
 `;
 
-const nebulaFragmentShader = /* glsl */ `
+const nebulaFragmentShader =  `
   precision highp float;
 
   uniform float uTime;
@@ -293,8 +293,6 @@ export class VolumetricNebula {
     this.camera.updateMatrixWorld();
     this.cameraRotation.setFromMatrix4(this.camera.matrixWorld);
 
-    // The nebula evolves slowly, so a stable half-rate render preserves its
-    // spatial detail while leaving more GPU time for the foreground scene.
     this.frame++;
     const renderInterval = 2;
     if (this.frame % renderInterval === 0) {

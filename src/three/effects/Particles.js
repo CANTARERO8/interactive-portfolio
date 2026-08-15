@@ -13,7 +13,6 @@ export class Particles {
     
     const texture = this.createGlowTexture();
     
-    // 1. Standard background cyber dust
     const positions = new Float32Array(this.count * 3);
     const speeds = new Float32Array(this.count);
     this.velocities = new Float32Array(this.count * 3);
@@ -41,8 +40,6 @@ export class Particles {
     this.points = new THREE.Points(this.geometry, this.material);
     this.scene.add(this.points);
 
-    // 1.1 Ultra+ exclusive violet deep-field layer. It stays GPU-static and
-    // moves as one slow volume, adding density without another CPU particle loop.
     this.ultraParticleCount = 3200;
     const ultraPositions = new Float32Array(this.ultraParticleCount * 3);
     for (let i = 0; i < this.ultraParticleCount; i++) {
@@ -66,7 +63,6 @@ export class Particles {
     this.ultraParticlePoints.visible = false;
     this.scene.add(this.ultraParticlePoints);
 
-    // 2. Cinematic Bokeh Floaters Layer
     this.bokehCount = 120;
     const bokehPositions = new Float32Array(this.bokehCount * 3);
 
@@ -147,7 +143,6 @@ export class Particles {
     return new THREE.CanvasTexture(canvas);
   }
 
-  // Trigger Hyperspace Warp Speed acceleration
   triggerWarpSpeed(duration = 1.4) {
     this.isWarpActive = true;
     
@@ -167,7 +162,6 @@ export class Particles {
       }
     });
 
-    // Particle size flare
     gsap.to(this.material, {
       size: 0.55,
       duration: duration * 0.4,
@@ -183,7 +177,6 @@ export class Particles {
     const speeds = this.speeds;
     const count = this.activeCount;
 
-    // Lerp speed multiplier back towards baseline unless actively in warp
     if (!this.isWarpActive) {
       this.speedMultiplier += (1.0 - this.speedMultiplier) * 0.05;
     }
@@ -209,7 +202,6 @@ export class Particles {
           vels[idx + 2] = vz;
         }
 
-        // Warp speed streak behavior: if in warp, fly along Z axis towards camera!
         if (this.isWarpActive) {
           positions[idx + 2] += this.speedMultiplier * deltaTime * 12.0;
           if (positions[idx + 2] > 15) {

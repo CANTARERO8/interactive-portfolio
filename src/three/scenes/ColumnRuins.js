@@ -10,7 +10,6 @@ export class ColumnRuins {
     this.glowingOrbs = [];
     this.monoliths = [];
 
-    // 1B. Floating Brutalist Monoliths (Server Towers scattered on far left and far right outer boundaries)
     const monolithLayouts = [
       { x: -18.5, y: -2.0, z: 12,   w: 2.2, h: 14, d: 2.2, speed: 0.18, phase: 0.0 },
       { x: -21.0, y: -1.0, z: -15,  w: 2.6, h: 18, d: 2.6, speed: 0.12, phase: 2.5 },
@@ -23,10 +22,10 @@ export class ColumnRuins {
     ];
 
     const monolithMaterial = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#050810'), // extremely dark matte stone
+      color: new THREE.Color('#050810'), 
       roughness: 0.7,
       metalness: 0.5,
-      flatShading: true // flat shaded edges fit the brutalist aesthetic beautifully
+      flatShading: true 
     });
 
     monolithLayouts.forEach(config => {
@@ -42,7 +41,6 @@ export class ColumnRuins {
       });
     });
 
-    // 1. Generate 26 massive detailed Greek columns scattered in an extremely deep visual corridor
     const columnLayouts = [
       { x: -4.5, y: -3.5, z: 8,   scale: 1.6, rotY: 0.5 },
       { x: -5.0, y: -3.5, z: 4,   scale: 1.8, rotY: 0.2 },
@@ -92,7 +90,6 @@ export class ColumnRuins {
       });
     });
 
-    // 2. Floating debris blocks — reduced to 22 (was 38) to cut draw calls
     for (let i = 0; i < 22; i++) {
       const w = 0.3 + Math.random() * 0.7;
       const h = 0.15 + Math.random() * 0.35;
@@ -116,11 +113,10 @@ export class ColumnRuins {
       });
     }
 
-    // 3. Cosmic Energy Orbs — reduced to 10 (was 15)
     const orbColors = ['#00f3ff', '#9d00ff', '#fbbf24', '#ff0055'];
     for (let i = 0; i < 10; i++) {
       const color = orbColors[i % orbColors.length];
-      // Low-poly sphere (8 segments) — looks identical at small sizes
+      
       const orbGeo = new THREE.SphereGeometry(0.08 + Math.random() * 0.14, 8, 8);
       const orbMat = new THREE.MeshBasicMaterial({
         color: new THREE.Color(color),
@@ -143,12 +139,10 @@ export class ColumnRuins {
       });
     }
 
-    // 4. Upward sparks — reduced to 1200 (was 2500), use flat TypedArrays instead of object array
     this.sparksCount = 1200;
     this.sparksGeometry = new THREE.BufferGeometry();
     const sparksPositions = new Float32Array(this.sparksCount * 3);
 
-    // Store per-spark data in typed arrays for cache-friendly access (no object property lookup)
     this._sparksSpeed  = new Float32Array(this.sparksCount);
     this._sparksDriftX = new Float32Array(this.sparksCount);
 
@@ -172,9 +166,6 @@ export class ColumnRuins {
     this.sparksPoints = new THREE.Points(this.sparksGeometry, this.sparksMaterial);
     this.scene.add(this.sparksPoints);
 
-
-
-    // 6. Water shader — scaled to 180 size but keeping 64x64 vertices to ensure zero performance cost
     this.waterGeometry = new THREE.PlaneGeometry(180, 180, 64, 64);
     this.waterMaterial = new THREE.ShaderMaterial({
       vertexShader: `
@@ -229,13 +220,11 @@ export class ColumnRuins {
     this.waterMesh.position.y = -3.5;
     this.scene.add(this.waterMesh);
 
-    // 7. Master Lights
     this.setupLights();
 
-    // 8. Initialize Cyber-Drones (No Platforms, Flying and Perching in 3D Space)
     this.drones = [];
     const droneConfigs = [
-      // --- FLYING DRONES (Centrados en el canal central, rondando en X y Z - Colores más apagados) ---
+      
       {
         type: 'flying',
         baseY: 3.2,
@@ -244,7 +233,7 @@ export class ColumnRuins {
         minX: -6.0, maxX: 6.0,
         minZ: -5.0, maxZ: 8.0,
         floatAmpY: 0.8, floatSpeedY: 1.3,
-        glowColor: '#3a6b82', hasLight: true // Muted Cyan
+        glowColor: '#3a6b82', hasLight: true 
       },
       {
         type: 'flying',
@@ -254,7 +243,7 @@ export class ColumnRuins {
         minX: -6.5, maxX: 6.5,
         minZ: -15.0, maxZ: -2.0,
         floatAmpY: 0.9, floatSpeedY: 1.0,
-        glowColor: '#8f7547', hasLight: true // Muted Gold/Amber
+        glowColor: '#8f7547', hasLight: true 
       },
       {
         type: 'flying',
@@ -264,7 +253,7 @@ export class ColumnRuins {
         minX: -6.0, maxX: 6.0,
         minZ: -45.0, maxZ: -25.0,
         floatAmpY: 0.75, floatSpeedY: 1.5,
-        glowColor: '#517559', hasLight: true // Muted Sage Green
+        glowColor: '#517559', hasLight: true 
       },
       {
         type: 'flying',
@@ -274,33 +263,33 @@ export class ColumnRuins {
         minX: -5.8, maxX: 5.8,
         minZ: -40.0, maxZ: -5.0,
         floatAmpY: 1.0, floatSpeedY: 0.95,
-        glowColor: '#824a52', hasLight: true // Muted Crimson
+        glowColor: '#824a52', hasLight: true 
       },
-      // --- COLUMN TOP DRONES (En columnas del fondo, sólo 2 de apoyo - Colores más apagados) ---
+      
       {
         type: 'scanning',
         parentType: 'column',
-        columnIndex: 3, // Z = -6
+        columnIndex: 3, 
         columnScale: 2.5,
         scale: 1.3,
         rotY: 0.6,
-        glowColor: '#5f4c70', // Muted Lavender
+        glowColor: '#5f4c70', 
         hasLight: true
       },
       {
         type: 'scanning',
         parentType: 'column',
-        columnIndex: 17, // Z = -13
+        columnIndex: 17, 
         columnScale: 2.6,
         scale: 1.3,
         rotY: -0.5,
-        glowColor: '#3a6b82', // Muted Cyan
+        glowColor: '#3a6b82', 
         hasLight: true
       }
     ];
 
     droneConfigs.forEach(config => {
-      // Create Cyber-Drone
+      
       const droneData = this.buildDrone(config.scale, config.glowColor || '#00f2fe', config.type, config);
       
       droneData.cycleSeed = Math.random() * 100;
@@ -326,7 +315,7 @@ export class ColumnRuins {
           mon.mesh.add(droneData.group);
         }
       } else {
-        // Flying drone - added to scene directly
+        
         droneData.baseY = config.baseY;
         droneData.minX = config.minX;
         droneData.maxX = config.maxX;
@@ -349,7 +338,6 @@ export class ColumnRuins {
       this.drones.push(droneData);
     });
 
-    // Raycaster for interactive clicks (GSAP spin pulses)
     this.raycaster = new THREE.Raycaster();
     this.mouse2D = new THREE.Vector2();
 
@@ -385,7 +373,6 @@ export class ColumnRuins {
   buildDrone(scale = 0.5, glowColor = '#00f2fe', type = 'default', config = {}) {
     const droneGroup = new THREE.Group();
 
-    // Body Material: Brutalist dark matte metal
     const bodyMat = new THREE.MeshStandardMaterial({
       color: new THREE.Color('#10141e'),
       roughness: 0.7,
@@ -393,7 +380,6 @@ export class ColumnRuins {
       flatShading: true
     });
 
-    // Visor/Glow Material
     const glowMat = new THREE.MeshBasicMaterial({
       color: new THREE.Color(glowColor)
     });
@@ -409,19 +395,16 @@ export class ColumnRuins {
       baseScaleZ /= colScale;
     }
 
-    // Central Hexagonal Core
     const coreGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.18, 6);
     const core = new THREE.Mesh(coreGeo, bodyMat);
     core.rotation.y = Math.PI / 6;
     droneGroup.add(core);
 
-    // Front Visor / Lens (glow bar pointing +X)
     const lensGeo = new THREE.BoxGeometry(0.16, 0.05, 0.05);
     const lens = new THREE.Mesh(lensGeo, glowMat);
     lens.position.set(0.18, 0.02, 0);
     droneGroup.add(lens);
 
-    // Rotor Arms (4 arms extending at 45 degree angles)
     const armGeo = new THREE.BoxGeometry(0.48, 0.03, 0.04);
     const angles = [Math.PI / 4, 3 * Math.PI / 4, -Math.PI / 4, -3 * Math.PI / 4];
     const propellers = [];
@@ -434,17 +417,14 @@ export class ColumnRuins {
       armMesh.position.x = 0.24;
       armGroup.add(armMesh);
 
-      // Motor housing at the end of the arm
       const motorGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.08, 6);
       const motor = new THREE.Mesh(motorGeo, bodyMat);
       motor.position.set(0.48, 0.04, 0);
       armGroup.add(motor);
 
-      // Propeller (spin group)
       const propGroup = new THREE.Group();
       propGroup.position.set(0.48, 0.09, 0);
       
-      // Propeller blades
       const bladeGeo = new THREE.BoxGeometry(0.36, 0.008, 0.03);
       const bladeMesh = new THREE.Mesh(bladeGeo, bodyMat);
       propGroup.add(bladeMesh);
@@ -455,13 +435,11 @@ export class ColumnRuins {
       propellers.push(propGroup);
     });
 
-    // Scanning Ring (outer thin torus surrounding the core)
     const ringGeo = new THREE.TorusGeometry(0.34, 0.012, 4, 16);
     const ring = new THREE.Mesh(ringGeo, bodyMat);
     ring.rotation.x = Math.PI / 2;
     droneGroup.add(ring);
 
-    // Glowing status LED lights (red and green blinking lights)
     const ledMatRed = new THREE.MeshBasicMaterial({ color: 0xff0033 });
     const ledMatGreen = new THREE.MeshBasicMaterial({ color: 0x33ff00 });
     
@@ -474,28 +452,25 @@ export class ColumnRuins {
     led2.position.set(-0.15, 0.08, -0.08);
     droneGroup.add(led2);
 
-    // Scanner Group (holds scanner emitter, laser and flare so they point together)
     const scannerGroup = new THREE.Group();
     scannerGroup.position.set(0, -0.08, 0);
-    // Default rotation points along +Z, which we'll point straight down (Euler X = Math.PI/2)
+    
     scannerGroup.rotation.x = Math.PI / 2;
     droneGroup.add(scannerGroup);
 
-    // Scanner emitter mesh
     const emitterGeo = new THREE.CylinderGeometry(0.08, 0.04, 0.06, 6);
-    emitterGeo.rotateX(Math.PI / 2); // align Y along Z
+    emitterGeo.rotateX(Math.PI / 2); 
     const emitter = new THREE.Mesh(emitterGeo, bodyMat);
     scannerGroup.add(emitter);
 
-    // Volumetric Laser scan beam (extends along +Z, length 1.0 unit by default)
     const laserGeo = new THREE.CylinderGeometry(0.015, 0.25, 1.0, 8, 1, true);
-    laserGeo.rotateX(Math.PI / 2); // align Y along Z
-    laserGeo.translate(0, 0, 0.5); // shift origin to the base of cylinder
+    laserGeo.rotateX(Math.PI / 2); 
+    laserGeo.translate(0, 0, 0.5); 
     
     const laserMat = new THREE.MeshBasicMaterial({
       color: new THREE.Color(glowColor),
       transparent: true,
-      opacity: 0.20, // Softer volumetric look
+      opacity: 0.20, 
       blending: THREE.AdditiveBlending,
       depthWrite: false,
       side: THREE.DoubleSide
@@ -503,13 +478,12 @@ export class ColumnRuins {
     const laser = new THREE.Mesh(laserGeo, laserMat);
     scannerGroup.add(laser);
 
-    // Pulsing scanning flare (flat sonar ring at the end of laser)
     const flareGeo = new THREE.RingGeometry(0.01, 0.25, 12);
-    // ring is already parallel to XY plane, which is perpendicular to Z. Perfect!
+    
     const flareMat = new THREE.MeshBasicMaterial({
       color: new THREE.Color(glowColor),
       transparent: true,
-      opacity: 0.45, // Softer ring
+      opacity: 0.45, 
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
       depthWrite: false
@@ -517,10 +491,9 @@ export class ColumnRuins {
     const flare = new THREE.Mesh(flareGeo, flareMat);
     scannerGroup.add(flare);
 
-    // Add a real spotlight pointing along the scanner's Z axis
     if (config.hasLight) {
       const spotColor = new THREE.Color(glowColor);
-      const spotLight = new THREE.SpotLight(spotColor, 6.0, 32.0, Math.PI / 5, 0.6, 1.0); // Muted intensity
+      const spotLight = new THREE.SpotLight(spotColor, 6.0, 32.0, Math.PI / 5, 0.6, 1.0); 
       spotLight.position.set(0, 0, 0);
       scannerGroup.add(spotLight);
 
@@ -564,14 +537,12 @@ export class ColumnRuins {
       }
     });
 
-    // 1. Rapid 360 spin around Y axis
     tl.to(drone.group.rotation, {
       y: '+=6.283185',
       duration: 0.45,
       ease: 'power2.inOut'
     });
 
-    // 2. Volumetric laser flash & expand sonar ring
     const originalOpacity = drone.laser.material.opacity;
     drone.flare.scale.set(0.1, 0.1, 0.1);
     
@@ -661,25 +632,20 @@ export class ColumnRuins {
     const orbCount = this.glowingOrbs.length;
     const monolithCount = this.monoliths.length;
 
-    // 0. Update Cyber-Drones states & animations
     const droneCount = this.drones ? this.drones.length : 0;
     for (let i = 0; i < droneCount; i++) {
       const drone = this.drones[i];
 
-      // Spin propellers (rotors)
       drone.propellers.forEach((prop, idx) => {
         prop.rotation.y += (idx % 2 === 0 ? 1 : -1) * 22.0 * deltaTime;
       });
 
-      // Spin scanner ring
       drone.ring.rotation.z += 1.4 * deltaTime;
 
-      // Blink status LEDs
       const blink = Math.sin(elapsedTime * 8.0) > 0.0;
       drone.leds[0].visible = blink;
       drone.leds[1].visible = !blink;
 
-      // Flying motion (sinusoidal float, 3D roaming and banking tilts)
       if (drone.config.type === 'flying') {
         let x = drone.group.position.x;
         let z = drone.group.position.z;
@@ -725,33 +691,28 @@ export class ColumnRuins {
           const floatAmpY = drone.config.floatAmpY || 0.5;
           drone.group.position.y = drone.baseY + Math.sin(elapsedTime * floatSpeedY + drone.cycleSeed) * floatAmpY;
 
-          // Smoothly rotate Y toward velocity direction
           const targetYaw = Math.atan2(drone.vz, drone.vx);
           let diff = targetYaw - drone.group.rotation.y;
           diff = Math.atan2(Math.sin(diff), Math.cos(diff));
           drone.group.rotation.y += diff * 4.0 * deltaTime;
 
-          // Dynamic banking (roll) based on yaw turning
           const banking = diff * 0.35;
           drone.group.rotation.x = Math.sin(elapsedTime * floatSpeedY + drone.cycleSeed) * 0.12;
           drone.group.rotation.z = banking + Math.cos(elapsedTime * 1.5 + drone.cycleSeed) * 0.05;
         }
       }
 
-      // Autonomous laser searchlight sweep (runs for all drones)
       if (!drone.isAnimating) {
         const sweepSpeedX = 1.0 + Math.sin(drone.cycleSeed) * 0.3;
         const sweepSpeedZ = 0.8 + Math.cos(drone.cycleSeed) * 0.2;
         const sweepAmpX = 0.55;
         const sweepAmpZ = 0.55;
 
-        // Base rotation X = PI/2 (pointing straight down). Oscillate around it.
         drone.scanner.rotation.x = Math.PI / 2 + Math.sin(elapsedTime * sweepSpeedX + drone.cycleSeed) * sweepAmpX;
         drone.scanner.rotation.y = Math.cos(elapsedTime * sweepSpeedZ + drone.cycleSeed * 1.5) * sweepAmpZ;
         drone.scanner.rotation.z = 0;
       }
 
-      // Calculate exact distance to floor (Y = -3.5)
       const scannerWorldPos = new THREE.Vector3();
       drone.scanner.getWorldPosition(scannerWorldPos);
       
@@ -780,7 +741,6 @@ export class ColumnRuins {
       }
     }
 
-    // 1. Float Greek Columns
     for (let i = 0; i < colCount; i++) {
       const c = this.columns[i];
       const offset = elapsedTime * c.floatSpeed;
@@ -788,14 +748,12 @@ export class ColumnRuins {
       c.group.rotation.x = Math.sin(c.floatSeed + offset * 0.5) * 0.02;
     }
 
-    // 1B. Float and Rotate Brutalist Monoliths
     for (let i = 0; i < monolithCount; i++) {
       const m = this.monoliths[i];
       m.mesh.position.y = m.baseY + Math.sin(m.phase + elapsedTime * m.speed) * 0.16;
       m.mesh.rotation.y = elapsedTime * 0.005 + m.phase;
     }
 
-    // 2. Float and Rotate Debris
     for (let i = 0; i < debrisCount; i++) {
       const d = this.debris[i];
       d.mesh.position.y = d.baseY + Math.sin(d.phase + elapsedTime * d.speed) * 0.22;
@@ -804,14 +762,12 @@ export class ColumnRuins {
       d.mesh.rotation.z += d.rotSpeedZ * deltaTime;
     }
 
-    // 3. Float cosmic orbs
     for (let i = 0; i < orbCount; i++) {
       const o = this.glowingOrbs[i];
       o.mesh.position.y = o.initialY + Math.sin(o.phase + elapsedTime * o.speed) * 0.45;
       o.mesh.position.x += Math.sin(elapsedTime * o.speed) * o.driftX * deltaTime;
     }
 
-    // 4. Upward sparks
     const posArr = this.sparksGeometry.attributes.position.array;
     const sparksSpeed  = this._sparksSpeed;
     const sparksDriftX = this._sparksDriftX;
@@ -830,14 +786,10 @@ export class ColumnRuins {
     }
     this.sparksGeometry.attributes.position.needsUpdate = true;
 
-    // 5. Water shader time
     if (this.waterMaterial) {
       this.waterMaterial.uniforms.uTime.value = elapsedTime;
     }
 
-
-
-    // 7. DevOps Purge Event
     const devopsProgress = 6 / 8;
     const distanceToDevops = Math.abs(scrollProgress - devopsProgress);
     const devopsEnvelope = Math.max(0, 1.0 - distanceToDevops / 0.16);

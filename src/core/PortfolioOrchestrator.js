@@ -11,13 +11,10 @@ export class PortfolioOrchestrator {
     this.closeBtn = document.getElementById('drawer-close-btn');
     this.closeBackdrop = document.getElementById('drawer-close-backdrop');
     
-    // State of language: load from localStorage if exists, default to 'es'
     this.currentLang = localStorage.getItem('portfolio-lang') || 'es';
     
-    // Simulators state and intervals storage
     this.intervals = {};
     
-    // Boot orchestrations
     this.initShowcaseSimulators();
     this.initProjectsDrawer();
     this.initDrawerTabs();
@@ -27,14 +24,12 @@ export class PortfolioOrchestrator {
     this.initCommandRegistry();
     this.initCommandPalette();
     
-    // Initialize active language (ensures all data-i18n strings are translated)
     this.setLanguage(this.currentLang);
     
     this.initCliTerminals();
     this.initOverclockConsole();
   }
 
-  // ─── 1. SIMULATORS BOOT & TOGGLING ─────────────────────────────────────
   initShowcaseSimulators() {
     const panels = ['vue', 'laravel', 'postgres', 'wordpress'];
     
@@ -49,7 +44,6 @@ export class PortfolioOrchestrator {
       
       if (!codeBtn || !simBtn || !codeView || !simView) return;
       
-      // Code view trigger
       codeBtn.addEventListener('click', () => {
         codeBtn.classList.add('active');
         simBtn.classList.remove('active');
@@ -58,7 +52,6 @@ export class PortfolioOrchestrator {
         this.stopSimulator(p);
       });
       
-      // Simulator view trigger
       simBtn.addEventListener('click', () => {
         simBtn.classList.add('active');
         codeBtn.classList.remove('active');
@@ -69,9 +62,8 @@ export class PortfolioOrchestrator {
     });
   }
 
-  // Dispatch specific simulator loops
   startSimulator(type) {
-    this.stopSimulator(type); // Ensure absolute cleanup first
+    this.stopSimulator(type); 
     
     if (type === 'vue') {
       this.runVueTelemetry();
@@ -91,7 +83,6 @@ export class PortfolioOrchestrator {
     }
   }
 
-  // ─── 1.1 VUE TELEMETRY SIMULATION LOOP ──────────────────────────────────
   runVueTelemetry() {
     const loadText = document.getElementById('sim-vue-load');
     const loadBar = document.getElementById('sim-vue-bar');
@@ -100,37 +91,34 @@ export class PortfolioOrchestrator {
     
     if (!loadText || !loadBar || !logsContainer || !statusText) return;
     
-    // Clear initial logs
     logsContainer.innerHTML = '<span class="log-info">[SYSTEM] Client-side state virtualized. Telemetry live.</span>';
     
     const messages = [
       "[PINIA] State changed: useSystemStore -> instantiated",
       "[STORE] Fetching live client diagnostics metrics...",
-      "[VUE] Reactive DOM wrapper updated successfully // 60 FPS",
+      "[VUE] Reactive DOM wrapper updated successfully • 60 FPS",
       "[STORE] Mutation processed: scaleTelemetry -> Factor computed: 1.25",
       "[PINIA] coreLoad value mutated in reactive chain",
-      "[VUE] Virtual DOM tree reconciliation finished // Diff checked",
+      "[VUE] Virtual DOM tree reconciliation finished • Diff checked",
       "[STORE] Computed state: isHealthy -> resolved: true",
       "[SYSTEM] Triggering reactive telemetry render update..."
     ];
     
     let counter = 0;
     this.intervals['vue'] = setInterval(() => {
-      // 1. Tick loads
+      
       const coreLoad = 35 + Math.floor(Math.random() * 42);
       loadText.innerText = `${coreLoad}%`;
       loadBar.style.width = `${coreLoad}%`;
       
-      // Change color based on stress
       if (coreLoad > 70) {
-        statusText.innerText = 'HIGH LOAD // OPTIMIZING';
+        statusText.innerText = 'HIGH LOAD • OPTIMIZING';
         statusText.className = 'sim-accent-amber';
       } else {
-        statusText.innerText = 'OK // DECOUPLED';
+        statusText.innerText = 'OK • DECOUPLED';
         statusText.className = 'sim-accent-cyan';
       }
       
-      // 2. Output logs
       const msg = messages[counter % messages.length];
       const logLine = document.createElement('span');
       logLine.className = 'log-success';
@@ -143,7 +131,6 @@ export class PortfolioOrchestrator {
     }, 1800);
   }
 
-  // ─── 1.2 LARAVEL DISPATCH ROUTING SIMULATION LOOP ────────────────────────
   runLaravelRouter() {
     const latencyText = document.getElementById('sim-laravel-latency');
     const dumpPre = document.getElementById('sim-laravel-dump');
@@ -155,7 +142,7 @@ export class PortfolioOrchestrator {
     
     const logs = [
       "[ROUTER] Request intercepted: POST /api/v1/telemetry/dispatch",
-      "[MIDDLEWARE] Token validated // CSRF checked // Route allowed",
+      "[MIDDLEWARE] Token validated • CSRF checked • Route allowed",
       "[CONTROLLER] EventRepository -> pushToQueue initialized",
       "[QUEUE] Payload pushing into isolated Redis queue worker...",
       "[QUEUE] Job dispatched to queue: App\\Jobs\\ProcessSystemEvent",
@@ -166,11 +153,10 @@ export class PortfolioOrchestrator {
     
     let counter = 0;
     this.intervals['laravel'] = setInterval(() => {
-      // 1. Latency fluctuations
-      const latency = 10 + Math.floor(Math.random() * 6);
-      latencyText.innerText = `${latency}ms // VERIFIED`;
       
-      // 2. Dump responses
+      const latency = 10 + Math.floor(Math.random() * 6);
+      latencyText.innerText = `${latency}ms • VERIFIED`;
+      
       const responseObj = {
         success: true,
         transaction_id: `txn_${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
@@ -184,7 +170,6 @@ export class PortfolioOrchestrator {
       };
       dumpPre.innerText = JSON.stringify(responseObj, null, 2);
       
-      // 3. Output logs
       const logLine = document.createElement('span');
       logLine.className = counter % 2 === 0 ? 'log-info' : 'log-warn';
       logLine.innerText = logs[counter % logs.length];
@@ -196,7 +181,6 @@ export class PortfolioOrchestrator {
     }, 2000);
   }
 
-  // ─── 1.3 POSTGRESQL QUERY SCAN COMPILER SIMULATION LOOP ──────────────────
   runPostgresQueryCompiler() {
     const scanText = document.getElementById('sim-sql-scan');
     const speedText = document.getElementById('sim-sql-speed');
@@ -220,11 +204,10 @@ export class PortfolioOrchestrator {
     
     let counter = 0;
     this.intervals['postgres'] = setInterval(() => {
-      // 1. Speeds
+      
       const speed = (0.05 + Math.random() * 0.06).toFixed(2);
       speedText.innerText = `${speed}ms`;
       
-      // 2. Table values updates
       const depth1Load = (30 + Math.random() * 10).toFixed(1);
       const depth2Load = (55 + Math.random() * 20).toFixed(1);
       
@@ -236,7 +219,6 @@ export class PortfolioOrchestrator {
 +-------+------------+------------+`;
       tablePre.innerText = newTable;
       
-      // 3. Output logs
       const logLine = document.createElement('span');
       logLine.className = 'log-success';
       logLine.innerText = dbLogs[counter % dbLogs.length];
@@ -248,7 +230,6 @@ export class PortfolioOrchestrator {
     }, 2200);
   }
 
-  // ─── 1.4 WORDPRESS ELEMENTOR TELEMETRY SIMULATION LOOP ──────────────────
   runWordPressSimulator() {
     const statusText = document.getElementById('sim-wp-status');
     const logsContainer = document.getElementById('sim-wp-logs');
@@ -268,7 +249,7 @@ export class PortfolioOrchestrator {
     
     let counter = 0;
     this.intervals['wordpress'] = setInterval(() => {
-      statusText.innerText = 'BUILDER RUNNING // ACTIVE';
+      statusText.innerText = 'BUILDER RUNNING • ACTIVE';
       statusText.className = 'sim-accent-cyan';
       
       const logLine = document.createElement('span');
@@ -282,14 +263,12 @@ export class PortfolioOrchestrator {
     }, 1900);
   }
 
-  // ─── 2. PROJECTS DETAIL DRAWER MANAGEMENT ──────────────────────────────
   initProjectsDrawer() {
     if (!this.drawer) return;
     
-    // Select all project row elements
     const rows = document.querySelectorAll('.project-row');
     rows.forEach(row => {
-      // Attach cursor hover triggers
+      
       row.addEventListener('mouseenter', () => {
         document.body.classList.add('hovering-link');
         this.soundManager.playClick();
@@ -298,7 +277,6 @@ export class PortfolioOrchestrator {
         document.body.classList.remove('hovering-link');
       });
       
-      // Trigger drawer open on click
       row.addEventListener('click', () => {
         this.soundManager.playChirp();
         const projIdx = parseInt(row.getAttribute('data-project'), 10);
@@ -306,7 +284,6 @@ export class PortfolioOrchestrator {
       });
     });
     
-    // Close hooks
     if (this.closeBtn) {
       this.closeBtn.addEventListener('click', () => this.closeDrawer());
     }
@@ -314,7 +291,6 @@ export class PortfolioOrchestrator {
       this.closeBackdrop.addEventListener('click', () => this.closeDrawer());
     }
     
-    // ESC key closes drawer
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && this.drawer.classList.contains('active')) {
         this.closeDrawer();
@@ -322,14 +298,12 @@ export class PortfolioOrchestrator {
     });
   }
 
-  // Open the drawer sliding from the right, mapping target project index details
   openDrawer(index) {
     const data = this.projectsData[index];
     if (!data) return;
 
     this.soundManager.playDrawerSweep(true);
     
-    // Inject values dynamically
     document.getElementById('drawer-num').innerText = data.id;
     document.getElementById('drawer-category').innerText = data.category;
     document.getElementById('drawer-title').innerText = data.title;
@@ -337,13 +311,11 @@ export class PortfolioOrchestrator {
     document.getElementById('drawer-solution').innerText = data.solution;
     document.getElementById('drawer-architecture').innerText = data.architecture;
     
-    // Inject custom glowing SVG diagram
     const svgContainer = document.getElementById('drawer-architecture-svg');
     if (svgContainer) {
       svgContainer.innerHTML = data.svg || '';
     }
     
-    // Inject custom sequential SVG flow
     const seqContainer = document.getElementById('drawer-seq-svg');
     if (seqContainer) {
       seqContainer.innerHTML = data.seqSvg || '';
@@ -359,19 +331,16 @@ export class PortfolioOrchestrator {
       statsDesc.innerText = data.statsDesc || '';
     }
     
-    // Inject resource utilization SVG
     const resourceContainer = document.getElementById('drawer-resource-svg');
     if (resourceContainer) {
       resourceContainer.innerHTML = data.resourceSvg || '';
     }
     
-    // Inject resource utilization description
     const resourceDesc = document.getElementById('drawer-resource-desc');
     if (resourceDesc) {
       resourceDesc.innerText = data.resourceDesc || '';
     }
     
-    // Metrics list mapping
     const metricsContainer = document.getElementById('drawer-metrics');
     metricsContainer.innerHTML = '';
     data.metrics.forEach(m => {
@@ -384,7 +353,6 @@ export class PortfolioOrchestrator {
       metricsContainer.appendChild(metricItem);
     });
     
-    // Tech pills mapping
     const techsContainer = document.getElementById('drawer-techs');
     techsContainer.innerHTML = '';
     data.techs.forEach(t => {
@@ -394,7 +362,6 @@ export class PortfolioOrchestrator {
       techsContainer.appendChild(pill);
     });
     
-    // Inject dynamic ROI section
     const roiContainer = document.getElementById('drawer-roi');
     if (roiContainer) {
       roiContainer.innerHTML = '';
@@ -411,37 +378,30 @@ export class PortfolioOrchestrator {
       }
     }
     
-    // Reset tabs to default active states
     this.resetDrawerTabs();
     
-    // Repository link mapping (Completely hidden to ensure absolute confidentiality!)
     const gitLink = document.getElementById('drawer-github-link');
     if (gitLink) {
       gitLink.style.display = 'none';
     }
     
-    // Activate DOM elements (adds CSS transitions)
     this.drawer.classList.add('active');
     
-    // Stop background scrolling
     if (window.APP_INSTANCE && window.APP_INSTANCE.scrollManager && window.APP_INSTANCE.scrollManager.lenis) {
       window.APP_INSTANCE.scrollManager.lenis.stop();
     }
     
-    // Dynamic overlay animations
     gsap.fromTo(this.drawer.querySelector('.drawer-panel'), 
       { x: '100%' }, 
       { x: '0%', duration: 0.6, ease: 'power3.out' }
     );
   }
 
-  // Close the drawer with dynamic overlays transitions
   closeDrawer() {
     if (!this.drawer.classList.contains('active')) return;
 
     this.soundManager.playDrawerSweep(false);
     
-    // Hide active tooltip
     const tooltip = document.getElementById('cyber-tooltip');
     if (tooltip) {
       tooltip.classList.remove('visible');
@@ -456,7 +416,7 @@ export class PortfolioOrchestrator {
       ease: 'power3.inOut',
       onComplete: () => {
         this.drawer.classList.remove('active');
-        // Resume background scrolling
+        
         if (window.APP_INSTANCE && window.APP_INSTANCE.scrollManager && window.APP_INSTANCE.scrollManager.lenis) {
           window.APP_INSTANCE.scrollManager.lenis.start();
         }
@@ -464,7 +424,6 @@ export class PortfolioOrchestrator {
     });
   }
 
-  // ─── 2.1 TAB TOGGLE SYSTEM ───────────────────────────────────────────
   initDrawerTabs() {
     const tabBtns = this.drawer.querySelectorAll('.drawer-tab-btn');
     tabBtns.forEach(btn => {
@@ -477,13 +436,11 @@ export class PortfolioOrchestrator {
         const group = btn.getAttribute('data-tab-group');
         const tabId = btn.getAttribute('data-tab-id');
         
-        // Deactivate other buttons in the same group
         this.drawer.querySelectorAll(`.drawer-tab-btn[data-tab-group="${group}"]`).forEach(b => {
           b.classList.remove('active');
         });
         btn.classList.add('active');
         
-        // Toggle contents with a beautiful GSAP fade
         const contents = this.drawer.querySelectorAll(`.drawer-tab-content[data-tab-group="${group}"]`);
         contents.forEach(content => {
           if (content.getAttribute('data-tab-content') === tabId) {
@@ -521,27 +478,25 @@ export class PortfolioOrchestrator {
     });
   }
 
-  // ─── 2.2 INTERACTIVE CYBER HUD TOOLTIP SYSTEM ────────────────────────
   initCyberTooltip() {
     const tooltip = document.getElementById('cyber-tooltip');
     const tooltipText = document.getElementById('cyber-tooltip-text');
     if (!tooltip || !tooltipText) return;
     
-    // Global mouse listener inside drawer
     this.drawer.addEventListener('mouseover', (e) => {
       const target = e.target.closest('[data-tooltip]');
       if (target) {
         const text = target.getAttribute('data-tooltip');
         tooltipText.innerHTML = text;
         tooltip.style.display = 'block';
-        tooltip.offsetHeight; // force reflow
+        tooltip.offsetHeight; 
         tooltip.classList.add('visible');
       }
     });
     
     this.drawer.addEventListener('mousemove', (e) => {
       if (tooltip.classList.contains('visible')) {
-        // Place tooltip next to mouse
+        
         tooltip.style.left = `${e.clientX}px`;
         tooltip.style.top = `${e.clientY}px`;
       }
@@ -563,7 +518,6 @@ export class PortfolioOrchestrator {
     });
   }
 
-  // ─── 3. MOBILE MENU INTERACTIVE OVERLAY ───────────────────────────────
   initMobileMenu() {
     const trigger = document.getElementById('mobile-menu-trigger');
     const overlay = document.getElementById('mobile-menu-overlay');
@@ -580,7 +534,6 @@ export class PortfolioOrchestrator {
       overlay.classList.toggle('active');
     });
     
-    // Connect links in mobile overlay to ScrollManager scrolling
     const mobileLinks = overlay.querySelectorAll('.mobile-nav-link');
     mobileLinks.forEach(link => {
       link.addEventListener('mouseenter', () => {
@@ -591,11 +544,9 @@ export class PortfolioOrchestrator {
         e.preventDefault();
         this.soundManager.playChirp();
         
-        // 1. Close mobile overlay
         trigger.classList.remove('active');
         overlay.classList.remove('active');
         
-        // 2. Scroll smoothly via master ScrollManager
         const targetIdx = parseInt(link.getAttribute('data-target'), 10);
         if (window.APP_INSTANCE && window.APP_INSTANCE.scrollManager) {
           window.APP_INSTANCE.scrollManager.scrollToSection(targetIdx);
@@ -604,7 +555,6 @@ export class PortfolioOrchestrator {
     });
   }
 
-  // ─── 4. BILINGUAL LANGUAGE SELECTOR ─────────────────────────────────────
   initLanguageSelector() {
     const langBtn = document.getElementById('lang-btn');
     if (!langBtn) return;
@@ -624,7 +574,6 @@ export class PortfolioOrchestrator {
     this.currentLang = lang;
     localStorage.setItem('portfolio-lang', lang);
     
-    // Update active button classes
     const enCode = document.getElementById('lang-code-en');
     const esCode = document.getElementById('lang-code-es');
     if (enCode && esCode) {
@@ -637,31 +586,26 @@ export class PortfolioOrchestrator {
       }
     }
     
-    // Map projects data list to current language
     this.projectsData = lang === 'es' ? projectsDataES : projectsDataEN;
     
-    // Translate static strings with data-i18n
     const dictionary = staticTranslations[lang] || staticTranslations['en'];
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       const translation = dictionary[key];
       if (translation) {
-        // Change text content (preserve HTML e.g. <br> and <span>)
+        
         el.innerHTML = translation;
         
-        // Remove split-done so we can re-apply GSAP characters splitting!
         el.classList.remove('split-done');
       }
     });
 
-    // Remove reveal classes so they can be re-animated
     document.querySelectorAll('.scramble-revealed').forEach(el => el.classList.remove('scramble-revealed'));
     document.querySelectorAll('.revealed-word').forEach(el => el.classList.remove('revealed-word'));
 
-    // Re-trigger the dynamic characters and words splitting engine for smooth scroll staggers
     if (window.APP_INSTANCE) {
       if (window.APP_INSTANCE.animator) {
-        // Clear animator's animatedSections set so it allows re-triggering
+        
         if (window.APP_INSTANCE.animator.animatedSections) {
           window.APP_INSTANCE.animator.animatedSections.clear();
         }
@@ -669,10 +613,8 @@ export class PortfolioOrchestrator {
         window.APP_INSTANCE.animator.splitContentText();
       }
       
-      // Reset DOM cache to rebuild with the new span elements next frame!
       window.APP_INSTANCE._domCache = null;
       
-      // Re-trigger section entrance animation for the currently active section immediately!
       const sections = ['hero', 'about', 'projects', 'vue-frontend', 'laravel-backend', 'postgresql-showcase', 'wordpress-cms', 'contact'];
       const currentIdx = window.APP_INSTANCE.scrollManager ? window.APP_INSTANCE.scrollManager.currentSection : 0;
       const currentSectionId = sections[currentIdx];
@@ -688,7 +630,7 @@ export class PortfolioOrchestrator {
     const inputs = document.querySelectorAll('.cli-input-field');
     inputs.forEach(input => {
       input.addEventListener('keydown', (e) => {
-        // Play subtle keystroke clicks for ordinary characters
+        
         if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
           this.soundManager.playKeyboardClick();
         }
@@ -707,7 +649,6 @@ export class PortfolioOrchestrator {
       });
     });
 
-    // Wire suggestion chip buttons — clicking fills and executes the command
     const suggestBtns = document.querySelectorAll('.cli-suggest-btn');
     suggestBtns.forEach(btn => {
       btn.addEventListener('mouseenter', () => {
@@ -715,7 +656,7 @@ export class PortfolioOrchestrator {
       });
       btn.addEventListener('click', () => {
         this.soundManager.playChirp();
-        // Find the nearest cli-input-field in the same .simulator-body parent
+        
         const simBody = btn.closest('.simulator-body');
         if (!simBody) return;
         const input = simBody.querySelector('.cli-input-field');
@@ -724,7 +665,7 @@ export class PortfolioOrchestrator {
         const target = input.getAttribute('data-target');
         if (cmd && target) {
           this.executeCliCommand(cmd, target);
-          // Give the input a quick flash focus as feedback
+          
           input.focus();
         }
       });
@@ -737,7 +678,6 @@ export class PortfolioOrchestrator {
 
     const command = commandText.trim().toLowerCase();
     
-    // Print input echo first
     this.appendLogLine(container, `<span class="cli-user">visitor@cordova-core:~$</span> ${commandText}`, 'log-echo');
 
     const isEs = this.currentLang === 'es';
@@ -775,19 +715,19 @@ export class PortfolioOrchestrator {
         if (isEs) {
           this.appendLogLine(container, 
             ` - DIAGNÓSTICOS DEL SISTEMA INTERACTIVO:<br>` +
-            ` &nbsp;&nbsp;&bull; CARGA DE NÚCLEO: [████████████░░░░░░] 68% // NORMAL<br>` +
-            ` &nbsp;&nbsp;&bull; FPS DE RENDERIZADO: ${fps} FPS // RUTA FLUIDA<br>` +
+            ` &nbsp;&nbsp;&bull; CARGA DE NÚCLEO: [████████████░░░░░░] 68% • NORMAL<br>` +
+            ` &nbsp;&nbsp;&bull; FPS DE RENDERIZADO: ${fps} FPS • RUTA FLUIDA<br>` +
             ` &nbsp;&nbsp;&bull; VELOCIDAD DE SCROLL: ${scrollSpeed} px/s<br>` +
             ` &nbsp;&nbsp;&bull; USO DE MEMORIA: 184 MB / 512 MB ASIGNADOS VIRTUALMENTE<br>` +
-            ` &nbsp;&nbsp;&bull; TEMPERATURA THERMAL: 42.4 °C // ESTABLE`, 'log-success');
+            ` &nbsp;&nbsp;&bull; TEMPERATURA THERMAL: 42.4 °C • ESTABLE`, 'log-success');
         } else {
           this.appendLogLine(container, 
             ` - INTERACTIVE CONTROL TELEMETRY:<br>` +
-            ` &nbsp;&nbsp;&bull; CPU CORE LOAD: [████████████░░░░░░] 68% // NORMAL<br>` +
-            ` &nbsp;&nbsp;&bull; SHADER FPS: ${fps} FPS // RUNNING SMOOTH<br>` +
+            ` &nbsp;&nbsp;&bull; CPU CORE LOAD: [████████████░░░░░░] 68% • NORMAL<br>` +
+            ` &nbsp;&nbsp;&bull; SHADER FPS: ${fps} FPS • RUNNING SMOOTH<br>` +
             ` &nbsp;&nbsp;&bull; V-SCROLL VELOCITY: ${scrollSpeed} px/s<br>` +
             ` &nbsp;&nbsp;&bull; SYSTEM RAM: 184 MB / 512 MB VIRTUAL ALLOC<br>` +
-            ` &nbsp;&nbsp;&bull; TEMPERATURE: 42.4 °C // CORES STABLE`, 'log-success');
+            ` &nbsp;&nbsp;&bull; TEMPERATURE: 42.4 °C • CORES STABLE`, 'log-success');
         }
       }, 400);
     } 
@@ -840,7 +780,6 @@ export class PortfolioOrchestrator {
     line.style.lineHeight = '1.5';
     line.style.marginBottom = '0.3em';
     
-    // Custom styling for echo, error, success commands
     if (className === 'log-echo') {
       line.style.color = '#ffffff';
     } else if (className === 'log-error') {
@@ -911,9 +850,8 @@ export class PortfolioOrchestrator {
       overclockBtn.innerHTML = dictionary[key] || (isOverclocked ? '[ DAMPEN CORES ]' : '[ IGNITE OVERCLOCK ]');
     }
     
-    // Siren alarm sound disabled by user request
     if (isOverclocked) {
-      // this.startSirenSound();
+      
     } else {
       this.stopSirenSound();
     }
@@ -961,7 +899,7 @@ export class PortfolioOrchestrator {
       
       this.sirenGain.gain.cancelScheduledValues(now);
       this.sirenGain.gain.setValueAtTime(0, now);
-      this.sirenGain.gain.linearRampToValueAtTime(0.04, now + 0.08); // kept subtle and satisfying
+      this.sirenGain.gain.linearRampToValueAtTime(0.04, now + 0.08); 
       this.sirenGain.gain.linearRampToValueAtTime(0.002, now + 0.55);
       
       high = !high;
@@ -986,11 +924,10 @@ export class PortfolioOrchestrator {
         this.sirenGain = null;
       }
     } catch (e) {
-      // Safety catch
+      
     }
   }
 
-  // ─── 4. COMMAND REGISTRY DEFINITION ──────────────────────────────────
   initCommandRegistry() {
     this.commands = [
       { id: 'help', name: '/help', desc: 'Show all available commands', action: () => this.showHelpCommand() },
@@ -1032,7 +969,6 @@ export class PortfolioOrchestrator {
     });
   }
 
-  // ─── 4.1 PALETTE CONTROLLER & KEYBOARD BINDINGS ──────────────────────
   initCommandPalette() {
     this.palette = document.getElementById('cmd-palette');
     this.paletteInput = document.getElementById('cmd-palette-input');
@@ -1045,7 +981,6 @@ export class PortfolioOrchestrator {
     this.activeCmdIndex = 0;
     this.filteredCommands = [];
     
-    // UI click hooks
     if (this.paletteTrigger) {
       this.paletteTrigger.addEventListener('mouseenter', () => this.soundManager.playClick());
       this.paletteTrigger.addEventListener('click', () => {
@@ -1060,7 +995,6 @@ export class PortfolioOrchestrator {
       });
     }
     
-    // Global keyboard hotkey trigger: Ctrl + K or Cmd + K
     window.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
@@ -1069,7 +1003,6 @@ export class PortfolioOrchestrator {
       }
     });
     
-    // Search input handlers
     this.paletteInput.addEventListener('input', () => this.handlePaletteInput());
     this.paletteInput.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown') {
@@ -1089,7 +1022,7 @@ export class PortfolioOrchestrator {
         this.soundManager.playChirp();
         this.closeCommandPalette();
       } else {
-        // Play typing click sounds for standard alphanumeric characters
+        
         if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
           this.soundManager.playKeyboardClick();
         }
@@ -1177,7 +1110,6 @@ export class PortfolioOrchestrator {
     }
   }
 
-  // ─── 4.2 ACTIONS DISPATCHERS ─────────────────────────────────────────
   scrollTo(index) {
     if (window.APP_INSTANCE && window.APP_INSTANCE.scrollManager) {
       window.APP_INSTANCE.scrollManager.scrollToSection(index);
@@ -1209,7 +1141,6 @@ export class PortfolioOrchestrator {
     this.handlePaletteInput();
   }
 
-  // ─── 4.3 DISPLAY LAYER STATE ─────────────────────────────────────────
   toggleCommandPalette() {
     if (this.palette.style.display === 'none') {
       this.openCommandPalette();
@@ -1223,15 +1154,13 @@ export class PortfolioOrchestrator {
     this.handlePaletteInput();
     
     this.palette.style.display = 'flex';
-    this.palette.offsetHeight; // force reflow
+    this.palette.offsetHeight; 
     this.palette.classList.add('active');
 
-    // Stop background scrolling to avoid main page moving while interacting
     if (window.APP_INSTANCE && window.APP_INSTANCE.scrollManager && window.APP_INSTANCE.scrollManager.lenis) {
       window.APP_INSTANCE.scrollManager.lenis.stop();
     }
     
-    // Close other HUD items like mobile menu
     const trigger = document.getElementById('mobile-menu-trigger');
     const overlay = document.getElementById('mobile-menu-overlay');
     if (trigger && overlay && trigger.classList.contains('active')) {
@@ -1239,7 +1168,6 @@ export class PortfolioOrchestrator {
       overlay.classList.remove('active');
     }
     
-    // Auto-focus search box
     setTimeout(() => {
       this.paletteInput.focus();
     }, 50);
@@ -1248,7 +1176,6 @@ export class PortfolioOrchestrator {
   closeCommandPalette() {
     this.palette.classList.remove('active');
 
-    // Resume background scrolling
     if (window.APP_INSTANCE && window.APP_INSTANCE.scrollManager && window.APP_INSTANCE.scrollManager.lenis) {
       window.APP_INSTANCE.scrollManager.lenis.start();
     }

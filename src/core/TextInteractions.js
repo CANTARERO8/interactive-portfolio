@@ -7,30 +7,27 @@ export class TextInteractions {
     this.tickerIndex = 0;
     
     this.diagnosticStatements = [
-      '[ SYSTEMS CORE ACTIVE // OK ]',
-      '[ TELEMETRY SCANNER // 60 FPS ]',
-      '[ QUANTUM ENVELOPE // SECURE ]',
-      '[ THREADPOOL CORES // STABLE ]',
-      '[ COMPILER COGNITION // READY ]'
+      '[ SYSTEMS CORE ACTIVE • OK ]',
+      '[ TELEMETRY SCANNER • 60 FPS ]',
+      '[ QUANTUM ENVELOPE • SECURE ]',
+      '[ THREADPOOL CORES • STABLE ]',
+      '[ COMPILER COGNITION • READY ]'
     ];
 
     this.initHoverScrambles();
     this.initTitleJitters();
     this.initMutatingTicker();
     
-    // Continuous background triggers (Autonomous mainframes loop!)
     this.initAutoMemoryTicker();
     this.initAutoScrambleLoop();
     this.initAutoCRTGlitches();
   }
 
-  // ─── A. INTERACTIVE HOVER SCRAMBLE (DECRYPTION) ─────────────────────────
   initHoverScrambles() {
     const targets = document.querySelectorAll(
       '.project-tech-tag, .about-tag, .hero-subtitle, .scene-section .mono.sm, .contact-item'
     );
     
-    // Pure digital code matrix glyphs: binary, terminal blocks, and tech symbols
     const glyphs = ['0', '1', 'X', 'Y', 'Z', 'A', 'B', 'C', '░', '▒', '▓', '█', '▄', '▀', '▲', '▼', '◀', '▶', '◆', '◇', '#', '$', '%', '&', '@', '*', '+', '-', '=', '?', '/', '\\', '!'];
 
     targets.forEach(tag => {
@@ -42,7 +39,7 @@ export class TextInteractions {
         if (isScrambling) return;
         isScrambling = true;
 
-        tag.style.color = '#ffffff'; // modern crisp white highlight during scramble
+        tag.style.color = '#ffffff'; 
         tag.style.textShadow = 'none';
 
         const obj = { progress: 0 };
@@ -56,9 +53,9 @@ export class TextInteractions {
               if (char === ' ') return ' ';
               const charProgress = index / chars.length;
               if (currentProgress >= charProgress) {
-                return char; // resolved
+                return char; 
               } else if (currentProgress >= charProgress - 0.25) {
-                // scrambling console glyph in gray
+                
                 const randomGlyph = glyphs[Math.floor(Math.random() * glyphs.length)];
                 return `<span style="color:#94a3b8">${randomGlyph}</span>`;
               } else {
@@ -75,7 +72,6 @@ export class TextInteractions {
       });
     });
 
-    // Hover scramble for .project-row -> .project-name
     const projectRows = document.querySelectorAll('.project-row');
     projectRows.forEach(row => {
       const nameEl = row.querySelector('.project-name');
@@ -96,7 +92,7 @@ export class TextInteractions {
             gsap.to(obj, {
               progress: 1,
               duration: 0.42,
-              delay: idx * 0.012, // rapid staggered sweep from left to right
+              delay: idx * 0.012, 
               ease: 'power1.out',
               onStart: () => {
                 gsap.set(char, { 
@@ -108,7 +104,7 @@ export class TextInteractions {
               onUpdate: () => {
                 if (obj.progress < 0.7) {
                   char.innerText = glyphs[Math.floor(Math.random() * glyphs.length)];
-                  char.style.color = '#94a3b8'; // modern slate gray scrambling color
+                  char.style.color = '#94a3b8'; 
                 } else {
                   char.innerText = originalChar;
                   char.style.color = '';
@@ -130,7 +126,6 @@ export class TextInteractions {
     });
   }
 
-  // ─── B. CHROMATIC SHADOW & POSITION JITTER ON TITLE HOVER ───────────────
   initTitleJitters() {
     const headings = document.querySelectorAll('.hero-title, .about-title, .footer-heading');
     
@@ -140,7 +135,7 @@ export class TextInteractions {
         if (!chars.length) return;
 
         chars.forEach(char => {
-          // 45% probability per character to glitch on title hover
+          
           if (Math.random() > 0.45) {
             const shadowCyan = '3px -2px 0 rgba(0, 242, 254, 0.9)';
             const shadowPurple = '-3px 2px 0 rgba(168, 85, 247, 0.9)';
@@ -170,13 +165,12 @@ export class TextInteractions {
     });
   }
 
-  // ─── C. CONSTANTLY MUTATING DIAGNOSTIC TICKER ───────────────────────────
   initMutatingTicker() {
     const statusTag = document.getElementById('about-specs-status');
     if (!statusTag) return;
 
     const cycleTicker = () => {
-      // Don't cycle statements if overclock is active (overclock syncer locks the text alert)
+      
       const isOverclocked = window.APP_INSTANCE && window.APP_INSTANCE.isOverclocked;
       if (isOverclocked) return;
 
@@ -186,11 +180,9 @@ export class TextInteractions {
       this.transitionText(statusTag, nextStatement);
     };
 
-    // Cycle diagnostic logs every 4 seconds
     this.tickerInterval = setInterval(cycleTicker, 4000);
   }
 
-  // Scramble transition helper
   transitionText(element, targetText) {
     const chars = targetText.split('');
     const glyphs = ['0', '1', '$', '%', '&', '@', '#', '▲', '▼', '*'];
@@ -206,7 +198,7 @@ export class TextInteractions {
           if (char === ' ') return ' ';
           const charProgress = index / chars.length;
           if (currentProgress >= charProgress) {
-            return char; // resolved
+            return char; 
           } else if (currentProgress >= charProgress - 0.25) {
             return glyphs[Math.floor(Math.random() * glyphs.length)];
           } else {
@@ -220,7 +212,6 @@ export class TextInteractions {
     });
   }
 
-  // ─── D. HIGH-SPEED DYNAMIC HEX ADDRESS MUTATOR (150ms Loop) ────────────
   initAutoMemoryTicker() {
     const addrEl = document.getElementById('hud-addr-val');
     if (!addrEl) return;
@@ -235,7 +226,6 @@ export class TextInteractions {
     }, 150);
   }
 
-  // ─── E. AUTONOMOUS BACKGROUND SCRAMBLE LOOP (Cycles Randomly Every 3s) ──
   initAutoScrambleLoop() {
     const tags = document.querySelectorAll(
       '.project-tech-tag, .about-tag, .hero-subtitle, .scene-section .mono.sm'
@@ -249,7 +239,6 @@ export class TextInteractions {
       const originalText = tag.textContent.trim().replace(/\u00a0/g, ' ');
       const chars = originalText.split('');
       
-      // Pure digital console matrix glyphs
       const glyphs = ['0', '1', 'X', 'Y', 'Z', 'A', 'B', 'C', '░', '▒', '▓', '█', '▄', '▀', '▲', '▼', '◀', '▶', '◆', '◇', '#', '$', '%', '&', '@', '*', '+', '-', '=', '?', '/', '\\', '!'];
       
       const obj = { progress: 0 };
@@ -259,8 +248,8 @@ export class TextInteractions {
         duration: 0.55,
         ease: 'power1.out',
         onStart: () => {
-          tag.style.color = '#ffffff'; // modern crisp white highlight
-          tag.style.textShadow = 'none'; // absolutely no neon drop shadow
+          tag.style.color = '#ffffff'; 
+          tag.style.textShadow = 'none'; 
         },
         onUpdate: () => {
           const currentProgress = obj.progress;
@@ -271,7 +260,7 @@ export class TextInteractions {
               return char;
             } else if (currentProgress >= charProgress - 0.25) {
               const randomGlyph = glyphs[Math.floor(Math.random() * glyphs.length)];
-              return `<span style="color:#94a3b8">${randomGlyph}</span>`; // slate gray scrambling character
+              return `<span style="color:#94a3b8">${randomGlyph}</span>`; 
             } else {
               return '';
             }
@@ -284,14 +273,12 @@ export class TextInteractions {
         }
       });
 
-      // Repeat every 3 to 4.5 seconds
       setTimeout(triggerRandomScramble, 3000 + Math.random() * 1500);
     };
 
     setTimeout(triggerRandomScramble, 2500);
   }
 
-  // ─── F. AUTONOMOUS CRT CARD GLITCH & FLICKER (Every 2s Loop) ────────────
   initAutoCRTGlitches() {
     const cards = document.querySelectorAll('.metric-card, #cyber-hud, #about-profile-specs, .showcase-code-panel');
     if (!cards.length) return;
@@ -307,14 +294,12 @@ export class TextInteractions {
         .to(card, { opacity: 0.6, duration: 0.02, ease: 'power1.inOut' })
         .to(card, { opacity: 1, duration: 0.04, ease: 'power2.out' });
 
-      // Repeat every 2.2 to 3.8 seconds
       setTimeout(triggerAutoGlitch, 2200 + Math.random() * 1600);
     };
 
     setTimeout(triggerAutoGlitch, 3500);
   }
 
-  // Overclock Trigger Interface - instantly updates ticker content
   syncOverclockState(isOverclocked) {
     const statusTag = document.getElementById('about-specs-status');
     if (!statusTag) return;

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-const beamVertexShader = /* glsl */ `
+const beamVertexShader =  `
   varying vec3 vLocalPosition;
   varying vec3 vWorldPosition;
 
@@ -12,7 +12,7 @@ const beamVertexShader = /* glsl */ `
   }
 `;
 
-const beamFragmentShader = /* glsl */ `
+const beamFragmentShader =  `
   precision highp float;
 
   uniform float uTime;
@@ -57,7 +57,7 @@ const beamFragmentShader = /* glsl */ `
   }
 `;
 
-const dustVertexShader = /* glsl */ `
+const dustVertexShader =  `
   uniform float uTime;
   uniform float uHeight;
   uniform float uPixelRatio;
@@ -77,7 +77,7 @@ const dustVertexShader = /* glsl */ `
   }
 `;
 
-const dustFragmentShader = /* glsl */ `
+const dustFragmentShader =  `
   uniform vec3 uColor;
   varying float vAlpha;
 

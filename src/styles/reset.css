@@ -10,7 +10,7 @@ html {
   text-size-adjust: none;
   overflow-x: hidden;
   background-color: var(--color-bg-primary);
-  scroll-behavior: auto; /* Desactivar behavior por defecto para Lenis */
+  scroll-behavior: auto; 
 }
 
 body {

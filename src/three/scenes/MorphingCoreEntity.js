@@ -8,22 +8,18 @@ export class MorphingCoreEntity {
     this.group = new THREE.Group();
     this.scene.add(this.group);
 
-    // Master state
     this.isHovered = false;
-    this.hoverProgress = 0; // 0 (assembled) to 1 (fully exploded)
+    this.hoverProgress = 0; 
     this.targetHover = 0;
     this.isSpinning = false;
     this.isOverclocked = false;
 
-    // Raycasting for direct mouse interaction
     this.raycaster = new THREE.Raycaster();
     this.mouse2D = new THREE.Vector2();
     this.interactiveMeshes = [];
 
-    // Initialize materials
     this.initMaterials();
 
-    // Build the 6 Morphing Artifact Entities
     this.forms = {};
     this.buildHeroMonolith();
     this.buildAboutPolyhedron();
@@ -34,25 +30,22 @@ export class MorphingCoreEntity {
     this.buildWordPressLayoutCore();
     this.buildContactOrbitalCore();
 
-    // Waypoints for the entity placement along the scroll corridor
-    // Z positions and offsets carefully matched to each section's biome center
     this.entityWaypoints = [
-      { pos: [0, 0.8, 1.5],     scale: 1.0, activeForm: 'hero' },      // 0: Hero
-      { pos: [0, 0.5, -8.0],    scale: 0.95, activeForm: 'about' },    // 1: About (Data Vault)
-      { pos: [0, 0.0, -16.0],   scale: 0.9, activeForm: 'projects' },  // 2: Projects Archive
-      { pos: [0, 0.5, -25.0],   scale: 1.0, activeForm: 'vue' },       // 3: Vue (Crystal Chamber)
-      { pos: [0, 0.8, -35.0],   scale: 1.05, activeForm: 'laravel' },  // 4: Laravel (Citadel)
-      { pos: [0, 3.45, -46.0],  scale: 0.62, activeForm: 'postgres' }, // 5: Postgres (overhead DB beacon)
-      { pos: [0, 0.2, -58.0],   scale: 0.95, activeForm: 'wordpress' },// 6: WordPress Foundry
-      { pos: [0, 3.2, -72.0],   scale: 1.5, activeForm: 'contact' }    // 7: Contact (Singularity)
+      { pos: [0, 0.8, 1.5],     scale: 1.0, activeForm: 'hero' },      
+      { pos: [0, 0.5, -8.0],    scale: 0.95, activeForm: 'about' },    
+      { pos: [0, 0.0, -16.0],   scale: 0.9, activeForm: 'projects' },  
+      { pos: [0, 0.5, -25.0],   scale: 1.0, activeForm: 'vue' },       
+      { pos: [0, 0.8, -35.0],   scale: 1.05, activeForm: 'laravel' },  
+      { pos: [0, 3.45, -46.0],  scale: 0.62, activeForm: 'postgres' }, 
+      { pos: [0, 0.2, -58.0],   scale: 0.95, activeForm: 'wordpress' },
+      { pos: [0, 3.2, -72.0],   scale: 1.5, activeForm: 'contact' }    
     ];
 
-    // Setup pointer events
     this.setupInteractions();
   }
 
   initMaterials() {
-    // Dark polished armor keeps the artifacts dimensional without drawn outlines.
+    
     this.armorMaterial = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color('#0b1120'),
       roughness: 0.28,
@@ -62,7 +55,6 @@ export class MorphingCoreEntity {
       flatShading: false
     });
 
-    // Solid emissive rings remain as intentional energy cues, not mesh outlines.
     this.ringMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color('#00f2fe'),
       transparent: true,
@@ -70,7 +62,6 @@ export class MorphingCoreEntity {
       toneMapped: false
     });
 
-    // Glowing Inner Energy Core Material
     this.coreEnergyMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color('#00f2fe'),
       wireframe: false,
@@ -78,7 +69,6 @@ export class MorphingCoreEntity {
       opacity: 0.9
     });
 
-    // Outer Aura Glow Material
     this.auraMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color('#38bdf8'),
       transparent: true,
@@ -89,7 +79,6 @@ export class MorphingCoreEntity {
       toneMapped: false
     });
 
-    // Tech Accents
     this.vueMaterial = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color('#10b981'),
       emissive: new THREE.Color('#053e2b'),
@@ -124,34 +113,30 @@ export class MorphingCoreEntity {
     });
   }
 
-  // ─── 1. FORM A: HERO CYBER MONOLITH (Deconstructible) ─────────────────
   buildHeroMonolith() {
     const root = new THREE.Group();
     this.monolithPlates = [];
 
-    // Inner Glowing Quantum Core (Icosahedron)
     const coreGeo = new THREE.IcosahedronGeometry(0.55, 1);
     this.heroInnerCore = new THREE.Mesh(coreGeo, this.coreEnergyMaterial);
     root.add(this.heroInnerCore);
 
-    // Translucent energy shell, cleanly separated from the solid core.
     const cageGeo = new THREE.IcosahedronGeometry(0.75, 1);
     this.heroInnerCage = new THREE.Mesh(cageGeo, this.auraMaterial);
     root.add(this.heroInnerCage);
 
-    // 6 Segmented Outer Floating Obsidian Plates (Deconstruction Target)
     const plateConfigs = [
-      // Top Cap
+      
       { w: 0.9, h: 0.3, d: 0.9, basePos: [0, 1.25, 0], normal: [0, 1.5, 0], rot: [0, 0, 0] },
-      // Bottom Cap
+      
       { w: 0.9, h: 0.3, d: 0.9, basePos: [0, -1.25, 0], normal: [0, -1.5, 0], rot: [0, 0, 0] },
-      // Front Plate
+      
       { w: 0.85, h: 1.8, d: 0.22, basePos: [0, 0, 0.65], normal: [0, 0, 1.6], rot: [0, 0, 0] },
-      // Back Plate
+      
       { w: 0.85, h: 1.8, d: 0.22, basePos: [0, 0, -0.65], normal: [0, 0, -1.6], rot: [0, Math.PI, 0] },
-      // Left Plate
+      
       { w: 0.22, h: 1.8, d: 0.85, basePos: [-0.65, 0, 0], normal: [-1.6, 0, 0], rot: [0, Math.PI / 2, 0] },
-      // Right Plate
+      
       { w: 0.22, h: 1.8, d: 0.85, basePos: [0.65, 0, 0], normal: [1.6, 0, 0], rot: [0, -Math.PI / 2, 0] }
     ];
 
@@ -177,7 +162,6 @@ export class MorphingCoreEntity {
       });
     });
 
-    // 2 Orbital Energy Rings around monolith
     const ringGeo = new THREE.TorusGeometry(1.6, 0.02, 16, 64);
     this.heroRing1 = new THREE.Mesh(ringGeo, this.ringMaterial);
     this.heroRing1.rotation.x = Math.PI / 3;
@@ -192,12 +176,10 @@ export class MorphingCoreEntity {
     this.forms.hero = root;
   }
 
-  // ─── 2. FORM B: ABOUT POLYHEDRON ──────────────────────────────────────
   buildAboutPolyhedron() {
     const root = new THREE.Group();
     root.visible = false;
 
-    // Dodecahedron with dual shell
     const outerGeo = new THREE.DodecahedronGeometry(1.2, 0);
     this.aboutOuterMesh = new THREE.Mesh(outerGeo, this.armorMaterial);
     root.add(this.aboutOuterMesh);
@@ -206,7 +188,6 @@ export class MorphingCoreEntity {
     this.aboutInnerMesh = new THREE.Mesh(innerGeo, this.coreEnergyMaterial);
     root.add(this.aboutInnerMesh);
 
-    // 3 Gyroscope Gimbal Rings
     this.aboutGimbals = [];
     [1.5, 1.8, 2.1].forEach((rad, i) => {
       const ring = new THREE.Mesh(
@@ -222,7 +203,6 @@ export class MorphingCoreEntity {
     this.forms.about = root;
   }
 
-  // ─── 3. FORM C: PROJECTS SYSTEM ARCHIVE ──────────────────────────────
   buildProjectsArchiveCore() {
     const root = new THREE.Group();
     root.visible = false;
@@ -252,18 +232,15 @@ export class MorphingCoreEntity {
     this.forms.projects = root;
   }
 
-  // ─── 4. FORM D: VUE QUANTUM PRISM ─────────────────────────────────────
   buildVuePrism() {
     const root = new THREE.Group();
     root.visible = false;
 
-    // Emerald & Cyan Double Pyramid (Octahedron elongated)
     const prismGeo = new THREE.OctahedronGeometry(1.3, 0);
     prismGeo.scale(1.0, 1.6, 1.0);
     this.vuePrismMesh = new THREE.Mesh(prismGeo, this.vueMaterial);
     root.add(this.vuePrismMesh);
 
-    // Inner glowing Vue Chevron Core
     const coreGeo = new THREE.ConeGeometry(0.5, 0.9, 3);
     coreGeo.rotateX(Math.PI);
     this.vueChevron = new THREE.Mesh(
@@ -272,7 +249,6 @@ export class MorphingCoreEntity {
     );
     root.add(this.vueChevron);
 
-    // Floating Orbit Nodes (3 satellite cubes)
     this.vueNodes = [];
     for (let i = 0; i < 3; i++) {
       const nodeMesh = new THREE.Mesh(
@@ -292,7 +268,6 @@ export class MorphingCoreEntity {
     this.forms.vue = root;
   }
 
-  // ─── 5. FORM E: LARAVEL INTERLOCKING QUAD-COLUMNS ─────────────────────
   buildLaravelColumns() {
     const root = new THREE.Group();
     root.visible = false;
@@ -317,7 +292,6 @@ export class MorphingCoreEntity {
       this.laravelPillars.push({ group: colGroup, phase: i * 0.7 });
     });
 
-    // Central Energy Conduit
     const conduitGeo = new THREE.CylinderGeometry(0.12, 0.12, 2.8, 12);
     this.laravelConduit = new THREE.Mesh(
       conduitGeo,
@@ -329,7 +303,6 @@ export class MorphingCoreEntity {
     this.forms.laravel = root;
   }
 
-  // ─── 6. FORM F: POSTGRESQL HOLOGRAPHIC BEACON ─────────────────────────
   buildPostgresBeacon() {
     const root = new THREE.Group();
     root.visible = false;
@@ -360,7 +333,6 @@ export class MorphingCoreEntity {
     this.forms.postgres = root;
   }
 
-  // ─── 7. FORM G: WORDPRESS MODULAR LAYOUT CORE ────────────────────────
   buildWordPressLayoutCore() {
     const root = new THREE.Group();
     root.visible = false;
@@ -393,7 +365,6 @@ export class MorphingCoreEntity {
     this.forms.wordpress = root;
   }
 
-  // ─── 8. FORM H: CONTACT ORBITAL TRANSMISSION CORE ─────────────────────
   buildContactOrbitalCore() {
     const root = new THREE.Group();
     root.visible = false;
@@ -478,9 +449,8 @@ export class MorphingCoreEntity {
     this.forms.contact = root;
   }
 
-  // ─── INTERACTION & DECONSTRUCTION (EXPLODED VIEW) ─────────────────────
   setupInteractions() {
-    // Mouse Move Raycasting
+    
     window.addEventListener('mousemove', (e) => {
       this.mouse2D.x = (e.clientX / window.innerWidth - 0.5) * 2;
       this.mouse2D.y = -(e.clientY / window.innerHeight - 0.5) * 2;
@@ -506,7 +476,6 @@ export class MorphingCoreEntity {
       }
     });
 
-    // Click Surge Shockwave Pulse
     window.addEventListener('click', (e) => {
       if (e.target !== this.app.canvas && !e.target.closest('#hero')) return;
 
@@ -527,7 +496,6 @@ export class MorphingCoreEntity {
       window.soundManager.playChirp();
     }
 
-    // Rapid 360 Spin + Scale Surge Animation
     gsap.to(this.group.rotation, {
       y: this.group.rotation.y + Math.PI * 2,
       x: this.group.rotation.x + Math.PI * 0.5,
@@ -538,7 +506,6 @@ export class MorphingCoreEntity {
       }
     });
 
-    // Quantum Core scale flash
     if (this.heroInnerCore) {
       gsap.fromTo(this.heroInnerCore.scale, 
         { x: 2.2, y: 2.2, z: 2.2 },
@@ -547,28 +514,24 @@ export class MorphingCoreEntity {
     }
   }
 
-  // ─── TICK UPDATE LOOP ────────────────────────────────────────────────
   update(deltaTime, elapsedTime, scrollProgress) {
-    // 1. Smoothly interpolate Exploded View hover progress
+    
     this.hoverProgress += (this.targetHover - this.hoverProgress) * 0.1;
 
-    // 2. Animate Exploded View plates of Hero Monolith
     if (this.monolithPlates && this.monolithPlates.length > 0) {
       this.monolithPlates.forEach((p, idx) => {
         const explodeDistance = this.hoverProgress * 1.25;
-        // Float oscillation + Exploded displacement along normal vector
+        
         const floatOsc = Math.sin(elapsedTime * 2.0 + idx * 1.1) * 0.04;
         
         p.group.position.x = p.basePos.x + (p.normal.x * explodeDistance) + floatOsc;
         p.group.position.y = p.basePos.y + (p.normal.y * explodeDistance) + floatOsc;
         p.group.position.z = p.basePos.z + (p.normal.z * explodeDistance);
 
-        // Subtle dynamic tilt on hover
         p.group.rotation.z = this.hoverProgress * (idx % 2 === 0 ? 0.15 : -0.15);
       });
     }
 
-    // 3. Ambient rotations of inner cores and rings
     if (this.heroInnerCore) {
       this.heroInnerCore.rotation.y += deltaTime * 0.8;
       this.heroInnerCore.rotation.x += deltaTime * 0.4;
@@ -582,7 +545,6 @@ export class MorphingCoreEntity {
     if (this.heroRing1) this.heroRing1.rotation.z += deltaTime * 0.4;
     if (this.heroRing2) this.heroRing2.rotation.x += deltaTime * 0.3;
 
-    // 4. Update secondary forms
     if (this.forms.about.visible && this.aboutGimbals) {
       this.aboutGimbals.forEach((g, i) => {
         g.rotation.x += deltaTime * (0.6 + i * 0.3);
@@ -674,7 +636,6 @@ export class MorphingCoreEntity {
       }
     }
 
-    // 5. Section Morphing Interpolation based on Scroll Progress
     this.updateMorphingState(scrollProgress, elapsedTime);
   }
 
@@ -688,8 +649,6 @@ export class MorphingCoreEntity {
     const w1 = waypoints[idx];
     const w2 = waypoints[idx + 1];
 
-    // Lerp 3D Position. The PostgreSQL form stays above the clear center
-    // aisle while entering and leaving the workstation corridor.
     const transitionArc = idx === 4 ? Math.sin(factor * Math.PI) : 0;
     const postgresExitLift = idx === 5 ? Math.sin(factor * Math.PI) * 1.2 : 0;
     this.group.position.x = w1.pos[0] + (w2.pos[0] - w1.pos[0]) * factor
@@ -701,23 +660,20 @@ export class MorphingCoreEntity {
       + Math.cos(elapsedTime * 0.6) * 0.06;
     this.group.position.z = w1.pos[2] + (w2.pos[2] - w1.pos[2]) * factor;
 
-    // Lerp Scale
     const currentScale = w1.scale + (w2.scale - w1.scale) * factor;
     this.group.scale.set(currentScale, currentScale, currentScale);
 
-    // Organic continuous rotation
     if (!this.isSpinning) {
       this.group.rotation.y += 0.005;
       this.group.rotation.x = Math.sin(elapsedTime * 0.5) * 0.08;
     }
 
-    // Form visibility toggle based on closest waypoint form
     const currentFormKey = factor < 0.5 ? w1.activeForm : w2.activeForm;
     Object.keys(this.forms).forEach(key => {
       const form = this.forms[key];
       if (key === currentFormKey) {
         form.visible = true;
-        // Fade in scale
+        
         form.scale.lerp(new THREE.Vector3(1, 1, 1), 0.15);
       } else {
         form.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), 0.2);

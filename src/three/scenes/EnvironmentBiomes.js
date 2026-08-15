@@ -22,7 +22,6 @@ export class EnvironmentBiomes {
     this.initSharedMaterials();
     this.initArchitecturalLighting();
 
-    // Build one architectural biome for every scroll section.
     this.buildBiomeHeroSanctum();
     this.buildBiomeAboutDataVault();
     this.buildBiomeProjectsArchive();
@@ -32,8 +31,6 @@ export class EnvironmentBiomes {
     this.buildBiomeWordPressFoundry();
     this.buildBiomeContactOrbitalUplink();
 
-    // Explorer entry boundaries. PostgreSQL begins before its visual center so
-    // its blue operations beacon is active as soon as the first cabin appears.
     this.biomeRanges = [
       { key: 'hero',      centerProgress: 0.0,  z: 0,   entryZ: Infinity },
       { key: 'about',     centerProgress: 0.14, z: -8,  entryZ: -4.0 },
@@ -50,7 +47,7 @@ export class EnvironmentBiomes {
   }
 
   initSharedMaterials() {
-    // Brutalist Matte Dark Slate / Carbon
+    
     this.matSlate = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color('#0b1422'),
       roughness: 0.46,
@@ -60,7 +57,6 @@ export class EnvironmentBiomes {
       flatShading: false
     });
 
-    // Dark Obsidian with High Specularity
     this.matObsidian = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color('#030711'),
       roughness: 0.26,
@@ -77,7 +73,6 @@ export class EnvironmentBiomes {
       toneMapped: false
     });
 
-    // Emissive Core Glowing Strips
     this.glowCyan = new THREE.MeshBasicMaterial({ color: '#00f2fe', transparent: true, opacity: 0.85 });
     this.glowEmerald = new THREE.MeshBasicMaterial({ color: '#34d399', transparent: true, opacity: 0.85 });
     this.glowRuby = new THREE.MeshBasicMaterial({ color: '#ff4438', transparent: true, opacity: 0.85 });
@@ -120,12 +115,10 @@ export class EnvironmentBiomes {
     }));
   }
 
-  // ─── 1. BIOMA HERO: SANCTUM CÓSMICO (Z = 8 to -2) ─────────────────────
   buildBiomeHeroSanctum() {
     const group = new THREE.Group();
     group.position.set(0, 0, 0);
 
-    // Minimalist floating perimeter gate pillars (4 monolithic gate posts)
     const gatePositions = [
       [-7.5, 0, 4], [7.5, 0, 4],
       [-9.0, 0, -4], [9.0, 0, -4]
@@ -141,7 +134,6 @@ export class EnvironmentBiomes {
       gateGroup.add(mesh);
       this.registerCollider(mesh);
 
-      // Vertical energy channel strip
       const stripGeo = new THREE.BoxGeometry(0.12, 12, 0.12);
       const strip = new THREE.Mesh(stripGeo, this.glowCyan);
       strip.position.z = 0.82;
@@ -154,12 +146,10 @@ export class EnvironmentBiomes {
     this.rootGroup.add(group);
   }
 
-  // ─── 2. BIOMA ABOUT: BÓVEDA DE SERVIDORES CUÁNTICOS (Z = -6 to -14) ───
   buildBiomeAboutDataVault() {
     const group = new THREE.Group();
     group.position.set(0, 0, -8);
 
-    // Left and right massive server rack walls
     this.serverUnits = [];
     const rackCount = 10;
     const rackGeo = new THREE.BoxGeometry(2.2, 8.5, 1.2);
@@ -168,7 +158,7 @@ export class EnvironmentBiomes {
     for (let i = 0; i < rackCount; i++) {
       const isLeft = i % 2 === 0;
       const laneIndex = Math.floor(i / 2);
-      // Frame the About corridor without extending into the project gallery.
+      
       const zOffset = -3.2 + laneIndex * 1.3;
       const xPos = isLeft ? -8.8 : 8.8;
 
@@ -181,7 +171,6 @@ export class EnvironmentBiomes {
       rackGroup.add(mesh);
       this.registerCollider(mesh);
 
-      // Server LED blink arrays
       for (let l = 0; l < 4; l++) {
         const led = new THREE.Mesh(ledGeo, this.glowCyan);
         led.position.set((Math.random() - 0.5) * 1.6, -3.0 + l * 1.8, 0.62);
@@ -192,7 +181,6 @@ export class EnvironmentBiomes {
       group.add(rackGroup);
     }
 
-    // Suspended glass walkway platform in the middle
     const walkwayGeo = new THREE.BoxGeometry(4.2, 0.15, 10.5);
     const walkway = new THREE.Mesh(walkwayGeo, this.matSlate);
     walkway.position.set(0, -3.4, 0);
@@ -202,7 +190,6 @@ export class EnvironmentBiomes {
     this.rootGroup.add(group);
   }
 
-  // ─── 3. BIOMA PROJECTS: ARCHIVO DE SISTEMAS CONSTRUIDOS (Z = -16) ────
   buildBiomeProjectsArchive() {
     const group = new THREE.Group();
     group.position.set(0, 0, -16);
@@ -263,7 +250,6 @@ export class EnvironmentBiomes {
       });
     }
 
-    // Suspended data bridge and a constellation that maps the project systems.
     const bridge = new THREE.Mesh(new THREE.BoxGeometry(3.8, 0.16, 16), this.matSlate);
     bridge.position.y = -3.2;
     group.add(bridge);
@@ -283,12 +269,10 @@ export class EnvironmentBiomes {
     this.rootGroup.add(group);
   }
 
-  // ─── 4. BIOMA VUE: CÁMARA DE CRISTALES GEOMÉTRICOS (Z = -20 to -30) ───
   buildBiomeVueCrystalChamber() {
     const group = new THREE.Group();
     group.position.set(0, 0, -25);
 
-    // Array of floating geometric polyhedrons and crystals in orbit
     this.vueCrystals = [];
     const crystalGeo = new THREE.OctahedronGeometry(1.4, 0);
 
@@ -308,7 +292,6 @@ export class EnvironmentBiomes {
       mesh.scale.set(cfg.scale, cfg.scale * 1.5, cfg.scale);
       cGroup.add(mesh);
 
-      // Orbital holographic ring
       const ring = new THREE.Mesh(
         new THREE.TorusGeometry(cfg.scale * 1.4, 0.02, 16, 48),
         this.glowCyan
@@ -324,13 +307,10 @@ export class EnvironmentBiomes {
     this.rootGroup.add(group);
   }
 
-  // ─── 4. BIOMA LARAVEL: CIUDADELA BRUTALISTA MODULAR (Z = -30 to -40) ──
   buildBiomeLaravelCitadel() {
     const group = new THREE.Group();
     group.position.set(0, 0, -35);
 
-    // Exterior Laravel terraces: they frame their own section without spilling
-    // into the database approach or the workstation sightlines.
     this.citadelBlocks = [];
     const blockCount = 14;
     const terraceOffset = 8.8;
@@ -353,7 +333,6 @@ export class EnvironmentBiomes {
       blockGroup.add(mesh);
       this.registerCollider(mesh);
 
-      // Top glowing energy cap
       const topCapGeo = new THREE.BoxGeometry(2.02, 0.15, 2.02);
       const topCap = new THREE.Mesh(topCapGeo, this.glowRuby);
       topCap.position.y = height / 2;
@@ -367,7 +346,6 @@ export class EnvironmentBiomes {
     this.rootGroup.add(group);
   }
 
-  // ─── 5. BIOMA POSTGRESQL: CORREDOR DE OPERACIONES (Z = -39 to -54) ────
   buildBiomePostgresDataCorridor() {
     const group = new THREE.Group();
     group.position.set(0, 0, -46);
@@ -604,7 +582,6 @@ export class EnvironmentBiomes {
       });
     }
 
-    // Long, unobstructed center aisle. Cabins remain outside the camera lane.
     const walkwayGeometry = new THREE.BoxGeometry(6.6, 0.14, walkwayLength);
     const walkway = new THREE.Mesh(walkwayGeometry, this.matObsidian);
     walkway.position.set(0, -3.0, -0.15);
@@ -646,7 +623,6 @@ export class EnvironmentBiomes {
       group.add(centerLamp);
     }
 
-    // Elevated operations display creates a focal point without blocking passage.
     const overviewFrame = new THREE.Mesh(new THREE.BoxGeometry(3.9, 1.72, 0.16), this.matObsidian);
     overviewFrame.position.set(0, 1.15, -corridorHalfSpan - 1.0);
     group.add(overviewFrame);
@@ -674,7 +650,6 @@ export class EnvironmentBiomes {
     this.rootGroup.add(group);
   }
 
-  // ─── 7. BIOMA WORDPRESS: FUNDICIÓN MODULAR DE CONTENIDO (Z = -58) ────
   buildBiomeWordPressFoundry() {
     const group = new THREE.Group();
     group.position.set(0, 0.2, -58);
@@ -716,7 +691,6 @@ export class EnvironmentBiomes {
       });
     }
 
-    // A central CMS assembly ring with floating page-layout blocks.
     this.wordpressCoreRing = new THREE.Mesh(
       new THREE.TorusGeometry(3.35, 0.12, 12, 64),
       this.glowPurple
@@ -732,7 +706,6 @@ export class EnvironmentBiomes {
     this.rootGroup.add(group);
   }
 
-  // ─── 8. BIOMA CONTACTO: NÚCLEO DE COMUNICACIÓN ORBITAL (Z = -65 to -85)
   buildBiomeContactOrbitalUplink() {
     const group = new THREE.Group();
     group.position.set(0, 3.2, -72);
@@ -741,7 +714,6 @@ export class EnvironmentBiomes {
     this.contactOrbitalStation.name = 'CONTACT_ORBITAL_UPLINK';
     group.add(this.contactOrbitalStation);
 
-    // Mechanical collar around the mobile crystalline transmitter.
     this.contactHubCollar = new THREE.Mesh(
       new THREE.TorusGeometry(3.45, 0.2, 14, 88),
       this.matObsidian
@@ -760,7 +732,6 @@ export class EnvironmentBiomes {
     }
     this.contactOrbitalStation.add(this.contactHubFins);
 
-    // Three transmission bands define the station without crossing the UI.
     const ringConfigs = [
       { radius: 4.35, tube: 0.055, rotation: [Math.PI / 2.5, 0.18, 0.12], speed: 0.18, material: this.glowCyan },
       { radius: 5.65, tube: 0.045, rotation: [Math.PI / 2.1, -0.28, -0.18], speed: -0.12, material: this.glowPurple },
@@ -784,8 +755,6 @@ export class EnvironmentBiomes {
       };
     });
 
-    // Eight project archives restore the broad orbit of the original monoliths,
-    // but every object now communicates real work instead of acting as filler.
     const projectDisplays = createProjectOrbitalTextures(this.app.engine.renderer);
     this.contactProjectModules = [];
     this.contactCameraWorldPosition = new THREE.Vector3();
@@ -853,7 +822,6 @@ export class EnvironmentBiomes {
       });
     });
 
-    // Instanced packets keep the orbital traffic detailed and inexpensive.
     const packetGeometry = new THREE.BoxGeometry(0.24, 0.055, 0.09);
     this.contactPacketMatrix = new THREE.Matrix4();
     this.contactPacketPosition = new THREE.Vector3();
@@ -886,9 +854,8 @@ export class EnvironmentBiomes {
     this.rootGroup.add(group);
   }
 
-  // ─── UPDATE TICK LOOP ────────────────────────────────────────────────
   update(deltaTime, elapsedTime, scrollProgress) {
-    // 1. Dynamic Animate Active Biomes
+    
     if (this.projectVaults) {
       this.projectVaults.forEach((project, index) => {
         project.vault.position.y = 0.15 + Math.sin(elapsedTime * 0.72 + project.phase) * 0.12;
@@ -902,7 +869,6 @@ export class EnvironmentBiomes {
       }
     }
 
-    // Vue Crystals
     if (this.vueCrystals) {
       this.vueCrystals.forEach(c => {
         c.group.position.y = c.baseY + Math.sin(elapsedTime * c.speed + c.phase) * 0.35;
@@ -911,21 +877,18 @@ export class EnvironmentBiomes {
       });
     }
 
-    // Server LEDs blinking
     if (this.serverUnits && this.app._tickCount % 6 === 0) {
       this.serverUnits.forEach(u => {
         u.led.visible = Math.sin(elapsedTime * 6.0 + u.phase) > 0.0;
       });
     }
 
-    // Citadel Blocks subtle hydraulic breathing
     if (this.citadelBlocks) {
       this.citadelBlocks.forEach(b => {
         b.group.position.y = (-3.5 + b.baseH / 2) + Math.sin(elapsedTime * 1.5 + b.phase) * 0.15;
       });
     }
 
-    // PostgreSQL workstation corridor
     if (this.databaseStations) {
       this.databaseStations.forEach(station => {
         station.screenMaterial.opacity = 0.92 + Math.sin(elapsedTime * 0.45 + station.phase) * 0.035;
@@ -952,7 +915,6 @@ export class EnvironmentBiomes {
       }
     }
 
-    // Orbital communication station
     if (this.contactTransmissionRings) {
       this.contactTransmissionRings.forEach((item, index) => {
         item.ring.rotation.x = item.baseX + Math.sin(elapsedTime * 0.18 + item.phase) * 0.06;
@@ -1007,7 +969,6 @@ export class EnvironmentBiomes {
       });
     }
 
-    // 2. Spatial Elevation / Scale / Visibility Transitions for Each Biome
     Object.keys(this.biomes).forEach(key => {
       const biome = this.biomes[key];
       if (this.explorerActive) {

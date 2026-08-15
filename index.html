@@ -5,26 +5,21 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- SEO Optimization -->
     <title>Eduardo Cordova // Portafolio</title>
     <meta name="description" content="Portafolio creativo e inmersivo de Eduardo Cordova, Desarrollador Fullstack e Ingeniero de Sistemas especializado en construir sistemas de software robustos y experiencias WebGL." />
     <meta name="keywords" content="Eduardo Cordova, Fullstack Engineer, Creative Developer, Three.js, GSAP, Fullstack Developer, Web 3D, Nicaragua" />
     <meta name="author" content="Eduardo Cordova" />
     
-    <!-- Open Graph (Facebook / LinkedIn) -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Eduardo Cordova // Desarrollador Fullstack & Web" />
     <meta property="og:description" content="Experiencia digital inmersiva. Diseñando y programando ecosistemas digitales." />
     <meta property="og:image" content="/og.jpg" />
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- Critical inline CSS to prevent FOUC before JS module loads -->
-    <style>
-      #loader-container {
+    <style>      #loader-container {
         position: fixed; inset: 0; z-index: 1000;
         background: #02040a; display: grid;
         grid-template-rows: 1fr auto; align-items: center;
@@ -33,24 +28,19 @@
       #nav-header, .custom-cursor, .custom-cursor-ring { display: none; }
     </style>
 
-    <!-- Force scroll to top on refresh to prevent halfway restore -->
     <script>history.scrollRestoration='manual';window.scrollTo(0,0);</script>
   </head>
   <body>
-    <!-- Three.js Canvas -->
+    
     <canvas id="webgl-canvas"></canvas>
     
-    <!-- Ambient Fog Vignette -->
     <div class="ambient-fog"></div>
     
-    <!-- Portal Transition Overlay for Smooth Wrap-around -->
     <div id="transition-overlay" style="position: fixed; inset: 0; background: #080d28; z-index: 1200; pointer-events: none; opacity: 0;"></div>
     
-    <!-- Custom Dual Interactive Cursor -->
     <div class="custom-cursor" id="js-cursor"></div>
     <div class="custom-cursor-ring" id="js-cursor-ring"></div>
-    <script>
-      (function() {
+    <script>      (function() {
         var dot = document.getElementById('js-cursor');
         var ring = document.getElementById('js-cursor-ring');
         if (!dot || !ring) return;
@@ -90,7 +80,6 @@
       })();
     </script>
 
-    <!-- Persistent graphics profile selector -->
     <div
       class="graphics-mode-control mono"
       id="graphics-mode-control"
@@ -106,7 +95,6 @@
       </div>
     </div>
 
-    <!-- Fullscreen graphics pipeline transition -->
     <div
       class="graphics-transition-overlay"
       id="graphics-transition-overlay"
@@ -139,7 +127,6 @@
       </div>
     </div>
 
-    <!-- Free-Roam Drone Explorer: keeps the guided portfolio intact until activated -->
     <button
       type="button"
       class="explorer-mode-toggle mono"
@@ -207,7 +194,6 @@
       </div>
     </aside>
     
-    <!-- Cinematic Immersive Loader -->
     <div id="loader-container">
       <div class="loader-center-display">
         <h1 class="loader-percentage" id="loader-percent-text">00%</h1>
@@ -228,7 +214,6 @@
       </div>
     </div>
 
-    <!-- Navigation Header -->
     <header id="nav-header">
       <div class="nav-logo" id="header-logo">
         <svg class="logo-svg" viewBox="0 0 32 32" width="22" height="22">
@@ -238,11 +223,11 @@
               <stop offset="100%" stop-color="#a855f7" />
             </linearGradient>
           </defs>
-          <!-- Top Cap Facet -->
+          
           <polygon points="16,4 26,11 16,17 6,11" fill="rgba(0, 242, 254, 0.08)" stroke="url(#logo-grad)" stroke-width="1.6" stroke-linejoin="round" />
-          <!-- Left Facet -->
+          
           <polygon points="6,11 16,17 16,28" fill="rgba(0, 242, 254, 0.03)" stroke="url(#logo-grad)" stroke-width="1.6" stroke-linejoin="round" />
-          <!-- Right Facet -->
+          
           <polygon points="26,11 16,17 16,28" fill="rgba(168, 85, 247, 0.05)" stroke="url(#logo-grad)" stroke-width="1.6" stroke-linejoin="round" />
         </svg>
         <span>Eduardo Cordova</span>
@@ -258,7 +243,6 @@
         <a href="#contact" class="nav-link scroll-to" data-target="7" data-i18n="nav.portal">Portal</a>
       </nav>
       
-      <!-- Header Controls -->
       <div class="header-controls">
         <button id="cmd-palette-trigger" class="cmd-trigger-btn" aria-label="Open Command Palette" title="Command Palette (Ctrl + K)">
           <svg class="cmd-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -277,7 +261,6 @@
         </div>
       </div>
 
-      <!-- Mobile Menu Trigger -->
       <button id="mobile-menu-trigger" class="menu-trigger" aria-label="Toggle Navigation Menu">
         <span class="menu-line"></span>
         <span class="menu-line"></span>
@@ -285,7 +268,6 @@
       </button>
     </header>
 
-    <!-- Mobile Navigation Overlay (Slides/Fades full screen) -->
     <div id="mobile-menu-overlay" class="mobile-menu-overlay">
       <nav class="mobile-nav-links">
         <a href="#hero" class="mobile-nav-link scroll-to" data-target="0"><span class="mono">01/</span> <span data-i18n="nav.home">Inicio</span></a>
@@ -299,10 +281,8 @@
       </nav>
     </div>
 
-    <!-- Master Scroll Content -->
     <main id="app-container">
       
-      <!-- SCENE 1: HERO -->
       <section class="scene-section" id="hero">
         <div class="hero-wrapper">
           <span class="hero-subtitle mono sm" id="hero-subtitle-tag" data-i18n="hero.subtitle">// EDUARDO CORDOVA // DESARROLLADOR FULLSTACK & WEB</span>
@@ -321,7 +301,6 @@
         </div>
       </section>
 
-      <!-- SCENE 2: ABOUT ME -->
       <section class="scene-section" id="about">
         <div class="about-grid">
           <div class="about-content">
@@ -331,7 +310,7 @@
             </p>
           </div>
           <div class="about-specs" id="about-profile-specs">
-            <!-- Systems Core status ticker -->
+            
             <div class="systems-status-tag mono sm" id="about-specs-status">[ SYSTEMS CORE ACTIVE ]</div>
             <div class="spec-item">
               <span class="spec-label" data-i18n="about.spec.loc.label">Ubicación</span>
@@ -346,7 +325,6 @@
               <span class="spec-value" data-i18n="about.spec.exp.val">Sistemas Distribuidos & Experiencias WebGL</span>
             </div>
             
-            <!-- Cyber HUD Static Dashboard (Moved here to be static and non-obtrusive!) -->
             <div id="cyber-hud" class="cyber-hud-console">
               <div class="hud-header">
                 <span class="mono sm" data-i18n="hud.title">// CYBER MONITOR V1.0.4</span>
@@ -377,14 +355,13 @@
         </div>
       </section>
 
-      <!-- SCENE 3: PROJECTS -->
       <section class="scene-section" id="projects">
         <div class="projects-wrapper">
           <div class="section-header">
             <h2 class="mono sm" data-i18n="projects.title">CONSTRUCTED SYSTEMS</h2>
           </div>
           <div class="project-carrusel" id="projects-rows-container">
-            <!-- Project 1: Elite Performance -->
+            
             <div class="project-row" data-project="0">
               <span class="project-num">01</span>
               <div class="project-info-group">
@@ -403,7 +380,6 @@
               <span class="project-arrow">→</span>
             </div>
 
-            <!-- Project 2: Banco de Sangre -->
             <div class="project-row" data-project="1">
               <span class="project-num">02</span>
               <div class="project-info-group">
@@ -422,7 +398,6 @@
               <span class="project-arrow">→</span>
             </div>
 
-            <!-- Project 3: AD2N Cloud -->
             <div class="project-row" data-project="2">
               <span class="project-num">03</span>
               <div class="project-info-group">
@@ -441,7 +416,6 @@
               <span class="project-arrow">→</span>
             </div>
 
-            <!-- Project 4: Capital Marketing -->
             <div class="project-row" data-project="3">
               <span class="project-num">04</span>
               <div class="project-info-group">
@@ -460,7 +434,6 @@
               <span class="project-arrow">→</span>
             </div>
 
-            <!-- Project 5: Julie -->
             <div class="project-row" data-project="4">
               <span class="project-num">05</span>
               <div class="project-info-group">
@@ -479,7 +452,6 @@
               <span class="project-arrow">→</span>
             </div>
 
-            <!-- Project 6: CEMED Hub -->
             <div class="project-row" data-project="5">
               <span class="project-num">06</span>
               <div class="project-info-group">
@@ -498,7 +470,6 @@
               <span class="project-arrow">→</span>
             </div>
 
-            <!-- Project 7: LetsGo App -->
             <div class="project-row" data-project="6">
               <span class="project-num">07</span>
               <div class="project-info-group">
@@ -517,7 +488,6 @@
               <span class="project-arrow">→</span>
             </div>
 
-            <!-- Project 8: Logística Carnes San Martín -->
             <div class="project-row" data-project="7">
               <span class="project-num">08</span>
               <div class="project-info-group">
@@ -536,7 +506,6 @@
               <span class="project-arrow">→</span>
             </div>
 
-            <!-- Project 9: Sistema Pyme -->
             <div class="project-row" data-project="8">
               <span class="project-num">09</span>
               <div class="project-info-group">
@@ -555,7 +524,6 @@
               <span class="project-arrow">→</span>
             </div>
 
-            <!-- Project 10: Sistema Fotos -->
             <div class="project-row" data-project="9">
               <span class="project-num">10</span>
               <div class="project-info-group">
@@ -577,7 +545,6 @@
         </div>
       </section>
 
-      <!-- SCENE 4: VUE.JS FRONTEND ARCHITECTURE -->
       <section class="scene-section" id="vue-frontend">
         <div class="showcase-grid">
           <div class="showcase-details">
@@ -622,7 +589,7 @@
               });
             </div>
             <div class="panel-sim-view" style="display: none;">
-              <!-- Telemetry Simulator Screen -->
+              
               <div class="simulator-terminal mono">
                 <div class="simulator-header">[ TELEMETRY SCANNER ACTIVE ]</div>
                 <div class="simulator-body">
@@ -658,7 +625,6 @@
         </div>
       </section>
 
-      <!-- SCENE 4: PHP LARAVEL BACKEND ARCHITECTURE -->
       <section class="scene-section" id="laravel-backend">
         <div class="showcase-grid">
           <div class="showcase-details">
@@ -705,7 +671,7 @@
               }
             </div>
             <div class="panel-sim-view" style="display: none;">
-              <!-- Laravel Router Simulator Screen -->
+              
               <div class="simulator-terminal mono">
                 <div class="simulator-header">[ REST DISPATCH ROUTER ACTIVE ]</div>
                 <div class="simulator-body">
@@ -742,7 +708,6 @@
         </div>
       </section>
 
-      <!-- SCENE 5: POSTGRESQL DATA ARCHITECTURE -->
       <section class="scene-section" id="postgresql-showcase">
         <div class="showcase-grid">
           <div class="showcase-details">
@@ -787,7 +752,7 @@
               <span class="code-keyword">GROUP BY</span> depth <span class="code-keyword">ORDER BY</span> depth <span class="code-keyword">ASC</span>;
             </div>
             <div class="panel-sim-view" style="display: none;">
-              <!-- PostgreSQL CTE Query Simulator Screen -->
+              
               <div class="simulator-terminal mono">
                 <div class="simulator-header">[ SQL COMPILER AGENT ACTIVE ]</div>
                 <div class="simulator-body">
@@ -830,7 +795,6 @@
         </div>
       </section>
 
-      <!-- SCENE 5.5: WORDPRESS & ELEMENTOR ARCHITECTURE (CMS Showcase) -->
       <section class="scene-section" id="wordpress-cms">
         <div class="showcase-grid">
           <div class="showcase-details">
@@ -877,7 +841,7 @@
               }
             </div>
             <div class="panel-sim-view" style="display: none;">
-              <!-- WordPress & Elementor Simulator Screen -->
+              
               <div class="simulator-terminal mono">
                 <div class="simulator-header">[ ELEMENTOR BUILDER SCANNER ACTIVE ]</div>
                 <div class="simulator-body">
@@ -910,9 +874,6 @@
         </div>
       </section>
 
-
-
-      <!-- SCENE 7: FOOTER -->
       <section class="scene-section" id="contact">
         <div class="footer-grid">
           <div class="footer-left">
@@ -933,7 +894,6 @@
 
     </main>
 
-    <!-- Project Details Glassmorphic Drawer (Slides in from the right) -->
     <div id="project-details-drawer" class="details-drawer">
       <div class="drawer-backdrop" id="drawer-close-backdrop"></div>
       <div class="drawer-panel">
@@ -985,19 +945,19 @@
             <div class="drawer-section">
               <span class="drawer-section-title mono sm" data-i18n="drawer.metrics_title">// TECHNICAL METRICS</span>
               <div class="drawer-metrics" id="drawer-metrics">
-                <!-- dynamic metrics -->
+                
               </div>
             </div>
             <div class="drawer-section">
               <span class="drawer-section-title mono sm" data-i18n="drawer.stack_title">// STACK ARSENAL</span>
               <div class="drawer-techs" id="drawer-techs">
-                <!-- dynamic tech pills -->
+                
               </div>
             </div>
             <div class="drawer-section">
               <span class="drawer-section-title mono sm" data-i18n="drawer.roi_title">// ENGINEERING IMPACT &amp; ROI</span>
               <div class="drawer-roi-card" id="drawer-roi">
-                <!-- dynamic roi items -->
+                
               </div>
             </div>
             <div class="drawer-footer">
@@ -1010,7 +970,6 @@
       </div>
     </div>
 
-    <!-- Minimalist Command Palette -->
     <div class="cmd-palette" id="cmd-palette" style="display: none;" data-lenis-prevent>
       <div class="cmd-palette-backdrop" id="cmd-palette-backdrop"></div>
       <div class="cmd-palette-panel">
@@ -1020,15 +979,13 @@
           <span class="cmd-palette-esc mono">ESC</span>
         </div>
         <div class="cmd-palette-results" id="cmd-palette-results" data-lenis-prevent>
-          <!-- command suggestions loaded dynamically -->
+          
         </div>
       </div>
     </div>
 
-
-
     <script type="module" src="/src/main.js"></script>
-    <!-- Floating Cyber HUD Tooltip -->
+    
     <div class="cyber-tooltip-container" id="cyber-tooltip" style="display:none;">
       <span class="cyber-tooltip-text" id="cyber-tooltip-text"></span>
     </div>

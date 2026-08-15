@@ -6,20 +6,16 @@ export class Engine {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     
-    // Scene setup
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color('#080d28'); // Rich deep cosmic navy void (slightly brighter)
+    this.scene.background = new THREE.Color('#080d28'); 
     
-    // Ambient fog - slightly thinner density (0.022) to make deep columns and details clearer
     this.scene.fog = new THREE.FogExp2('#080d28', 0.022);
 
-    // Camera setup - 55 degrees FOV for a wide cinematic perspective
     this.baseFov = 55;
     this.targetFov = 55;
     this.camera = new THREE.PerspectiveCamera(55, this.width / this.height, 0.1, 150);
-    this.camera.position.set(0, 0.5, 8); // Posicionamiento abisal inicial
+    this.camera.position.set(0, 0.5, 8); 
 
-    // Clean sub-pixel contours are especially important for the architectural silhouettes.
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       antialias: true,
@@ -31,30 +27,24 @@ export class Engine {
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(this.getTargetPixelRatio());
     
-    // Cinematic tone mapping
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.1;
-    // Shadows disabled — we have 6 SpotLights with PCFSoft which costs enormous GPU time
+    
     this.renderer.shadowMap.enabled = false;
 
-    // Timer with Page Visibility integration avoids giant deltas after tab changes.
     this.timer = new THREE.Timer();
     this.timer.connect(document);
     
-    // Resize listener
     this.resizeCallback = this.onResize.bind(this);
     window.addEventListener('resize', this.resizeCallback);
     
-    // Tick registers
     this.tickCallbacks = new Set();
     
-    // Start tick loop with a stable callback reference.
     this.tickCallback = this.tick.bind(this);
     this.tick();
   }
 
-  // Register animation tick callbacks
   addTick(callback) {
     this.tickCallbacks.add(callback);
   }
@@ -63,7 +53,6 @@ export class Engine {
     this.tickCallbacks.delete(callback);
   }
 
-  // Animation Loop (60fps)
   tick(timestamp) {
     this.rafId = requestAnimationFrame(this.tickCallback);
     this.timer.update(timestamp);
@@ -71,22 +60,18 @@ export class Engine {
     const deltaTime = this.timer.getDelta();
     const elapsedTime = this.timer.getElapsed();
     
-    // Execute registered ticks
     for (const callback of this.tickCallbacks) {
       callback(deltaTime, elapsedTime);
     }
     
-    // Smoothly interpolate Camera FOV (for Warp Speed and dynamic zooms)
     if (Math.abs(this.camera.fov - this.targetFov) > 0.05) {
       this.camera.fov += (this.targetFov - this.camera.fov) * 0.08;
       this.camera.updateProjectionMatrix();
     }
 
-    // Standard rendering
     this.renderer.render(this.scene, this.camera);
   }
 
-  // Set target FOV with smooth transition
   setFov(fov) {
     this.targetFov = fov;
   }
@@ -111,7 +96,6 @@ export class Engine {
     }
   }
 
-  // Window Resize handler
   onResize() {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
@@ -123,7 +107,6 @@ export class Engine {
     this.renderer.setPixelRatio(this.getTargetPixelRatio());
   }
 
-  // Clean resources
   destroy() {
     window.removeEventListener('resize', this.resizeCallback);
     cancelAnimationFrame(this.rafId);

@@ -1,11 +1,10 @@
-/* Universal Invisible Scrollbars for maximum immersion */
 html,
 body,
 #app-container,
 .scene-section,
 * {
-  -ms-overflow-style: none !important;  /* IE and Edge */
-  scrollbar-width: none !important;     /* Firefox */
+  -ms-overflow-style: none !important;  
+  scrollbar-width: none !important;     
 }
 
 html::-webkit-scrollbar,
@@ -13,7 +12,7 @@ body::-webkit-scrollbar,
 #app-container::-webkit-scrollbar,
 .scene-section::-webkit-scrollbar,
 *::-webkit-scrollbar {
-  display: none !important;             /* Chrome, Safari, Opera */
+  display: none !important;             
   width: 0 !important;
   height: 0 !important;
   background: transparent !important;
@@ -27,30 +26,29 @@ body {
   overflow-x: hidden;
 }
 
-/* Fluid Typography Scales */
 h1 {
-  font-size: 3em; /* ~48px en 1440px */
+  font-size: 3em; 
   font-weight: 300;
   letter-spacing: -0.04em;
   line-height: 1.1;
 }
 
 h2 {
-  font-size: 1.5em; /* ~24px en 1440px */
+  font-size: 1.5em; 
   font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
 h3 {
-  font-size: 1em; /* ~16px en 1440px */
+  font-size: 1em; 
   font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 p, li {
-  font-size: 0.85em; /* ~13.6px en 1440px */
+  font-size: 0.85em; 
   font-weight: 400;
   color: var(--color-text-sub);
   line-height: 1.6;
@@ -63,10 +61,9 @@ p, li {
 }
 
 .sm {
-  font-size: 0.6em; /* ~9.6px en 1440px */
+  font-size: 0.6em; 
 }
 
-/* Custom Text Selection */
 ::selection {
   background-color: var(--color-accent-cyan);
   color: var(--color-bg-primary);

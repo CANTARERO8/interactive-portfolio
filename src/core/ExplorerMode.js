@@ -4,18 +4,18 @@ const EXPLORER_COPY = {
   es: {
     enter: '[ 🎮 MODO EXPLORADOR ]',
     exit: '[ ✕ SALIR DEL EXPLORADOR ]',
-    status: 'DRON FREE-ROAM // EN LÍNEA',
+    status: 'DRON FREE-ROAM • EN LÍNEA',
     help: 'WASD/FLECHAS MOVER · ESPACIO/SHIFT ALTURA · Q/E BALANCEO · RATÓN MIRAR · ESC SALIR'
   },
   en: {
     enter: '[ 🎮 EXPLORER MODE ]',
     exit: '[ ✕ EXIT EXPLORER ]',
-    status: 'FREE-ROAM DRONE // ONLINE',
+    status: 'FREE-ROAM DRONE • ONLINE',
     help: 'WASD/ARROWS MOVE · SPACE/SHIFT ALTITUDE · Q/E ROLL · MOUSE LOOK · ESC EXIT'
   }
 };
 
-const flashlightBeamVertexShader = /* glsl */ `
+const flashlightBeamVertexShader =  `
   varying vec3 vLocalPosition;
   varying vec3 vWorldPosition;
 
@@ -27,7 +27,7 @@ const flashlightBeamVertexShader = /* glsl */ `
   }
 `;
 
-const flashlightBeamFragmentShader = /* glsl */ `
+const flashlightBeamFragmentShader =  `
   precision highp float;
 
   uniform float uTime;
@@ -340,9 +340,7 @@ export class ExplorerMode {
       this.draggingLook = false;
       this.ignoreNextPointerLockMove = true;
     } else if (this.hadPointerLock) {
-      // Browsers can release pointer lock when focus changes. Stay in explorer
-      // mode and fall back to drag-to-look instead of returning the camera to a
-      // distant scroll waypoint.
+      
       this.hadPointerLock = false;
       this.draggingLook = false;
     }
@@ -355,15 +353,13 @@ export class ExplorerMode {
     this.pointer.y = event.clientY;
     this.lookZone.setPointerCapture?.(event.pointerId);
 
-    // Pointer Lock is requested only from a direct gesture. Drag-to-look remains
-    // the fallback in embedded browsers or touch environments that reject it.
     if (event.pointerType === 'mouse' && this.canvas.requestPointerLock) {
       this.ignoreNextPointerLockMove = true;
       try {
         const pointerLockRequest = this.canvas.requestPointerLock();
         pointerLockRequest?.catch?.(() => {});
       } catch {
-        // The active pointer drag already provides camera look control.
+        
       }
     }
   }
@@ -385,9 +381,6 @@ export class ExplorerMode {
   applyLookDelta(deltaX, deltaY) {
     if (!Number.isFinite(deltaX) || !Number.isFinite(deltaY)) return;
 
-    // Ignore the anomalous delta emitted by some browsers when pointer lock
-    // starts or ends. Normal mouse movement stays responsive through the many
-    // small events received per frame.
     const maximumDelta = window.innerWidth <= 768 ? 34 : 48;
     const safeDeltaX = THREE.MathUtils.clamp(deltaX, -maximumDelta, maximumDelta);
     const safeDeltaY = THREE.MathUtils.clamp(deltaY, -maximumDelta, maximumDelta);

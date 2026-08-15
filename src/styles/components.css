@@ -1,6 +1,3 @@
-/* ==========================================================================
-   CUSTOM DUAL INTERACTIVE CURSOR (Core Dot + Inertial Spring Ring)
-   ========================================================================== */
 .custom-cursor {
   position: fixed;
   top: 0;
@@ -45,7 +42,6 @@
               box-shadow 0.25s ease;
 }
 
-/* Hover States for Interactive Elements */
 body.hovering-link .custom-cursor {
   width: 14px;
   height: 14px;
@@ -61,7 +57,6 @@ body.hovering-link .custom-cursor-ring {
   box-shadow: 0 0 25px rgba(0, 243, 255, 0.55);
 }
 
-/* Click / Mousedown state */
 body.cursor-clicking .custom-cursor {
   width: 6px;
   height: 6px;
@@ -76,7 +71,6 @@ body.cursor-clicking .custom-cursor-ring {
   box-shadow: 0 0 20px rgba(0, 243, 255, 0.9);
 }
 
-/* Hide native cursor ONLY when custom cursor is confirmed active */
 html.has-custom-cursor,
 html.has-custom-cursor body,
 html.has-custom-cursor *,
@@ -85,7 +79,6 @@ html.has-custom-cursor *::after {
   cursor: none !important;
 }
 
-/* Fallback for real mobile touch screens */
 html.is-touch-device .custom-cursor,
 html.is-touch-device .custom-cursor-ring {
   display: none !important;
@@ -97,7 +90,6 @@ html.is-touch-device * {
   cursor: auto !important;
 }
 
-/* Cinematic Fullscreen Loader Screen */
 #loader-container {
   position: fixed;
   top: 0;
@@ -115,7 +107,6 @@ html.is-touch-device * {
   overflow: hidden;
 }
 
-/* Massive absolute-centered glowing percentage */
 .loader-center-display {
   display: flex;
   flex-direction: column;
@@ -147,7 +138,6 @@ html.is-touch-device * {
   margin-top: 1em;
 }
 
-/* Wide full-screen technical boot terminal at the bottom */
 .loader-terminal {
   width: 100%;
   max-width: 100%;
@@ -162,7 +152,7 @@ html.is-touch-device * {
 }
 
 .terminal-header {
-  display: none; /* Removed for a cleaner wide structure */
+  display: none; 
 }
 
 .terminal-logs {
@@ -228,7 +218,7 @@ html.is-touch-device * {
     padding-top: 1.5em;
   }
   .terminal-logs {
-    display: none; /* Hide logs on mobile for cleaner space */
+    display: none; 
   }
 }
 
@@ -242,7 +232,6 @@ html.is-touch-device * {
   }
 }
 
-/* Header Navigation */
 #nav-header {
   position: fixed;
   top: 0;
@@ -253,7 +242,7 @@ html.is-touch-device * {
   align-items: center;
   padding: 2em 4em;
   z-index: var(--z-nav);
-  mix-blend-mode: difference; /* Elegante blend mode para overlay */
+  mix-blend-mode: difference; 
 }
 
 .nav-logo {
@@ -269,10 +258,9 @@ html.is-touch-device * {
 }
 
 .logo-dot {
-  display: none; /* Replaced by glowing SVG */
+  display: none; 
 }
 
-/* Minimalist 3D Prism Logo */
 .logo-svg {
   display: inline-block;
   vertical-align: middle;
@@ -343,7 +331,6 @@ html.is-touch-device * {
     display: none;
   }
   
-  /* Mobile Menu Trigger Icon */
   .menu-trigger {
     display: flex;
     flex-direction: column;
@@ -365,7 +352,6 @@ html.is-touch-device * {
     transform-origin: left center;
   }
   
-  /* Morphing hamburger to X */
   .menu-trigger.active .menu-line:nth-child(1) {
     transform: rotate(45deg) translate(2px, -1px);
     background-color: var(--color-accent-cyan);
@@ -379,7 +365,6 @@ html.is-touch-device * {
     background-color: var(--color-accent-cyan);
   }
   
-  /* Fullscreen mobile menu overlay */
   .mobile-menu-overlay {
     position: fixed;
     top: 0;
@@ -437,7 +422,6 @@ html.is-touch-device * {
   }
 }
 
-/* Bilingual Language Toggle Selector */
 .lang-selector {
   display: flex;
   align-items: center;
@@ -491,9 +475,6 @@ html.is-touch-device * {
   }
 }
 
-/* ==========================================================================
-   Cyber HUD Telemetry Console & Overclock HUD (Idea C)
-   ========================================================================== */
 #cyber-hud {
   position: relative;
   width: 100%;
@@ -544,7 +525,6 @@ html.is-touch-device * {
   text-shadow: 0 0 5px rgba(255, 51, 0, 0.4);
 }
 
-/* Overclock Trigger Button */
 .overclock-btn {
   background: transparent;
   border: 1px solid var(--color-accent-cyan);
@@ -579,13 +559,11 @@ html.is-touch-device * {
   box-shadow: 0 0 20px rgba(255, 51, 0, 0.4);
 }
 
-/* Animations */
 @keyframes overclock-btn-pulse {
   0%, 100% { opacity: 0.9; box-shadow: 0 0 5px rgba(255, 51, 0, 0.1); }
   50% { opacity: 1; box-shadow: 0 0 12px rgba(255, 51, 0, 0.3); }
 }
 
-/* Clickable Suggestion Chips for Terminal Commands */
 .cli-command-suggestions {
   display: flex;
   flex-wrap: wrap;
@@ -633,9 +611,6 @@ html.is-touch-device * {
   box-shadow: 0 0 10px rgba(255, 51, 0, 0.25);
 }
 
-/* ==========================================================================
-   Interactive CLI Terminal (Idea A)
-   ========================================================================== */
 .terminal-cli-prompt {
   display: flex;
   align-items: center;
@@ -679,7 +654,6 @@ html.is-touch-device * {
   font-style: italic;
 }
 
-/* Ascii DB Result Alignment */
 .sim-table-dump {
   display: block;
   font-size: 0.7em !important;
@@ -697,9 +671,6 @@ html.is-touch-device * {
   background: rgba(3, 6, 12, 0.8) !important;
 }
 
-/* ==========================================================================
-   GSAP Click Sparks & Stroboscopic Counters (Idea C & D)
-   ========================================================================== */
 .click-spark {
   position: fixed;
   width: 5px;
@@ -742,7 +713,6 @@ html.is-touch-device * {
   }
 }
 
-/* 3D Artifact Interactive Badge */
 .artifact-badge {
   display: inline-flex;
   align-items: center;
