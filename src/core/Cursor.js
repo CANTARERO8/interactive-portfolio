@@ -1,8 +1,6 @@
-import gsap from 'gsap';
-
 export class Cursor {
   constructor() {
-    // 1. Fetch or create cursor DOM nodes if needed
+    // 1. Fetch or dynamically create cursor DOM nodes
     this.dot = document.getElementById('js-cursor');
     this.ring = document.getElementById('js-cursor-ring');
 
@@ -19,51 +17,49 @@ export class Cursor {
       document.body.appendChild(this.ring);
     }
 
-    // 2. Position tracking (initialized offscreen)
-    this.mouse = { x: -200, y: -200 };
-    this.pos = { x: -200, y: -200 };
-    this.isInitialized = false;
+    // 2. Initialize in viewport center
+    const startX = window.innerWidth / 2;
+    const startY = window.innerHeight / 2;
+    this.mouse = { x: startX, y: startY };
+    this.pos = { x: startX, y: startY };
 
-    // 3. Bind events
-    this.onMouseMove = this.onMouseMove.bind(this);
+    this.dot.style.transform = `translate3d(${startX}px, ${startY}px, 0) translate(-50%, -50%)`;
+    this.ring.style.transform = `translate3d(${startX}px, ${startY}px, 0) translate(-50%, -50%)`;
+
+    // 3. Bind movement and click events
+    this.onMove = this.onMove.bind(this);
     this.tick = this.tick.bind(this);
 
-    window.addEventListener('mousemove', this.onMouseMove, { passive: true });
+    window.addEventListener('mousemove', this.onMove, { passive: true });
+    document.addEventListener('mousemove', this.onMove, { passive: true });
+    window.addEventListener('pointermove', this.onMove, { passive: true });
+
     window.addEventListener('mousedown', () => document.body.classList.add('cursor-clicking'));
     window.addEventListener('mouseup', () => document.body.classList.remove('cursor-clicking'));
 
-    // 4. Setup hover triggers
+    // 4. Setup hover listeners
     this.setupHoverListeners();
 
-    // 5. Start RAF loop
+    // 5. Start animation loop
     requestAnimationFrame(this.tick);
   }
 
-  onMouseMove(e) {
+  onMove(e) {
+    if (!e.clientX && !e.clientY) return;
     this.mouse.x = e.clientX;
     this.mouse.y = e.clientY;
 
-    if (!this.isInitialized) {
-      this.isInitialized = true;
-      this.pos.x = this.mouse.x;
-      this.pos.y = this.mouse.y;
-      this.dot.style.opacity = '1';
-      this.ring.style.opacity = '1';
-    }
-
-    // Instant placement of inner dot via hardware-accelerated transform
+    // Instant update for inner core dot
     this.dot.style.transform = `translate3d(${this.mouse.x}px, ${this.mouse.y}px, 0) translate(-50%, -50%)`;
   }
 
   tick() {
-    if (this.isInitialized) {
-      // Elastic spring lag for the follower ring
-      const ease = 0.18;
-      this.pos.x += (this.mouse.x - this.pos.x) * ease;
-      this.pos.y += (this.mouse.y - this.pos.y) * ease;
+    // Smooth spring lerp for follower ring
+    const ease = 0.2;
+    this.pos.x += (this.mouse.x - this.pos.x) * ease;
+    this.pos.y += (this.mouse.y - this.pos.y) * ease;
 
-      this.ring.style.transform = `translate3d(${this.pos.x}px, ${this.pos.y}px, 0) translate(-50%, -50%)`;
-    }
+    this.ring.style.transform = `translate3d(${this.pos.x}px, ${this.pos.y}px, 0) translate(-50%, -50%)`;
 
     requestAnimationFrame(this.tick);
   }

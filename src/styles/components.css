@@ -5,18 +5,19 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 8px;
-  height: 8px;
-  background-color: #00f3ff;
+  width: 9px;
+  height: 9px;
+  background-color: #00f3ff !important;
   border-radius: 50%;
   pointer-events: none !important;
-  z-index: 999999;
-  box-shadow: 0 0 10px #00f3ff, 0 0 20px rgba(0, 243, 255, 0.8);
+  z-index: 2147483647 !important;
+  box-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 35px rgba(0, 243, 255, 0.9);
+  opacity: 1 !important;
+  visibility: visible !important;
   transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
               height 0.2s cubic-bezier(0.16, 1, 0.3, 1),
               background-color 0.2s ease,
               box-shadow 0.2s ease;
-  opacity: 0;
   will-change: transform;
 }
 
@@ -26,18 +27,19 @@
   left: 0;
   width: 36px;
   height: 36px;
-  border: 1.5px solid rgba(0, 243, 255, 0.55);
-  background-color: rgba(0, 243, 255, 0.04);
+  border: 1.8px solid #00f3ff !important;
+  background-color: rgba(0, 243, 255, 0.08) !important;
   border-radius: 50%;
   pointer-events: none !important;
-  z-index: 999998;
-  box-shadow: 0 0 14px rgba(0, 243, 255, 0.25);
+  z-index: 2147483646 !important;
+  box-shadow: 0 0 16px rgba(0, 243, 255, 0.35);
+  opacity: 1 !important;
+  visibility: visible !important;
   transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
               height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.25s ease,
               background-color 0.25s ease,
               box-shadow 0.25s ease;
-  opacity: 0;
   will-change: transform;
 }
 
@@ -45,31 +47,31 @@
 body.hovering-link .custom-cursor {
   width: 12px;
   height: 12px;
-  background-color: #ffffff;
-  box-shadow: 0 0 12px #ffffff, 0 0 25px rgba(0, 243, 255, 0.9);
+  background-color: #ffffff !important;
+  box-shadow: 0 0 15px #ffffff, 0 0 30px rgba(0, 243, 255, 1);
 }
 
 body.hovering-link .custom-cursor-ring {
-  width: 52px;
-  height: 52px;
-  border-color: rgba(0, 243, 255, 0.95);
-  background-color: rgba(0, 243, 255, 0.12);
-  box-shadow: 0 0 22px rgba(0, 243, 255, 0.45);
+  width: 54px;
+  height: 54px;
+  border-color: #00f3ff !important;
+  background-color: rgba(0, 243, 255, 0.18) !important;
+  box-shadow: 0 0 25px rgba(0, 243, 255, 0.55);
 }
 
 /* Click / Mousedown state */
 body.cursor-clicking .custom-cursor {
   width: 6px;
   height: 6px;
-  background-color: #00f3ff;
+  background-color: #00f3ff !important;
 }
 
 body.cursor-clicking .custom-cursor-ring {
   width: 24px;
   height: 24px;
-  border-color: #00f3ff;
-  background-color: rgba(0, 243, 255, 0.35);
-  box-shadow: 0 0 18px rgba(0, 243, 255, 0.8);
+  border-color: #ffffff !important;
+  background-color: rgba(0, 243, 255, 0.4) !important;
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.9);
 }
 
 /* Desktop native cursor replacement */
