@@ -986,12 +986,49 @@
   text-align: justify;
 }
 
+.drawer-diagram-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.drawer-diagram-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 242, 254, 0.05);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  border-radius: 4px;
+  padding: 5px 12px;
+  font-size: 11px;
+  color: var(--color-accent-cyan);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.04em;
+}
+
+.drawer-diagram-btn:hover {
+  background: rgba(0, 242, 254, 0.15);
+  border-color: var(--color-accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+  transform: translateY(-1px);
+  color: #ffffff;
+}
+
+.drawer-diagram-btn svg {
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
 .drawer-architecture-svg-container {
   width: 100%;
-  background-color: rgba(2, 3, 6, 0.35);
-  border: 1px solid rgba(0, 242, 254, 0.1);
+  background-color: rgba(2, 3, 6, 0.45);
+  border: 1px solid rgba(0, 242, 254, 0.12);
   border-radius: 8px;
-  padding: 1.2em;
+  padding: 0.8em;
   box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.75), 0 0 15px rgba(0, 242, 254, 0.02);
   display: flex;
   justify-content: center;
@@ -999,17 +1036,19 @@
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   margin-bottom: 0.8em;
+  cursor: pointer;
+  position: relative;
 }
 
 .drawer-architecture-svg-container:hover {
-  border-color: rgba(0, 242, 254, 0.25);
-  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.75), 0 0 25px rgba(0, 242, 254, 0.06);
+  border-color: rgba(0, 242, 254, 0.35);
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.75), 0 0 25px rgba(0, 242, 254, 0.1);
 }
 
 .drawer-architecture-svg-container svg {
   width: 100%;
   height: auto;
-  max-height: 180px;
+  max-height: 320px;
   display: block;
 }
 
@@ -1620,4 +1659,190 @@
 .cmd-palette-item:hover .cmd-palette-item-desc, 
 .cmd-palette-item.active .cmd-palette-item-desc {
   color: var(--color-text-sub);
+}
+
+/* ==========================================================================
+   HD ARCHITECTURE BLUEPRINT LIGHTBOX / MODAL
+   ========================================================================== */
+.diagram-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.diagram-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.diagram-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 6, 14, 0.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+.diagram-modal-dialog {
+  position: relative;
+  z-index: 2;
+  width: 92vw;
+  max-width: 1400px;
+  height: 88vh;
+  max-height: 920px;
+  background: #0b0f19;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.96) translateY(12px);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.diagram-modal.active .diagram-modal-dialog {
+  transform: scale(1) translateY(0);
+}
+
+.diagram-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #1e293b;
+  background: #090d16;
+}
+
+.diagram-modal-badge {
+  font-size: 10px;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.diagram-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.diagram-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.diagram-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 11px;
+  color: #e2e8f0;
+  background: #131b2c;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.04em;
+}
+
+.diagram-modal-btn:hover {
+  background: #1e293b;
+  border-color: #38bdf8;
+  color: #38bdf8;
+  transform: translateY(-1px);
+}
+
+.diagram-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  font-size: 11px;
+  color: #94a3b8;
+  background: #131b2c;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.04em;
+}
+
+.diagram-modal-close:hover {
+  background: #1e293b;
+  border-color: #ef4444;
+  color: #ef4444;
+  transform: translateY(-1px);
+}
+
+.diagram-modal-viewport {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #060911;
+}
+
+.diagram-modal-canvas {
+  width: 100%;
+  max-width: 1250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.diagram-modal-canvas svg {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  display: block;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 0 1px #1e293b;
+}
+
+.diagram-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 24px;
+  border-top: 1px solid #1e293b;
+  background: #090d16;
+  font-size: 10px;
+  color: #64748b;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 768px) {
+  .diagram-modal-dialog {
+    width: 96vw;
+    height: 94vh;
+  }
+  .diagram-modal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+  }
+  .diagram-modal-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .diagram-modal-viewport {
+    padding: 12px;
+  }
 }

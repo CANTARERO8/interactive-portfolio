@@ -13,12 +13,14 @@ export class PortfolioOrchestrator {
     
     this.currentLang = localStorage.getItem('portfolio-lang') || 'es';
     this.currentProjectIndex = null;
+    this.isDiagramModalOpen = false;
     
     this.intervals = {};
     
     this.initShowcaseSimulators();
     this.initProjectsDrawer();
     this.initDrawerTabs();
+    this.initDiagramModal();
     this.initCyberTooltip();
     this.initMobileMenu();
     this.initLanguageSelector();
@@ -296,8 +298,12 @@ export class PortfolioOrchestrator {
     }
     
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && this.drawer.classList.contains('active')) {
-        this.closeDrawer();
+      if (e.key === 'Escape') {
+        if (this.isDiagramModalOpen) {
+          this.closeDiagramModal();
+        } else if (this.drawer.classList.contains('active')) {
+          this.closeDrawer();
+        }
       }
     });
   }
@@ -321,6 +327,16 @@ export class PortfolioOrchestrator {
     const svgContainer = document.getElementById('drawer-architecture-svg');
     if (svgContainer) {
       svgContainer.innerHTML = data.svg || '';
+    }
+
+    const downloadLink = document.getElementById('drawer-diagram-download');
+    if (downloadLink) {
+      downloadLink.href = data.diagramSvg || `/diagrams/${data.slug}-${this.currentLang}.svg`;
+      downloadLink.setAttribute('download', `${data.slug || 'blueprint'}-${this.currentLang}.svg`);
+    }
+
+    if (this.isDiagramModalOpen) {
+      this.updateDiagramModal(data);
     }
     
     const seqContainer = document.getElementById('drawer-seq-svg');
@@ -432,6 +448,97 @@ export class PortfolioOrchestrator {
         }
       }
     });
+  }
+
+  initDiagramModal() {
+    const expandBtn = document.getElementById('drawer-diagram-expand');
+    const svgContainer = document.getElementById('drawer-architecture-svg');
+    const modalClose = document.getElementById('diagram-modal-close');
+    const modalBackdrop = document.getElementById('diagram-modal-backdrop');
+
+    if (expandBtn) {
+      expandBtn.addEventListener('click', () => {
+        if (this.currentProjectIndex !== null && this.projectsData[this.currentProjectIndex]) {
+          this.openDiagramModal(this.projectsData[this.currentProjectIndex]);
+        }
+      });
+    }
+
+    if (svgContainer) {
+      svgContainer.addEventListener('click', () => {
+        if (this.currentProjectIndex !== null && this.projectsData[this.currentProjectIndex]) {
+          this.openDiagramModal(this.projectsData[this.currentProjectIndex]);
+        }
+      });
+    }
+
+    if (modalClose) {
+      modalClose.addEventListener('click', () => this.closeDiagramModal());
+    }
+
+    if (modalBackdrop) {
+      modalBackdrop.addEventListener('click', () => this.closeDiagramModal());
+    }
+  }
+
+  openDiagramModal(data) {
+    if (!data) return;
+    this.isDiagramModalOpen = true;
+    this.soundManager.playChirp();
+    
+    const modal = document.getElementById('diagram-modal');
+    if (!modal) return;
+    
+    this.updateDiagramModal(data);
+    modal.style.display = 'flex';
+    requestAnimationFrame(() => {
+      modal.classList.add('active');
+    });
+
+    if (window.APP_INSTANCE && window.APP_INSTANCE.scrollManager && window.APP_INSTANCE.scrollManager.lenis) {
+      window.APP_INSTANCE.scrollManager.lenis.stop();
+    }
+  }
+
+  updateDiagramModal(data) {
+    const modal = document.getElementById('diagram-modal');
+    if (!modal || !data) return;
+    
+    const titleEl = document.getElementById('diagram-modal-title');
+    if (titleEl) {
+      titleEl.innerText = `${data.id} — ${data.title.toUpperCase()}`;
+    }
+    
+    const downloadBtn = document.getElementById('diagram-modal-download');
+    if (downloadBtn) {
+      downloadBtn.href = data.diagramSvg || `/diagrams/${data.slug}-${this.currentLang}.svg`;
+      downloadBtn.setAttribute('download', `${data.slug || 'blueprint'}-${this.currentLang}.svg`);
+    }
+    
+    const canvas = document.getElementById('diagram-modal-canvas');
+    if (canvas) {
+      canvas.innerHTML = data.svg || '';
+    }
+  }
+
+  closeDiagramModal() {
+    this.isDiagramModalOpen = false;
+    const modal = document.getElementById('diagram-modal');
+    if (!modal) return;
+    
+    this.soundManager.playClick();
+    modal.classList.remove('active');
+    setTimeout(() => {
+      if (!this.isDiagramModalOpen) {
+        modal.style.display = 'none';
+      }
+    }, 350);
+
+    if (!this.drawer || !this.drawer.classList.contains('active')) {
+      if (window.APP_INSTANCE && window.APP_INSTANCE.scrollManager && window.APP_INSTANCE.scrollManager.lenis) {
+        window.APP_INSTANCE.scrollManager.lenis.start();
+      }
+    }
   }
 
   initDrawerTabs() {
@@ -600,6 +707,10 @@ export class PortfolioOrchestrator {
     
     if (this.currentProjectIndex !== null && this.currentProjectIndex !== undefined && this.drawer && this.drawer.classList.contains('active')) {
       this.openDrawer(this.currentProjectIndex, true);
+    }
+    
+    if (this.isDiagramModalOpen && this.currentProjectIndex !== null && this.projectsData[this.currentProjectIndex]) {
+      this.updateDiagramModal(this.projectsData[this.currentProjectIndex]);
     }
     
     const dictionary = staticTranslations[lang] || staticTranslations['en'];
