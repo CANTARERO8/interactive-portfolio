@@ -11,14 +11,14 @@ function cleanText(str) {
 // 1. Update staticTranslations
 staticTranslations.en["drawer.map_title"] = "SYSTEM ARCHITECTURE BLUEPRINT";
 staticTranslations.en["drawer.map_tab"] = "SYSTEM BLUEPRINT";
-staticTranslations.en["drawer.diagram_expand"] = "[ EXPAND HD BLUEPRINT ]";
-staticTranslations.en["drawer.diagram_download"] = "[ ⬇ DOWNLOAD BLUEPRINT ]";
+staticTranslations.en["drawer.diagram_expand"] = "EXPAND BLUEPRINT";
+staticTranslations.en["drawer.diagram_download"] = "DOWNLOAD BLUEPRINT";
 staticTranslations.en["drawer.modal_badge"] = "SYSTEM ARCHITECTURE BLUEPRINT";
 
 staticTranslations.es["drawer.map_title"] = "PLANO DE ARQUITECTURA DEL SISTEMA";
 staticTranslations.es["drawer.map_tab"] = "PLANO DEL SISTEMA";
-staticTranslations.es["drawer.diagram_expand"] = "[ EXPANDIR PLANO HD ]";
-staticTranslations.es["drawer.diagram_download"] = "[ ⬇ DESCARGAR PLANO ]";
+staticTranslations.es["drawer.diagram_expand"] = "EXPANDIR PLANO";
+staticTranslations.es["drawer.diagram_download"] = "DESCARGAR PLANO";
 staticTranslations.es["drawer.modal_badge"] = "PLANO DE ARQUITECTURA DEL SISTEMA";
 
 for (const lang of ['en', 'es']) {
@@ -180,9 +180,9 @@ const projectConfigs = {
         ["320ms", "GEMINI AI", "Athletic Insights", "Stream Tokens", "#6366f1"],
         ["60 FPS", "REACT 19 UI", "Motion Hardware", "Zero Frame Drop", "#fbbf24"]
       ],
-      statsLeft: "[TELEMETRY BENCHMARK — ELITE PERFORMANCE]",
+      statsLeft: "TELEMETRY BENCHMARK — ELITE PERFORMANCE",
       statsRight: "High-Frequency Stream @ 500 req/s",
-      resHeader: "[CSS ENGINE & HYDRATION FOOTPRINT]",
+      resHeader: "CSS ENGINE & HYDRATION FOOTPRINT",
       resRow1: "CSS BUNDLE WEIGHT",
       resB1W: 240, resB1Txt: "320 KB (v3 + PostCSS)",
       resO1W: 22, resO1Txt: "18 KB (Rust Engine v4)",
@@ -207,9 +207,9 @@ const projectConfigs = {
         ["320ms", "GEMINI IA", "Análisis Carga\nde Atleta", "Flujo Tokens", "#6366f1"],
         ["60 FPS", "PANEL REACT", "Aceleración GPU", "Cero Retardo", "#fbbf24"]
       ],
-      statsLeft: "[BENCHMARK DE TELEMETRÍA — ELITE PERFORMANCE]",
+      statsLeft: "BENCHMARK DE TELEMETRÍA — ELITE PERFORMANCE",
       statsRight: "Flujo de Alta Frecuencia @ 500 req/s",
-      resHeader: "[HUELLA DE MOTOR CSS E HIDRATACIÓN]",
+      resHeader: "HUELLA DE MOTOR CSS E HIDRATACIÓN",
       resRow1: "PESO CSS BUNDLE",
       resB1W: 240, resB1Txt: "320 KB (v3 + PostCSS)",
       resO1W: 22, resO1Txt: "18 KB (Motor Rust v4)",
@@ -237,9 +237,9 @@ const projectConfigs = {
         ["0.8ms", "REDIS QUEUE", "Async Worker Push", "Non-Blocking", "#6366f1"],
         ["0%", "RACE CONDITIONS", "Simultaneous Orders", "Guaranteed", "#fbbf24"]
       ],
-      statsLeft: "[TRANSACTION LATENCY — BANCO DE SANGRE]",
+      statsLeft: "TRANSACTION LATENCY — BANCO DE SANGRE",
       statsRight: "Multi-Clinic Concurrency Peak @ 200 req/s",
-      resHeader: "[DB LOCK CONTENTION & WORKER UTILIZATION]",
+      resHeader: "DB LOCK CONTENTION & WORKER UTILIZATION",
       resRow1: "LOCK WAIT TIME",
       resB1W: 220, resB1Txt: "120ms (Read Committed, 14 deadlocks)",
       resO1W: 15, resO1Txt: "0.1ms (SERIALIZABLE + NOWAIT, 0 deadlocks)",
@@ -264,9 +264,9 @@ const projectConfigs = {
         ["0.8ms", "COLA REDIS", "Despacho Asíncrono", "Hilo Libre", "#6366f1"],
         ["0%", "COLISIÓN STOCK", "Pedidos Simultáneos", "Garantizado", "#fbbf24"]
       ],
-      statsLeft: "[LATENCIA TRANSACCIONAL — BANCO DE SANGRE]",
+      statsLeft: "LATENCIA TRANSACCIONAL — BANCO DE SANGRE",
       statsRight: "Pico Multi-Clínica @ 200 req/s",
-      resHeader: "[ESPERA DE BLOQUEOS Y CONSUMO DE CPU]",
+      resHeader: "ESPERA DE BLOQUEOS Y CONSUMO DE CPU",
       resRow1: "ESPERA DE BLOQUEO",
       resB1W: 220, resB1Txt: "120ms (Read Committed, 14 bloqueos)",
       resO1W: 15, resO1Txt: "0.1ms (SERIALIZABLE + NOWAIT, 0 bloqueos)",
@@ -294,9 +294,9 @@ const projectConfigs = {
         ["0.15ms", "NVMe SAN I/O", "All-Flash Data Store", "Sub-ms Latency", "#6366f1"],
         ["99.99%", "SYSTEM UPTIME", "VMware HA Failover", "SLA Certified", "#fbbf24"]
       ],
-      statsLeft: "[INFRASTRUCTURE LATENCY & AVAILABILITY]",
+      statsLeft: "INFRASTRUCTURE LATENCY & AVAILABILITY",
       statsRight: "Enterprise SLA Benchmark Audit",
-      resHeader: "[FAILOVER RECOVERY TIME & STORAGE DEDUPLICATION]",
+      resHeader: "FAILOVER RECOVERY TIME & STORAGE DEDUPLICATION",
       resRow1: "FAILOVER RTO",
       resB1W: 240, resB1Txt: "45 min (Manual Node Recovery)",
       resO1W: 12, resO1Txt: "1.2 sec (Automated vSphere HA)",
@@ -321,9 +321,9 @@ const projectConfigs = {
         ["0.15ms", "I/O SAN NVMe", "Data Store\nNVMe All-Flash", "Sub-milisegundo", "#6366f1"],
         ["99.99%", "DISPONIBILIDAD", "Clúster Alta Disp.", "Certificado SLA", "#fbbf24"]
       ],
-      statsLeft: "[LATENCIA Y DISPONIBILIDAD DE INFRAESTRUCTURA]",
+      statsLeft: "LATENCIA Y DISPONIBILIDAD DE INFRAESTRUCTURA",
       statsRight: "Auditoría de Certificación SLA",
-      resHeader: "[TIEMPO DE RECUPERACIÓN Y ALMACENAMIENTO]",
+      resHeader: "TIEMPO DE RECUPERACIÓN Y ALMACENAMIENTO",
       resRow1: "RECUPERACIÓN RTO",
       resB1W: 240, resB1Txt: "45 min (Conmutación Manual)",
       resO1W: 12, resO1Txt: "1.2 seg (vSphere HA Automatizado)",
@@ -351,9 +351,9 @@ const projectConfigs = {
         ["60 FPS", "CANVAS DRAW LOOP", "Three.js RAF Budget", "Hardware Locked", "#6366f1"],
         ["180ms", "LEAD DISPATCH", "PHP 8 PHPMailer", "Async Concierge", "#fbbf24"]
       ],
-      statsLeft: "[SPA NAVIGATION & 3D RENDERING BENCHMARK]",
+      statsLeft: "SPA NAVIGATION & 3D RENDERING BENCHMARK",
       statsRight: "Smooth Inertial Scroll & WebGL Test",
-      resHeader: "[SPA NAVIGATION OVERHEAD & VRAM FOOTPRINT]",
+      resHeader: "SPA NAVIGATION OVERHEAD & VRAM FOOTPRINT",
       resRow1: "PAGE SWITCH TIME",
       resB1W: 240, resB1Txt: "1.8s (Full MPA Reload, 1.4 MB)",
       resO1W: 16, resO1Txt: "4ms (Modular SPA, 0 KB transfer)",
@@ -378,9 +378,9 @@ const projectConfigs = {
         ["60 FPS", "CUADROS WEBGL", "Presupuesto rAF 16ms", "Aceleración GPU", "#6366f1"],
         ["180ms", "DESPACHO LEADS", "PHP 8 PHPMailer", "Concierge Asíncrono", "#fbbf24"]
       ],
-      statsLeft: "[NAVEGACIÓN SPA Y RENDIMIENTO 3D]",
+      statsLeft: "NAVEGACIÓN SPA Y RENDIMIENTO 3D",
       statsRight: "Prueba de Desplazamiento Inercial y WebGL",
-      resHeader: "[SOBRECARGA DE NAVEGACIÓN Y CONSUMO DE VRAM]",
+      resHeader: "SOBRECARGA DE NAVEGACIÓN Y CONSUMO DE VRAM",
       resRow1: "TIEMPO NAVEGACIÓN",
       resB1W: 240, resB1Txt: "1.8s (Recarga Completa, 1.4 MB)",
       resO1W: 16, resO1Txt: "4ms (SPA Modular, 0 KB descarga)",
@@ -408,9 +408,9 @@ const projectConfigs = {
         ["1.2ms", "AUDIO LATENCY", "Procedural Ambient Node", "Web Audio Engine", "#6366f1"],
         ["0.000", "LAYOUT SHIFT (CLS)", "Predictive Preload", "Solid Layout", "#fbbf24"]
       ],
-      statsLeft: "[CREATIVE WEBGL & CINEMATIC GSAP TELEMETRY]",
+      statsLeft: "CREATIVE WEBGL & CINEMATIC GSAP TELEMETRY",
       statsRight: "Lighthouse 100 Performance Audit",
-      resHeader: "[PARTICLE RENDERING FPS & AUDIO ASSET MEMORY]",
+      resHeader: "PARTICLE RENDERING FPS & AUDIO ASSET MEMORY",
       resRow1: "PARTICLE RENDER FPS",
       resB1W: 160, resB1Txt: "18 FPS (DOM Canvas 2D, 85% CPU)",
       resO1W: 230, resO1Txt: "60 FPS (Three.js Instanced, 9% CPU)",
@@ -435,9 +435,9 @@ const projectConfigs = {
         ["1.2ms", "LATENCIA AUDIO", "Nodos Sintetizados", "Motor Web Audio", "#6366f1"],
         ["0.000", "DESPLAZAMIENTO CLS", "Precarga Predictiva", "Diseño Estable", "#fbbf24"]
       ],
-      statsLeft: "[TELEMETRÍA WEBGL CREATIVO Y CINEMÁTICA GSAP]",
+      statsLeft: "TELEMETRÍA WEBGL CREATIVO Y CINEMÁTICA GSAP",
       statsRight: "Auditoría Lighthouse 100",
-      resHeader: "[RENDIMIENTO DE PARTÍCULAS Y MEMORIA DE AUDIO]",
+      resHeader: "RENDIMIENTO DE PARTÍCULAS Y MEMORIA DE AUDIO",
       resRow1: "CUADROS POR SEGUNDO",
       resB1W: 160, resB1Txt: "18 FPS (DOM Canvas 2D, 85% CPU)",
       resO1W: 230, resO1Txt: "60 FPS (Three.js Instanciado, 9% CPU)",
@@ -465,9 +465,9 @@ const projectConfigs = {
         ["3.8ms", "EHR RETRIEVAL", "Indexed Patient Vault", "Sub-5ms Target", "#6366f1"],
         ["110ms", "SECURE PDF RX", "DomPDF Hashed Order", "Instant Print", "#fbbf24"]
       ],
-      statsLeft: "[CLINICAL ERP RESPONSE TIMES & INTEGRITY]",
+      statsLeft: "CLINICAL ERP RESPONSE TIMES & INTEGRITY",
       statsRight: "Hospital Concurrent Shift Audit @ 300 Users",
-      resHeader: "[EHR QUERY PERFORMANCE & PERMISSION OVERHEAD]",
+      resHeader: "EHR QUERY PERFORMANCE & PERMISSION OVERHEAD",
       resRow1: "EHR QUERY LATENCY",
       resB1W: 240, resB1Txt: "850ms (Unindexed JSON Query, 45 MB RAM)",
       resO1W: 15, resO1Txt: "3.8ms (B-Tree Indexed Schema, 1.2 MB RAM)",
@@ -492,9 +492,9 @@ const projectConfigs = {
         ["3.8ms", "CONSULTA EHR", "Expediente Indexado", "Objetivo Sub-5ms", "#6366f1"],
         ["110ms", "RECETA DOMPDF", "Firma con Hash Médico", "Impresión Rápida", "#fbbf24"]
       ],
-      statsLeft: "[TIEMPOS DE RESPUESTA ERP CLÍNICO E INTEGRIDAD]",
+      statsLeft: "TIEMPOS DE RESPUESTA ERP CLÍNICO E INTEGRIDAD",
       statsRight: "Auditoría Turno Hospitalario @ 300 Usuarios",
-      resHeader: "[CONSULTA DE HISTORIAL Y CONTROL DE PERMISOS]",
+      resHeader: "CONSULTA DE HISTORIAL Y CONTROL DE PERMISOS",
       resRow1: "TIEMPO CONSULTA EHR",
       resB1W: 240, resB1Txt: "850ms (JSON Sin Índices, 45 MB RAM)",
       resO1W: 15, resO1Txt: "3.8ms (Esquema B-Tree Indexado, 1.2 MB RAM)",
@@ -522,9 +522,9 @@ const projectConfigs = {
         ["2.1ms", "DRIVER MATCHING", "Nearest Fleet Queue", "Redis Queue", "#6366f1"],
         ["14ms", "SOCKET BROADCAST", "Coordinate Telemetry", "Realtime Sync", "#fbbf24"]
       ],
-      statsLeft: "[FLEET DISPATCH & SPATIAL QUERY TELEMETRY]",
+      statsLeft: "FLEET DISPATCH & SPATIAL QUERY TELEMETRY",
       statsRight: "Urban Rush-Hour High Volume Benchmark",
-      resHeader: "[SPATIAL CALCULATION & TELEMETRY BANDWIDTH]",
+      resHeader: "SPATIAL CALCULATION & TELEMETRY BANDWIDTH",
       resRow1: "RADIUS QUERY TIME",
       resB1W: 240, resB1Txt: "180ms (PHP Haversine Loop, 100% CPU lock)",
       resO1W: 14, resO1Txt: "1.2ms (PostgreSQL PostGIS GiST Index)",
@@ -549,9 +549,9 @@ const projectConfigs = {
         ["2.1ms", "ASIGNACIÓN FLOTA", "Conductor Más Próximo", "Cola Redis", "#6366f1"],
         ["14ms", "NOTIFICACIÓN PUSH", "Telemetría de Coordenadas", "Tiempo Real", "#fbbf24"]
       ],
-      statsLeft: "[DESPACHO DE FLOTA Y TELEMETRÍA ESPACIAL]",
+      statsLeft: "DESPACHO DE FLOTA Y TELEMETRÍA ESPACIAL",
       statsRight: "Prueba de Alta Demanda en Hora Pico",
-      resHeader: "[CÁLCULO ESPACIAL Y CONSUMO DE RED EN TELEMETRÍA]",
+      resHeader: "CÁLCULO ESPACIAL Y CONSUMO DE RED EN TELEMETRÍA",
       resRow1: "CÁLCULO DE RADIO",
       resB1W: 240, resB1Txt: "180ms (Fórmula Haversine en PHP, 100% CPU)",
       resO1W: 14, resO1Txt: "1.2ms (Índice GiST PostGIS en PostgreSQL)",
@@ -579,9 +579,9 @@ const projectConfigs = {
         ["410ms", "GEMINI ROUTING", "AI Optimal Waypoints", "Fuel Optimization", "#6366f1"],
         ["18%", "FUEL SAVINGS", "Intelligent Waybills", "Verified Fleet ROI", "#fbbf24"]
       ],
-      statsLeft: "[SUPPLY CHAIN & LOGISTICS TELEMETRY]",
+      statsLeft: "SUPPLY CHAIN & LOGISTICS TELEMETRY",
       statsRight: "Carnes San Martín Operational Batch Run",
-      resHeader: "[ROUTE PLANNING EFFICIENCY & ARCHITECTURAL COMPLEXITY]",
+      resHeader: "ROUTE PLANNING EFFICIENCY & ARCHITECTURAL COMPLEXITY",
       resRow1: "ROUTE PLANNING TIME",
       resB1W: 240, resB1Txt: "45 min (Manual Dispatch)",
       resO1W: 14, resO1Txt: "410ms (Gemini AI Route)",
@@ -606,9 +606,9 @@ const projectConfigs = {
         ["410ms", "RUTA GEMINI IA", "Puntos Óptimos de Entrega", "Ahorro de Gasolina", "#6366f1"],
         ["18%", "AHORRO DE RUTA", "Guías Inteligentes", "Retorno Operativo", "#fbbf24"]
       ],
-      statsLeft: "[TELEMETRÍA LOGÍSTICA Y CADENA DE SUMINISTRO]",
+      statsLeft: "TELEMETRÍA LOGÍSTICA Y CADENA DE SUMINISTRO",
       statsRight: "Corrida Operativa Carnes San Martín",
-      resHeader: "[PLANIFICACIÓN DE RUTAS Y COMPLEJIDAD DE CÓDIGO]",
+      resHeader: "PLANIFICACIÓN DE RUTAS Y COMPLEJIDAD DE CÓDIGO",
       resRow1: "TIEMPO PLANIFICACIÓN",
       resB1W: 240, resB1Txt: "45 min (Despacho Manual)",
       resO1W: 14, resO1Txt: "410ms (Rutas Gemini IA)",
@@ -636,9 +636,9 @@ const projectConfigs = {
         ["1.1ms", "KARDEX TRIGGER", "Weighted Cost Calc", "Zero Drift", "#6366f1"],
         ["85ms", "FISCAL TICKET", "DOMPDF Receipt Render", "Thermal Print", "#fbbf24"]
       ],
-      statsLeft: "[POS CHECKOUT & AUDIT TELEMETRY]",
+      statsLeft: "POS CHECKOUT & AUDIT TELEMETRY",
       statsRight: "High-Volume Cash Register Stress Test",
-      resHeader: "[KARDEX CALCULATION TIME & POS REACTIVE LATENCY]",
+      resHeader: "KARDEX CALCULATION TIME & POS REACTIVE LATENCY",
       resRow1: "KARDEX VALUATION",
       resB1W: 240, resB1Txt: "2,800ms (On-demand Historical Loop)",
       resO1W: 12, resO1Txt: "1.1ms (Incremental Weighted Average Trigger)",
@@ -663,9 +663,9 @@ const projectConfigs = {
         ["1.1ms", "TRIGGER KARDEX", "Cálculo Costo Promedio", "Cero Descuadre", "#6366f1"],
         ["85ms", "TICKET FISCAL", "Emisión Térmica DOMPDF", "Impresión Lista", "#fbbf24"]
       ],
-      statsLeft: "[TELEMETRÍA DE PUNTO DE VENTA Y AUDITORÍA]",
+      statsLeft: "TELEMETRÍA DE PUNTO DE VENTA Y AUDITORÍA",
       statsRight: "Prueba de Estrés de Cobro en Tienda",
-      resHeader: "[VALORACIÓN KARDEX Y LATENCIA EN PUNTO DE VENTA]",
+      resHeader: "VALORACIÓN KARDEX Y LATENCIA EN PUNTO DE VENTA",
       resRow1: "CÁLCULO KARDEX",
       resB1W: 240, resB1Txt: "2,800ms (Bucle Histórico Completo)",
       resO1W: 12, resO1Txt: "1.1ms (Trigger Incremental Ponderado)",
@@ -693,9 +693,9 @@ const projectConfigs = {
         ["3.2ms", "PRESIGNED S3 URL", "AWS S3 Temporary Access", "24-Hour Expiry", "#6366f1"],
         ["60 FPS", "PORTFOLIO SCROLL", "Lenis & GSAP View", "Hardware Locked", "#fbbf24"]
       ],
-      statsLeft: "[PHOTO ASSET PIPELINE & DELIVERY PERFORMANCE]",
+      statsLeft: "PHOTO ASSET PIPELINE & DELIVERY PERFORMANCE",
       statsRight: "High-Resolution Image Processing Audit",
-      resHeader: "[IMAGE BANDWIDTH CONSUMPTION & SERVER CPU OFFLOAD]",
+      resHeader: "IMAGE BANDWIDTH CONSUMPTION & SERVER CPU OFFLOAD",
       resRow1: "PROOF TRANSFER SIZE",
       resB1W: 240, resB1Txt: "42 MB (Uncompressed Full RAW Photo)",
       resO1W: 15, resO1Txt: "380 KB (Watermarked WebP Preview)",
@@ -720,9 +720,9 @@ const projectConfigs = {
         ["3.2ms", "URL PRESIGNADA", "Acceso Temporal AWS S3", "Caducidad 24 Horas", "#6366f1"],
         ["60 FPS", "SCROLL GALERÍA", "Inercia Lenis y GSAP", "Aceleración GPU", "#fbbf24"]
       ],
-      statsLeft: "[RENDIMIENTO DEL MOTOR DE FOTOGRAFÍA Y ENTREGA]",
+      statsLeft: "RENDIMIENTO DEL MOTOR DE FOTOGRAFÍA Y ENTREGA",
       statsRight: "Auditoría de Procesamiento en Alta Resolución",
-      resHeader: "[TRANSFERENCIA DE FOTOS Y DESCARGA DE CPU]",
+      resHeader: "TRANSFERENCIA DE FOTOS Y DESCARGA DE CPU",
       resRow1: "TAMAÑO DE MUESTRA",
       resB1W: 240, resB1Txt: "42 MB (Foto RAW Original Sin Comprimir)",
       resO1W: 15, resO1Txt: "380 KB (Muestra WebP con Marca de Agua)",

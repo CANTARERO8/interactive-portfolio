@@ -16,8 +16,8 @@ const COPY = {
       'ultra-plus': 'MODO ULTRA+'
     },
     description: {
-      performance: 'RENDER LIGERO • RESPUESTA MÁXIMA',
-      ultra: 'NEBULOSA OPTIMIZADA • CALIDAD EQUILIBRADA',
+      performance: 'RENDER LIGERO — RESPUESTA MÁXIMA',
+      ultra: 'NEBULOSA OPTIMIZADA — CALIDAD EQUILIBRADA',
       'ultra-plus': 'NEBULOSA HD VIOLETA + 7,700 PARTÍCULAS + TODOS LOS EFECTOS'
     },
     stages: {
@@ -54,8 +54,8 @@ const COPY = {
       'ultra-plus': 'ULTRA+ MODE'
     },
     description: {
-      performance: 'LIGHTWEIGHT RENDER • MAXIMUM RESPONSE',
-      ultra: 'OPTIMIZED NEBULA • BALANCED QUALITY',
+      performance: 'LIGHTWEIGHT RENDER — MAXIMUM RESPONSE',
+      ultra: 'OPTIMIZED NEBULA — BALANCED QUALITY',
       'ultra-plus': 'VIOLET HD NEBULA + 7,700 PARTICLES + ALL EFFECTS'
     },
     stages: {

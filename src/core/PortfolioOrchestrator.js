@@ -101,17 +101,17 @@ export class PortfolioOrchestrator {
     
     if (!statusText || !loadText || !loadBar || !logsContainer) return;
     
-    logsContainer.innerHTML = '<span class="log-info">[VUE] Reactive DOM runtime connected. Observing Pinia root state.</span>';
+    logsContainer.innerHTML = '<span class="log-info">VUE: Reactive DOM runtime connected. Observing Pinia root state.</span>';
     
     const messages = [
-      "[PINIA] Action dispatched: 'syncHardwareTelemetry' (payload: 64B)",
-      "[STORE] Active modules synchronized: 4 state nodes updated",
-      "[COMPUTED] Recalculating active telemetry aggregates in 0.04ms",
-      "[VUE] Reactive dependency tracked on system_telemetry_rate",
-      "[PINIA] coreLoad value mutated in reactive chain",
-      "[VUE] Virtual DOM tree reconciliation finished • Diff checked",
-      "[STORE] Computed state: isHealthy -> resolved: true",
-      "[SYSTEM] Triggering reactive telemetry render update..."
+      "PINIA: Action dispatched: 'syncHardwareTelemetry' (payload: 64B)",
+      "STORE: Active modules synchronized: 4 state nodes updated",
+      "COMPUTED: Recalculating active telemetry aggregates in 0.04ms",
+      "VUE: Reactive dependency tracked on system_telemetry_rate",
+      "PINIA: coreLoad value mutated in reactive chain",
+      "VUE: Virtual DOM tree reconciliation finished — Diff checked",
+      "STORE: Computed state: isHealthy -> resolved: true",
+      "SYSTEM: Triggering reactive telemetry render update..."
     ];
     
     let counter = 0;
@@ -121,10 +121,10 @@ export class PortfolioOrchestrator {
       loadBar.style.width = `${coreLoad}%`;
       
       if (coreLoad > 70) {
-        statusText.innerText = 'HIGH LOAD • OPTIMIZING';
+        statusText.innerText = 'HIGH LOAD — OPTIMIZING';
         statusText.className = 'sim-accent-amber';
       } else {
-        statusText.innerText = 'OK • DECOUPLED';
+        statusText.innerText = 'ESTADO: DESACOPLADO';
         statusText.className = 'sim-accent-cyan';
       }
       
@@ -147,23 +147,23 @@ export class PortfolioOrchestrator {
     
     if (!latencyText || !dumpPre || !logsContainer) return;
     
-    logsContainer.innerHTML = '<span class="log-info">[API] Routing orchestrator initialized. Dispatch pipeline open.</span>';
+    logsContainer.innerHTML = '<span class="log-info">API: Routing orchestrator initialized. Dispatch pipeline open.</span>';
     
     const logs = [
-      "[ROUTER] Request intercepted: POST /api/v1/telemetry/dispatch",
-      "[MIDDLEWARE] Token validated • CSRF checked • Route allowed",
-      "[CONTROLLER] EventRepository -> pushToQueue initialized",
-      "[QUEUE] Payload pushing into isolated Redis queue worker...",
-      "[QUEUE] Job dispatched to queue: App\\Jobs\\ProcessSystemEvent",
-      "[DATABASE] Event saved -> ID: 41829, latency_average: 12ms",
-      "[CONTROLLER] TelemetryOrchestrator logged success metrics",
-      "[ROUTER] Dispatch completed. Serializing JSON object payload..."
+      "ROUTER: Request intercepted: POST /api/v1/telemetry/dispatch",
+      "MIDDLEWARE: Token validated — CSRF checked — Route allowed",
+      "CONTROLLER: EventRepository -> pushToQueue initialized",
+      "QUEUE: Payload pushing into isolated Redis queue worker...",
+      "QUEUE: Job dispatched to queue: App\\Jobs\\ProcessSystemEvent",
+      "DATABASE: Event saved -> ID: 41829, latency_average: 12ms",
+      "CONTROLLER: TelemetryOrchestrator logged success metrics",
+      "ROUTER: Dispatch completed. Serializing JSON object payload..."
     ];
     
     let counter = 0;
     this.intervals['laravel'] = setInterval(() => {
       const latency = 10 + Math.floor(Math.random() * 6);
-      latencyText.innerText = `${latency}ms • VERIFIED`;
+      latencyText.innerText = `${latency}ms — VERIFICADO`;
       
       const responseObj = {
         success: true,
@@ -197,17 +197,17 @@ export class PortfolioOrchestrator {
     
     if (!scanText || !speedText || !tablePre || !logsContainer) return;
     
-    logsContainer.innerHTML = '<span class="log-info">[DB] SQL core agent attached. Index scanning loops active.</span>';
+    logsContainer.innerHTML = '<span class="log-info">DB: SQL core agent attached. Index scanning loops active.</span>';
     
     const dbLogs = [
-      "[PLANNER] Explaining scan hierarchy logic query CTE",
-      "[PLANNER] Primary Key index matched on parent_id",
-      "[PLANNER] Custom Index Scan: parent_id_idx on system_nodes",
-      "[EXECUTOR] Scanning relational branches recursing down node hierarchy",
-      "[EXECUTOR] Level 1 scanned (1 main node matched)",
-      "[EXECUTOR] Level 2 scanned (4 child nodes extracted in 0.02ms)",
-      "[EXECUTOR] Grouping metrics depth and aggregating average load metrics",
-      "[COMPILER] ACID validation check: transaction commited successfully"
+      "PLANNER: Explaining scan hierarchy logic query CTE",
+      "PLANNER: Primary Key index matched on parent_id",
+      "PLANNER: Custom Index Scan: parent_id_idx on system_nodes",
+      "EXECUTOR: Scanning relational branches recursing down node hierarchy",
+      "EXECUTOR: Level 1 scanned (1 main node matched)",
+      "EXECUTOR: Level 2 scanned (4 child nodes extracted in 0.02ms)",
+      "EXECUTOR: Grouping metrics depth and aggregating average load metrics",
+      "COMPILER: ACID validation check: transaction commited successfully"
     ];
     
     let counter = 0;
@@ -242,16 +242,16 @@ export class PortfolioOrchestrator {
     const logsContainer = document.getElementById('sim-wp-logs');
     if (!statusText || !logsContainer) return;
     
-    logsContainer.innerHTML = '<span class="log-info">[CMS] WordPress & Elementor builder system online.</span>';
+    logsContainer.innerHTML = '<span class="log-info">CMS: WordPress & Elementor builder system online.</span>';
     
     const logs = [
-      "[ELEMENTOR] Initializing layout drag-and-drop container...",
-      "[CMS] Custom CSS overrides compiled and loaded successfully",
-      "[THEME] Initializing active theme child custom customizer...",
-      "[LOOP] Builder loop compiler scanning custom query loops...",
-      "[API] Syncing dynamic WooCommerce custom API data...",
+      "ELEMENTOR: Initializing layout drag-and-drop container...",
+      "CMS: Custom CSS overrides compiled and loaded successfully",
+      "THEME: Initializing active theme child custom customizer...",
+      "LOOP: Builder loop compiler scanning custom query loops...",
+      "API: Syncing dynamic WooCommerce custom API data...",
       "[SEO] Yoast/RankMath meta tags structured and injected...",
-      "[SYSTEM] Output compiled: Elementor sections rendered in 14ms"
+      "SYSTEM: Output compiled: Elementor sections rendered in 14ms"
     ];
     
     let counter = 0;
@@ -821,14 +821,14 @@ export class PortfolioOrchestrator {
     if (command === 'help') {
       this.soundManager.playSuccess();
       if (isEs) {
-        this.appendLogLine(container, `[SISTEMA] Comandos activos disponibles:<br>` +
+        this.appendLogLine(container, `SISTEMA: Comandos activos disponibles:<br>` +
           `  - <strong>help</strong> : Listar comandos activos del terminal<br>` +
           `  - <strong>clear</strong> : Limpiar el búfer de pantalla del simulador<br>` +
           `  - <strong>telemetry</strong> : Extraer estadísticas de rendimiento de hardware en tiempo real<br>` +
           `  - <strong>database query</strong> : Ejecutar consulta jerárquica recursiva CTE<br>` +
           `  - <strong>overclock</strong> : Alternar reactor cooling / activar overclock global`, 'log-info');
       } else {
-        this.appendLogLine(container, `[SYSTEM] Available active console commands:<br>` +
+        this.appendLogLine(container, `SYSTEM: Available active console commands:<br>` +
           `  - <strong>help</strong> : List terminal commands and descriptions<br>` +
           `  - <strong>clear</strong> : Clear scrollback screen logs buffer<br>` +
           `  - <strong>telemetry</strong> : Fetch live real-time hardware performance metrics<br>` +
@@ -842,7 +842,7 @@ export class PortfolioOrchestrator {
     } 
     else if (command === 'telemetry') {
       this.soundManager.playSuccess();
-      this.appendLogLine(container, isEs ? `[SISTEMA] Leyendo diagnósticos del núcleo de renderizado...` : `[SYSTEM] Intercepting core hardware diagnostics...`, 'log-info');
+      this.appendLogLine(container, isEs ? `SISTEMA: Leyendo diagnósticos del núcleo de renderizado...` : `SYSTEM: Intercepting core hardware diagnostics...`, 'log-info');
       
       const fps = window.APP_INSTANCE && window.APP_INSTANCE.fps ? window.APP_INSTANCE.fps.toFixed(1) : '60.0';
       const scrollSpeed = window.APP_INSTANCE && window.APP_INSTANCE.scrollVelocity ? Math.abs(window.APP_INSTANCE.scrollVelocity).toFixed(0) : '0';
@@ -850,35 +850,35 @@ export class PortfolioOrchestrator {
       setTimeout(() => {
         if (isEs) {
           this.appendLogLine(container, 
-            ` - DIAGNÓSTICOS DEL SISTEMA INTERACTIVO:<br>` +
-            ` &nbsp;&nbsp;&bull; CARGA DE NÚCLEO: [████████████░░░░░░] 68% • NORMAL<br>` +
-            ` &nbsp;&nbsp;&bull; FPS DE RENDERIZADO: ${fps} FPS • RUTA FLUIDA<br>` +
-            ` &nbsp;&nbsp;&bull; VELOCIDAD DE SCROLL: ${scrollSpeed} px/s<br>` +
-            ` &nbsp;&nbsp;&bull; USO DE MEMORIA: 184 MB / 512 MB ASIGNADOS VIRTUALMENTE<br>` +
-            ` &nbsp;&nbsp;&bull; TEMPERATURA THERMAL: 42.4 °C • ESTABLE`, 'log-success');
+            ` DIAGNÓSTICO DEL SISTEMA:<br>` +
+            ` &nbsp;&nbsp;CARGA DE CPU: ████████████░░░░░░ 68% — NORMAL<br>` +
+            ` &nbsp;&nbsp;RENDERIZADO: ${fps} FPS — FLUIDO<br>` +
+            ` &nbsp;&nbsp;VELOCIDAD DE SCROLL: ${scrollSpeed} px/s<br>` +
+            ` &nbsp;&nbsp;USO DE MEMORIA: 184 MB / 512 MB ASIGNADOS<br>` +
+            ` &nbsp;&nbsp;TEMPERATURA: 42.4 °C — ESTABLE`, 'log-success');
         } else {
           this.appendLogLine(container, 
-            ` - INTERACTIVE CONTROL TELEMETRY:<br>` +
-            ` &nbsp;&nbsp;&bull; CPU CORE LOAD: [████████████░░░░░░] 68% • NORMAL<br>` +
-            ` &nbsp;&nbsp;&bull; SHADER FPS: ${fps} FPS • RUNNING SMOOTH<br>` +
-            ` &nbsp;&nbsp;&bull; V-SCROLL VELOCITY: ${scrollSpeed} px/s<br>` +
-            ` &nbsp;&nbsp;&bull; SYSTEM RAM: 184 MB / 512 MB VIRTUAL ALLOC<br>` +
-            ` &nbsp;&nbsp;&bull; TEMPERATURE: 42.4 °C • CORES STABLE`, 'log-success');
+            ` SYSTEM TELEMETRY & STATUS:<br>` +
+            ` &nbsp;&nbsp;CPU LOAD: ████████████░░░░░░ 68% — NORMAL<br>` +
+            ` &nbsp;&nbsp;RENDER PIPELINE: ${fps} FPS — SMOOTH<br>` +
+            ` &nbsp;&nbsp;SCROLL VELOCITY: ${scrollSpeed} px/s<br>` +
+            ` &nbsp;&nbsp;SYSTEM RAM: 184 MB / 512 MB VIRTUAL ALLOC<br>` +
+            ` &nbsp;&nbsp;TEMPERATURE: 42.4 °C — STABLE`, 'log-success');
         }
       }, 400);
     } 
     else if (command === 'database query') {
       this.soundManager.playSuccess();
-      this.appendLogLine(container, isEs ? `[DB] EXPLAIN ANALYZE consulta recursiva CTE analizando...` : `[DB] EXPLAIN ANALYZE recursive CTE compilation scanning...`, 'log-info');
+      this.appendLogLine(container, isEs ? `DB: EXPLAIN ANALYZE consulta recursiva CTE analizando...` : `DB: EXPLAIN ANALYZE recursive CTE compilation scanning...`, 'log-info');
       
       setTimeout(() => {
-        this.appendLogLine(container, isEs ? `[DB] Coincidencia con índice en parent_id...` : `[DB] Custom Index Scan: parent_id_idx on system_nodes (cost=0.00..8.25)`, 'log-info');
-        this.appendLogLine(container, isEs ? `[DB] 2 niveles de jerarquía analizados en 0.07ms (ACID OK)` : `[DB] 2 recursive hierarchy levels processed in 0.07ms (ACID OK)`, 'log-success');
+        this.appendLogLine(container, isEs ? `DB: Coincidencia con índice en parent_id...` : `DB: Custom Index Scan: parent_id_idx on system_nodes (cost=0.00..8.25)`, 'log-info');
+        this.appendLogLine(container, isEs ? `DB: 2 niveles de jerarquía analizados en 0.07ms (ACID OK)` : `DB: 2 recursive hierarchy levels processed in 0.07ms (ACID OK)`, 'log-success');
       }, 350);
     } 
     else if (command === 'overclock') {
       this.soundManager.playSuccess();
-      this.appendLogLine(container, isEs ? `[HARDWARE] Modulando frecuencia de reactor...` : `[HARDWARE] Modulating core overclock frequency...`, 'log-warn');
+      this.appendLogLine(container, isEs ? `HARDWARE: Modulando frecuencia de reactor...` : `HARDWARE: Modulating core overclock frequency...`, 'log-warn');
       if (window.APP_INSTANCE) {
         window.APP_INSTANCE.toggleOverclock();
       }
@@ -886,8 +886,8 @@ export class PortfolioOrchestrator {
     else {
       this.soundManager.playError();
       this.appendLogLine(container, isEs 
-        ? `[ERROR] Comando no reconocido: '${commandText}'. Escribe <strong>help</strong> para la lista de comandos.` 
-        : `[ERROR] Command unrecognized: '${commandText}'. Type <strong>help</strong> for available console commands.`, 'log-error');
+        ? `ERROR: Comando no reconocido: '${commandText}'. Escribe <strong>help</strong> para la lista de comandos.` 
+        : `ERROR: Command unrecognized: '${commandText}'. Type <strong>help</strong> for available console commands.`, 'log-error');
     }
   }
 

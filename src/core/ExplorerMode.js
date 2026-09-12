@@ -2,16 +2,16 @@ import * as THREE from 'three';
 
 const EXPLORER_COPY = {
   es: {
-    enter: '[ MODO EXPLORADOR ]',
-    exit: '[ SALIR DEL EXPLORADOR ]',
-    status: 'DRON FREE-ROAM • EN LÍNEA',
-    help: 'WASD/FLECHAS MOVER · ESPACIO/SHIFT ALTURA · Q/E BALANCEO · RATÓN MIRAR · ESC SALIR'
+    enter: 'MODO EXPLORADOR',
+    exit: 'SALIR DEL EXPLORADOR',
+    status: 'MODO EXPLORACIÓN LIBRE — ACTIVO',
+    help: 'WASD / FLECHAS: MOVER — ESPACIO / SHIFT: ALTURA — Q / E: GIRO — RATÓN: MIRAR — ESC: SALIR'
   },
   en: {
-    enter: '[ EXPLORER MODE ]',
-    exit: '[ EXIT EXPLORER ]',
-    status: 'FREE-ROAM DRONE • ONLINE',
-    help: 'WASD/ARROWS MOVE · SPACE/SHIFT ALTITUDE · Q/E ROLL · MOUSE LOOK · ESC EXIT'
+    enter: 'EXPLORER MODE',
+    exit: 'EXIT EXPLORER',
+    status: 'FREE EXPLORATION MODE — ACTIVE',
+    help: 'WASD / ARROWS: MOVE — SPACE / SHIFT: ALTITUDE — Q / E: ROLL — MOUSE: LOOK — ESC: EXIT'
   }
 };
 
