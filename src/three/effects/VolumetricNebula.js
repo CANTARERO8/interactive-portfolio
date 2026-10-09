@@ -277,12 +277,8 @@ export class VolumetricNebula {
   }
 
   update(elapsedTime, isOverclocked = false) {
-    if (this.qualityMode === 'performance') {
-      this.mesh.visible = false;
-      return;
-    }
-
-    this.mesh.visible = true;
+    this.mesh.visible = false;
+    return;
     const isUltraPlus = this.qualityMode === 'ultra-plus';
     const timeScale = this.reducedMotion ? 0.08 : 0.22;
     this.uniforms.uTime.value = elapsedTime * timeScale;

@@ -13,7 +13,7 @@ export class Engine {
 
     this.baseFov = 55;
     this.targetFov = 55;
-    this.camera = new THREE.PerspectiveCamera(55, this.width / this.height, 0.1, 150);
+    this.camera = new THREE.PerspectiveCamera(55, this.width / this.height, 0.2, 320);
     this.camera.position.set(0, 0.5, 8); 
 
     this.renderer = new THREE.WebGLRenderer({

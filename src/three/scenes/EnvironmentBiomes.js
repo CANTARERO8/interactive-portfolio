@@ -646,24 +646,94 @@ export class EnvironmentBiomes {
       phase: 2.4
     });
 
-    this.biomes.postgres = { group, baseScale: 1.0, activeRange: [0.63, 0.84], transitionPadding: 0.09 };
+    this.biomes.postgres = { group, baseScale: 1.0, activeRange: [0.64, 0.79], transitionPadding: 0.03 };
     this.rootGroup.add(group);
   }
 
   buildBiomeWordPressFoundry() {
     const group = new THREE.Group();
-    group.position.set(0, 0.2, -58);
+    group.position.set(-1.1, 0.35, -58);
     this.wordpressModules = [];
 
-    const moduleGeometry = new THREE.BoxGeometry(2.4, 1.45, 0.48);
-    for (let i = 0; i < 12; i++) {
-      const angle = (i / 12) * Math.PI * 2;
-      const radius = i % 2 === 0 ? 6.2 : 8.2;
+    // 1. Sleek architectural dais / platform anchoring the foundry
+    const daisGeo = new THREE.CylinderGeometry(4.0, 4.6, 0.35, 6);
+    const daisMesh = new THREE.Mesh(daisGeo, this.matObsidian);
+    daisMesh.position.y = -2.2;
+    group.add(daisMesh);
+    this.registerCollider(daisMesh);
+
+    // Glowing perimeter base rim
+    const baseRim = new THREE.Mesh(
+      new THREE.TorusGeometry(4.2, 0.05, 8, 48),
+      this.glowPurple
+    );
+    baseRim.rotation.x = Math.PI / 2;
+    baseRim.position.y = -2.0;
+    group.add(baseRim);
+
+    // 2. Central Polyhedral Core & Wireframe Lattice
+    const coreGroup = new THREE.Group();
+    coreGroup.position.set(0, 0.2, 0);
+
+    const coreInnerMat = new THREE.MeshBasicMaterial({
+      color: '#c084fc',
+      wireframe: true,
+      transparent: true,
+      opacity: 0.85
+    });
+    const coreInner = new THREE.Mesh(new THREE.DodecahedronGeometry(1.2, 1), coreInnerMat);
+    coreGroup.add(coreInner);
+
+    const coreSolid = new THREE.Mesh(new THREE.DodecahedronGeometry(0.85, 0), this.matSlate);
+    coreGroup.add(coreSolid);
+
+    // Central pulsing energy point
+    const coreLight = new THREE.PointLight('#d8b4fe', 38, 20, 1.8);
+    coreLight.position.set(0, 0, 0);
+    coreGroup.add(coreLight);
+
+    group.add(coreGroup);
+    this.wordpressCore = coreGroup;
+    this.wordpressInnerWire = coreInner;
+
+    // 3. Multi-tier Orbital Gyroscope Armatures
+    // Primary tilted ring (glowing royal purple)
+    this.wordpressCoreRing = new THREE.Mesh(
+      new THREE.TorusGeometry(2.9, 0.12, 12, 64),
+      this.glowPurple
+    );
+    this.wordpressCoreRing.rotation.set(Math.PI * 0.36, 0.25, 0);
+    group.add(this.wordpressCoreRing);
+
+    // Secondary counter-tilted ring (glowing amethyst)
+    this.wordpressSecondaryRing = new THREE.Mesh(
+      new THREE.TorusGeometry(3.8, 0.08, 10, 56),
+      new THREE.MeshBasicMaterial({ color: '#a855f7', transparent: true, opacity: 0.85 })
+    );
+    this.wordpressSecondaryRing.rotation.set(-Math.PI * 0.3, -0.2, 0.35);
+    group.add(this.wordpressSecondaryRing);
+
+    // Tertiary outer ring (ethereal cyan/violet accent)
+    this.wordpressTertiaryRing = new THREE.Mesh(
+      new THREE.TorusGeometry(4.7, 0.05, 8, 48),
+      new THREE.MeshBasicMaterial({ color: '#38bdf8', transparent: true, opacity: 0.65 })
+    );
+    this.wordpressTertiaryRing.rotation.set(0.2, 0, Math.PI * 0.15);
+    group.add(this.wordpressTertiaryRing);
+
+    // 4. Floating Content & Layout Modules orbiting closer to center (visible between screen UI)
+    const moduleGeometry = new THREE.BoxGeometry(1.6, 0.95, 0.32);
+    const moduleCount = 8;
+    for (let i = 0; i < moduleCount; i++) {
+      const angle = (i / moduleCount) * Math.PI * 2;
+      const radius = i % 2 === 0 ? 2.9 : 3.8;
       const moduleGroup = new THREE.Group();
+      
+      const baseY = -1.1 + (i % 4) * 0.75;
       moduleGroup.position.set(
         Math.cos(angle) * radius,
-        -1.7 + (i % 4) * 1.25,
-        Math.sin(angle) * radius * 0.46
+        baseY,
+        Math.sin(angle) * radius * 0.55
       );
       moduleGroup.rotation.y = -angle + Math.PI * 0.5;
 
@@ -672,37 +742,38 @@ export class EnvironmentBiomes {
       moduleGroup.add(panel);
       this.registerCollider(panel);
 
+      // Glowing data bars on the module surface
       const contentBarCount = 3;
       for (let barIndex = 0; barIndex < contentBarCount; barIndex++) {
         const bar = new THREE.Mesh(
-          new THREE.BoxGeometry(1.45 - barIndex * 0.22, 0.05, 0.03),
+          new THREE.BoxGeometry(1.0 - barIndex * 0.18, 0.045, 0.025),
           barIndex === 0 ? this.glowPurple : this.glowCyan
         );
-        bar.position.set(-0.25 + barIndex * 0.1, 0.38 - barIndex * 0.32, 0.265);
+        bar.position.set(-0.18 + barIndex * 0.07, 0.26 - barIndex * 0.22, 0.17);
         moduleGroup.add(bar);
       }
+
+      // Sleek energy beacon on top of module
+      const beaconGeo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+      const beacon = new THREE.Mesh(beaconGeo, this.glowPurple);
+      beacon.position.set(0.55, 0.3, 0.17);
+      moduleGroup.add(beacon);
 
       group.add(moduleGroup);
       this.wordpressModules.push({
         group: moduleGroup,
-        baseY: moduleGroup.position.y,
-        phase: i * 0.58,
+        baseY: baseY,
+        baseX: moduleGroup.position.x,
+        baseZ: moduleGroup.position.z,
+        radius: radius,
+        angle: angle,
+        phase: i * 0.78,
+        orbitSpeed: 0.15 + (i % 3) * 0.05,
         orbitDirection: i % 2 === 0 ? 1 : -1
       });
     }
 
-    this.wordpressCoreRing = new THREE.Mesh(
-      new THREE.TorusGeometry(3.35, 0.12, 12, 64),
-      this.glowPurple
-    );
-    this.wordpressCoreRing.rotation.x = Math.PI / 2;
-    group.add(this.wordpressCoreRing);
-
-    const core = new THREE.Mesh(new THREE.DodecahedronGeometry(1.15, 0), this.matSlate);
-    group.add(core);
-    this.wordpressCore = core;
-
-    this.biomes.wordpress = { group, baseScale: 1.0, activeRange: [0.76, 0.93] };
+    this.biomes.wordpress = { group, baseScale: 1.0, activeRange: [0.77, 0.96], transitionPadding: 0.06 };
     this.rootGroup.add(group);
   }
 
@@ -850,7 +921,7 @@ export class EnvironmentBiomes {
       return { mesh, states: stream.states };
     });
 
-    this.biomes.contact = { group, baseScale: 1.0, activeRange: [0.80, 1.0] };
+    this.biomes.contact = { group, baseScale: 1.0, activeRange: [0.91, 1.0], transitionPadding: 0.06 };
     this.rootGroup.add(group);
   }
 
@@ -906,12 +977,19 @@ export class EnvironmentBiomes {
     if (this.wordpressModules) {
       this.wordpressModules.forEach(module => {
         module.group.position.y = module.baseY + Math.sin(elapsedTime * 0.78 + module.phase) * 0.18;
-        module.group.rotation.z = Math.sin(elapsedTime * 0.34 + module.phase) * 0.035 * module.orbitDirection;
+        module.group.rotation.z = Math.sin(elapsedTime * 0.34 + module.phase) * 0.04 * module.orbitDirection;
+        module.group.rotation.y += deltaTime * 0.12 * module.orbitDirection;
       });
       if (this.wordpressCoreRing) this.wordpressCoreRing.rotation.z += deltaTime * 0.24;
+      if (this.wordpressSecondaryRing) this.wordpressSecondaryRing.rotation.z -= deltaTime * 0.32;
+      if (this.wordpressTertiaryRing) this.wordpressTertiaryRing.rotation.y += deltaTime * 0.18;
       if (this.wordpressCore) {
         this.wordpressCore.rotation.y -= deltaTime * 0.28;
         this.wordpressCore.rotation.x += deltaTime * 0.14;
+      }
+      if (this.wordpressInnerWire) {
+        this.wordpressInnerWire.rotation.y += deltaTime * 0.42;
+        this.wordpressInnerWire.rotation.z -= deltaTime * 0.25;
       }
     }
 
