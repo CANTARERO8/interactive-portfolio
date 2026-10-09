@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { AmbientSky } from './AmbientSky.js';
 import { DistantHorizon } from './DistantHorizon.js';
+import { DistantMegastructure } from './DistantMegastructure.js';
 import { AtmosphericParticles } from './AtmosphericParticles.js';
 import { BiomeAtmospheres } from './BiomeAtmospheres.js';
 
@@ -17,6 +18,7 @@ export class WorldBackground {
 
     this.sky = new AmbientSky(this.scene, this.camera);
     this.horizon = new DistantHorizon(this.scene, this.camera);
+    this.megastructure = new DistantMegastructure(this.scene, this.camera);
     this.particles = new AtmosphericParticles(this.scene);
     this.biomesAtmosphere = new BiomeAtmospheres(this.scene, this.camera);
 
@@ -27,6 +29,7 @@ export class WorldBackground {
     this.qualityMode = mode;
     this.sky.setQualityMode(mode);
     this.horizon.setQualityMode(mode);
+    this.megastructure.setQualityMode(mode);
     this.particles.setQualityMode(mode);
   }
 
@@ -56,6 +59,14 @@ export class WorldBackground {
     // 5. Update sub-systems
     this.sky.update(deltaTime, elapsedTime, scrollProgress);
     this.horizon.update(deltaTime, elapsedTime);
+    this.megastructure.update(
+      deltaTime,
+      elapsedTime,
+      scrollProgress,
+      isExplorer,
+      this.biomesAtmosphere.currentSkyHorizon,
+      this.biomesAtmosphere.currentFogColor
+    );
     this.particles.update(deltaTime, elapsedTime);
 
     // 6. Smoothly blend global scene fog with regional atmosphere
@@ -85,6 +96,7 @@ export class WorldBackground {
   dispose() {
     this.sky.dispose();
     this.horizon.dispose();
+    this.megastructure.dispose();
     this.particles.dispose();
     this.biomesAtmosphere.dispose();
     this.scene.remove(this.rootGroup);
