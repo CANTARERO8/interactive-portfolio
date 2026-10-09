@@ -235,6 +235,7 @@ export class GraphicsMode {
     this.app.lightBeams?.setQualityMode(this.currentMode);
     this.app.particles?.setQualityMode(this.currentMode);
     this.app.systemsCity?.setQualityMode(this.currentMode);
+    this.app.worldBackground?.setQualityMode(this.currentMode);
 
     this.buttons.forEach(button => {
       const active = button.dataset.graphicsMode === this.currentMode;

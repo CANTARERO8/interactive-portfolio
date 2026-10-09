@@ -250,13 +250,13 @@ export class PortfolioOrchestrator {
       "THEME: Initializing active theme child custom customizer...",
       "LOOP: Builder loop compiler scanning custom query loops...",
       "API: Syncing dynamic WooCommerce custom API data...",
-      "[SEO] Yoast/RankMath meta tags structured and injected...",
+      "SEO: Yoast and RankMath meta tags structured and injected...",
       "SYSTEM: Output compiled: Elementor sections rendered in 14ms"
     ];
     
     let counter = 0;
     this.intervals['wordpress'] = setInterval(() => {
-      statusText.innerText = 'BUILDER RUNNING • ACTIVE';
+      statusText.innerText = 'BUILDER RUNNING: ACTIVE';
       statusText.className = 'sim-accent-cyan';
       
       const logLine = document.createElement('span');
