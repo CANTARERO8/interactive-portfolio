@@ -16,6 +16,7 @@ import { ClickSparks } from './ClickSparks';
 import { TextInteractions } from './TextInteractions';
 import { ExplorerMode } from './ExplorerMode';
 import { GraphicsMode } from './GraphicsMode';
+import { WorldBackground } from '../three/environment/WorldBackground';
 import gsap from 'gsap';
 
 export class App {
@@ -34,6 +35,7 @@ export class App {
     this.morphingEntity = new MorphingCoreEntity(this);
     this.explorerMode = new ExplorerMode(this);
     this.graphicsMode = new GraphicsMode(this);
+    this.worldBackground = new WorldBackground(this);
 
     this.scrollProgress = 0;
     this.prevScroll = 0;
@@ -47,7 +49,7 @@ export class App {
       { pos: [3.2, 1.2, -18.0],   look: [0, 0.5, -25.0] },    
       { pos: [-3.4, -1.4, -28.0], look: [0, 0.8, -35.0] },   
       { pos: [0.4, -0.5, -39.0],  look: [0, -0.25, -47.5] },  
-      { pos: [-2.0, -0.6, -51.0], look: [0, 0.2, -58.0] },   
+      { pos: [-1.4, 0.7, -48.0],  look: [-1.0, 0.35, -58.0] },  
       { pos: [0, 5.5, -59.0],     look: [0, 3.2, -72.0] }     
     ];
     
@@ -62,10 +64,10 @@ export class App {
 
       let sceneProgress = this.scrollProgress;
       if (this.explorerMode.active) {
-        
         sceneProgress = this.biomes.getProgressForPosition(this.engine.camera.position);
       }
 
+      this.worldBackground.update(deltaTime, elapsedTime, sceneProgress, this.engine.camera, this.explorerMode.active);
       this.nebula.update(elapsedTime, this.isOverclocked);
       this.particles.update(deltaTime, elapsedTime);
       this.gridFloor.update(deltaTime, elapsedTime);
@@ -153,13 +155,13 @@ export class App {
     ];
 
     if (idx === 4) {
-      const sweepX = 3.2 * Math.sin(factor * Math.PI);
+      const sweepX = 1.0 * Math.sin(factor * Math.PI);
       look[0] -= sweepX;
-      pos[0] += 0.7 * Math.sin(factor * Math.PI);
+      pos[0] += 0.3 * Math.sin(factor * Math.PI);
     } else if (idx === 5) {
-      const sweepX = 5.2 * Math.sin(factor * Math.PI);
+      const sweepX = 0.35 * Math.sin(factor * Math.PI);
       look[0] += sweepX;
-      pos[0] -= 0.8 * Math.sin(factor * Math.PI);
+      pos[0] -= 0.2 * Math.sin(factor * Math.PI);
     }
     
     return { pos, look };
@@ -191,10 +193,14 @@ export class App {
       };
     }
 
-    const lookLerpFactor = 0.06; 
-    this.currentLook.x += (waypoint.look[0] * xOffsetMultiplier - this.currentLook.x) * lookLerpFactor;
-    this.currentLook.y += (waypoint.look[1] - this.currentLook.y) * lookLerpFactor;
-    this.currentLook.z += (waypoint.look[2] - this.currentLook.z) * lookLerpFactor;
+    const targetLookX = (waypoint.look[0] * xOffsetMultiplier) + (this.mouse.x * 0.4);
+    const targetLookY = waypoint.look[1] - (this.mouse.y * 0.25);
+    const targetLookZ = waypoint.look[2];
+
+    const lookLerpFactor = 0.35; 
+    this.currentLook.x += (targetLookX - this.currentLook.x) * lookLerpFactor;
+    this.currentLook.y += (targetLookY - this.currentLook.y) * lookLerpFactor;
+    this.currentLook.z += (targetLookZ - this.currentLook.z) * lookLerpFactor;
 
     this.engine.camera.lookAt(this.currentLook.x, this.currentLook.y, this.currentLook.z);
   }
@@ -250,9 +256,11 @@ export class App {
         cache.wrapper.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out';
       }
 
+      const isJumping = this.scrollManager && this.scrollManager.isWarpJumping;
       if (opacity > 0.05) {
-        
-        this.animator.animateSectionIn(cache.id);
+        if (!isJumping) {
+          this.animator.animateSectionIn(cache.id);
+        }
 
         const scrollParallaxX = localProgress * -45;
         for (let t = 0; t < cache.tags.length; t++) {
@@ -263,27 +271,7 @@ export class App {
           tagEl.style.transform = `translate(${floatX + scrollParallaxX + velocityXOffset}px, ${floatY}px)`;
           tagEl.style.transition = 'transform 0.12s ease-out';
         }
-
-        if (cache.titleChars.length > 0) {
-          const chars = cache.titleChars;
-          const totalChars = chars.length;
-          for (let c = 0; c < totalChars; c++) {
-            const char = chars[c];
-            
-            const threshold = -0.55 + (c / totalChars) * 0.35;
-            
-            if (localProgress >= threshold) {
-              char.style.opacity = 1;
-              char.style.textShadow = '0 0 10px rgba(255, 255, 255, 0.05)';
-            } else {
-              char.style.opacity = 0.05; 
-              char.style.textShadow = 'none';
-            }
-            char.style.transition = 'opacity 0.22s ease-out';
-          }
-        }
       } else {
-        
         for (let t = 0; t < cache.tags.length; t++) {
           const tagEl = cache.tags[t];
           if (tagEl) tagEl.style.transform = 'translate(0px, 0px)';
@@ -359,8 +347,26 @@ export class App {
     });
 
     const sections = ['hero', 'about', 'projects', 'vue-frontend', 'laravel-backend', 'postgresql-showcase', 'wordpress-cms', 'contact'];
-    if (sections[currentIdx]) {
+    if (sections[currentIdx] && (!this.scrollManager || !this.scrollManager.isWarpJumping)) {
       this.animator.animateSectionIn(sections[currentIdx]);
+    }
+  }
+
+  onSectionArrival(currentIdx) {
+    this.currentLook = null;
+    const links = document.querySelectorAll('.nav-link');
+    links.forEach((link, idx) => {
+      if (idx === currentIdx) {
+        link.style.color = '#ffffff';
+      } else {
+        link.style.color = 'var(--color-text-sub)';
+      }
+    });
+
+    const sections = ['hero', 'about', 'projects', 'vue-frontend', 'laravel-backend', 'postgresql-showcase', 'wordpress-cms', 'contact'];
+    const sectionId = sections[currentIdx];
+    if (sectionId && this.animator) {
+      this.animator.animateSectionIn(sectionId, true);
     }
   }
 
